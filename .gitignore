@@ -1,1 +1,5 @@
 .Rproj.user
+*.o
+*.h
+*.dll
+*.so
