@@ -14,6 +14,7 @@ r_check_args: '--ignore-vignettes'
 
 # currently there is a bug in rstantools 2.1.0 (tbb header missing)
 before_install:
+  - sudo apt-get install -y libv8-dev
   - Rscript -e 'install.packages("remotes")'
   - Rscript -e 'remotes::install_version("rstantools", version = "2.0.0", repos = "http://cran.us.r-project.org")'
   - mkdir -p ~/.R
