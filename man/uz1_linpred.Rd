@@ -4,10 +4,12 @@
 \alias{uz1_linpred}
 \title{Bayesian inference for the Type 1 moult model}
 \usage{
-uz1_linpred(formula, data, init = "auto", ...)
+uz1_linpred(start_formula, duration_formula, data, init = "auto", ...)
 }
 \arguments{
-\item{formula}{model formula for start date}
+\item{start_formula}{model formula for start date}
+
+\item{duration_formula}{model formula for duration}
 
 \item{data}{Input data frame must contain a numeric column "date" and a column "moult_cat" which is a numeric vector of categorical moult codes (1 = old plumage,2 = moulting,3 = new plumage).}
 
