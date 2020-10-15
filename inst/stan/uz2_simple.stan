@@ -36,15 +36,17 @@ target += sum(log(P))+sum(q)+sum(log(R));
 
 generated quantities{
 real end_date;
+vector[N_old+N_moult+N_new] log_lik;
 vector[N_old] P;
 vector[N_moult] q;
 vector[N_new] R;
-vector[N_old+N_moult+N_new] log_lik;
+
 
 
 for (i in 1:N_old) P[i] = 1 - Phi((old_dates[i] - mu)/sigma);
 for (i in 1:N_moult) q[i] = log(tau) + normal_lpdf((moult_dates[i] - moult_indices[i]*tau) | mu, sigma);//N.B. unlike P and R this returns a log density
 for (i in 1:N_new) R[i] = Phi((new_dates[i] - tau - mu)/sigma);
+
 log_lik = append_row(log(P), append_row(q, log(R)));
 
 end_date = mu + tau;

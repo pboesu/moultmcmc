@@ -10,7 +10,7 @@
 uz2_simple <- function(dates, moult_indices, init = "auto",...) {
   stopifnot(all(moult_indices >= 0 & moult_indices <= 1))
   #order data by moult index
-  data <- data[order(data$moult_indices),]
+  #data <- data[order(data$moult_indices),]
   #prepare data structure for stan
   standata <- list(old_dates = dates[moult_indices==0],
                    N_old = length(dates[moult_indices==0]),

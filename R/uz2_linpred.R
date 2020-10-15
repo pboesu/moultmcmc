@@ -20,13 +20,13 @@ uz2_linpred <- function(start_formula = ~1, duration_formula = ~1, sigma_formula
   X_tau <- model.matrix(duration_formula, data)
   X_sigma <- model.matrix(sigma_formula, data)
   #prepare data structure for stan
-  standata <- list(old_dates = dates[moult_indices==0],
-                   N_old = length(dates[moult_indices==0]),
-                   moult_dates  = dates[(moult_indices > 0 & moult_indices < 1)],
-                   moult_indices = moult_indices[(moult_indices > 0 & moult_indices < 1)],
-                   N_moult = length(dates[(moult_indices > 0 & moult_indices < 1)]),
-                   new_dates = dates[moult_indices==1],
-                   N_new = length(dates[moult_indices==1]),
+  standata <- list(old_dates = data$date[data$moult_indices==0],
+                   N_old = length(data$date[data$moult_indices==0]),
+                   moult_dates  = data$date[(data$moult_indices > 0 & data$moult_indices < 1)],
+                   moult_indices = data$moult_indices[(data$moult_indices > 0 & data$moult_indices < 1)],
+                   N_moult = length(data$date[(data$moult_indices > 0 & data$moult_indices < 1)]),
+                   new_dates = data$date[data$moult_indices==1],
+                   N_new = length(data$date[data$moult_indices==1]),
                    X_mu = X_mu,
                    N_pred_mu = ncol(X_mu),
                    X_tau = X_tau,
