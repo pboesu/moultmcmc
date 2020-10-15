@@ -9,6 +9,7 @@ data {
   vector[N_old] old_dates;//t_i
   int<lower=0> N_moult;//J
   vector[N_moult] moult_dates;//u_j
+  vector<lower=0,upper=1>[N_moult] moult_indices;//index of moult
   int<lower=0> N_new;//K
   vector[N_new] new_dates;//v_k
   //predictors
@@ -34,7 +35,7 @@ parameters {
 // The model to be estimated.
 model {
   vector[N_old] P;
-  vector[N_moult] Q;
+  vector[N_moult] q;
   vector[N_new] R;
   vector[N_old+N_moult+N_new] mu;//start date lin pred
   vector[N_old+N_moult+N_new] tau;//duration lin pred
@@ -48,14 +49,13 @@ model {
 
 for (i in 1:N_old) P[i] = 1 - Phi((old_dates[i] - mu[i])/sigma[i]);
 //print(P);
-for (i in 1:N_moult) Q[i] = Phi((moult_dates[i] - mu[i + N_old])/sigma[i + N_old]) - Phi((moult_dates[i] - tau[i + N_old] - mu[i + N_old])/sigma[i + N_old]);
-//print(Q);
+for (i in 1:N_moult) q[i] = log(tau[i + N_old]) + normal_lpdf((moult_dates[i] - moult_indices[i]*tau[i + N_old]) | mu[i + N_old], sigma[i + N_old]);//N.B. unlike P and R this returns a log density
 for (i in 1:N_new) R[i] = Phi((new_dates[i] - tau[i + N_old + N_moult] - mu[i + N_old + N_moult])/sigma[i + N_old + N_moult]);
 //print(R);
 //print(sum(log(P)));
 //print(sum(log(Q)));
 //print(sum(log(R)));
-target += sum(log(P))+sum(log(Q))+sum(log(R));
+target += sum(log(P))+sum(q)+sum(log(R));
 //priors
 //mu ~ normal(0,10);
 //tau ~ normal(0,10);
@@ -68,7 +68,7 @@ generated quantities{
 
 vector[N_old+N_moult+N_new] log_lik;
 vector[N_old] P;
-vector[N_moult] Q;
+vector[N_moult] q;
 vector[N_new] R;
 vector[N_old+N_moult+N_new] mu;//start date lin pred
 vector[N_old+N_moult+N_new] tau;//duration lin pred
@@ -82,9 +82,10 @@ vector[N_old+N_moult+N_new] sigma;//duration lin pred
 
 for (i in 1:N_old) P[i] = 1 - Phi((old_dates[i] - mu[i])/sigma[i]);
 //print(P);
-for (i in 1:N_moult) Q[i] = Phi((moult_dates[i] - mu[i + N_old])/sigma[i + N_old]) - Phi((moult_dates[i] - tau[i + N_old] - mu[i + N_old])/sigma[i + N_old]);
+//for (i in 1:N_moult) Q[i] = Phi((moult_dates[i] - mu[i + N_old])/sigma[i + N_old]) - Phi((moult_dates[i] - tau[i + N_old] - mu[i + N_old])/sigma[i + N_old]);
+for (i in 1:N_moult) q[i] = log(tau[i + N_old]) + normal_lpdf((moult_dates[i] - moult_indices[i]*tau[i + N_old]) | mu[i + N_old], sigma[i + N_old]);//N.B. unlike P and R this returns a log density
 //print(Q);
 for (i in 1:N_new) R[i] = Phi((new_dates[i] - tau[i + N_old + N_moult] - mu[i + N_old + N_moult])/sigma[i + N_old + N_moult]);
 
-log_lik = append_row(log(P), append_row(log(Q), log(R)));
+log_lik = append_row(log(P), append_row(q, log(R)));
 }

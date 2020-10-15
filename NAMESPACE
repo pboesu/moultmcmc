@@ -3,6 +3,7 @@
 export(lm_stan)
 export(uz1_linpred)
 export(uz1_simple)
+export(uz2_linpred)
 export(uz2_simple)
 import(Rcpp)
 import(methods)

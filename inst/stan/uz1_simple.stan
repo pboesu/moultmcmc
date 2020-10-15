@@ -41,5 +41,15 @@ target += sum(log(P))+sum(log(Q))+sum(log(R));
 
 generated quantities{
 real end_date;
+vector[N_old+N_moult+N_new] log_lik;
+vector[N_old] P;
+vector[N_moult] Q;
+vector[N_new] R;
+
+for (i in 1:N_old) P[i] = 1 - Phi((old_dates[i] - mu)/sigma);
+for (i in 1:N_moult) Q[i] = Phi((moult_dates[i] - mu)/sigma) - Phi((moult_dates[i] - tau - mu)/sigma);
+for (i in 1:N_new) R[i] = Phi((new_dates[i] - tau - mu)/sigma);
+
  end_date = mu + tau;
+ log_lik = append_row(log(P), append_row(log(Q), log(R)));
 }

@@ -2,13 +2,15 @@
 #'
 #' @export
 #' @param dates Numeric vector of input capture dates.
-#' @param moult_cat Numeric vector of categorical moult codes (1 = old plumage,2 = moulting,3 = new plumage).
+#' @param moult_indices Numeric vector of numerical index of moult progression in [0,1].
 #' @param init Specification of initial values for all or some parameters. Can be the string "auto" for an automatic guess based on the data, or any of the permitted rstan options: the digit 0, the strings "0" or "random", or a function. See the detailed documentation for the init argument in ?rstan::stan.
 #' @param ... Arguments passed to `rstan::sampling` (e.g. iter, chains).
 #' @return An object of class `stanfit` returned by `rstan::sampling`
 #'
 uz2_simple <- function(dates, moult_indices, init = "auto",...) {
   stopifnot(all(moult_indices >= 0 & moult_indices <= 1))
+  #order data by moult index
+  data <- data[order(data$moult_indices),]
   #prepare data structure for stan
   standata <- list(old_dates = dates[moult_indices==0],
                    N_old = length(dates[moult_indices==0]),

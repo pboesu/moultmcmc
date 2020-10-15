@@ -1,4 +1,4 @@
-#' Bayesian inference for the Type 1 moult model
+#' Bayesian inference for the Type 2 moult model
 #'
 #' @export
 #' @param start_formula model formula for start date
@@ -10,22 +10,23 @@
 #' @return An object of class `stanfit` returned by `rstan::sampling`
 #'
 #TODO: implement an input data class which ensures column names and correct encoding for categorical variables
-uz1_linpred <- function(start_formula = ~1, duration_formula = ~1, sigma_formula = ~1, data, init = "auto",...) {
-  stopifnot(all(data$moult_cat %in% c(1,2,3)))
+uz2_linpred <- function(start_formula = ~1, duration_formula = ~1, sigma_formula = ~1, data, init = "auto",...) {
+  stopifnot(all(data$moult_indices >= 0 & data$moult_indices <= 1))
 
   #order data by moult category
-  data <- data[order(data$moult_cat),]
+  data <- data[order(data$moult_indices),]
   #setup model matrices
   X_mu <- model.matrix(start_formula, data)
   X_tau <- model.matrix(duration_formula, data)
   X_sigma <- model.matrix(sigma_formula, data)
   #prepare data structure for stan
-  standata <- list(old_dates = data$date[data$moult_cat==1],
-                   N_old = length(data$date[data$moult_cat==1]),
-                   moult_dates  = data$date[data$moult_cat==2],
-                   N_moult = length(data$date[data$moult_cat==2]),
-                   new_dates = data$date[data$moult_cat==3],
-                   N_new = length(data$date[data$moult_cat==3]),
+  standata <- list(old_dates = dates[moult_indices==0],
+                   N_old = length(dates[moult_indices==0]),
+                   moult_dates  = dates[(moult_indices > 0 & moult_indices < 1)],
+                   moult_indices = moult_indices[(moult_indices > 0 & moult_indices < 1)],
+                   N_moult = length(dates[(moult_indices > 0 & moult_indices < 1)]),
+                   new_dates = dates[moult_indices==1],
+                   N_new = length(dates[moult_indices==1]),
                    X_mu = X_mu,
                    N_pred_mu = ncol(X_mu),
                    X_tau = X_tau,
@@ -43,9 +44,9 @@ uz1_linpred <- function(start_formula = ~1, duration_formula = ~1, sigma_formula
            beta_tau = as.array(c(tau_start, rep(0, standata$N_pred_tau - 1))),
            sigma = sigma_start)
     }
-    out <- rstan::sampling(stanmodels$uz1_linpred, data = standata, init = initfunc, ...)
+    out <- rstan::sampling(stanmodels$uz2_linpred, data = standata, init = initfunc, ...)
   } else {
-    out <- rstan::sampling(stanmodels$uz1_linpred, data = standata, init = init, ...)
+    out <- rstan::sampling(stanmodels$uz2_linpred, data = standata, init = init, ...)
   }
 
   return(out)
