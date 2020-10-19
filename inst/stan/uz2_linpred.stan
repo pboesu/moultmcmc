@@ -45,7 +45,7 @@ model {
 //  print(mu);
   tau = X_tau * beta_tau;
 //  print(tau);
-  sigma = X_sigma * beta_sigma;
+  sigma = exp(X_sigma * beta_sigma);//use log link for variance lin pred
 
 for (i in 1:N_old) P[i] = 1 - Phi((old_dates[i] - mu[i])/sigma[i]);
 //print(P);
@@ -63,6 +63,8 @@ target += sum(log(P))+sum(q)+sum(log(R));
 }
 
 generated quantities{
+
+//NB: code duplication for the likelihood calculation is less than ideal - refactor to a use stan function?
 //real end_date;
 // end_date = mu + tau;
 
@@ -78,7 +80,7 @@ vector[N_old+N_moult+N_new] sigma;//duration lin pred
 //  print(mu);
   tau = X_tau * beta_tau;
 //  print(tau);
-  sigma = X_sigma * beta_sigma;
+  sigma = exp(X_sigma * beta_sigma);
 
 for (i in 1:N_old) P[i] = 1 - Phi((old_dates[i] - mu[i])/sigma[i]);
 //print(P);

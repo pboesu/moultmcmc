@@ -44,7 +44,7 @@ model {
 //  print(mu);
   tau = X_tau * beta_tau;
 //  print(tau);
-  sigma = X_sigma * beta_sigma;
+  sigma = exp(X_sigma * beta_sigma);
 
 for (i in 1:N_old) P[i] = 1 - Phi((old_dates[i] - mu[i])/sigma[i]);
 //print(P);
@@ -78,7 +78,7 @@ vector[N_old+N_moult+N_new] sigma;//duration lin pred
 //  print(mu);
   tau = X_tau * beta_tau;
 //  print(tau);
-  sigma = X_sigma * beta_sigma;
+  sigma = exp(X_sigma * beta_sigma);
 
 for (i in 1:N_old) P[i] = 1 - Phi((old_dates[i] - mu[i])/sigma[i]);
 //print(P);

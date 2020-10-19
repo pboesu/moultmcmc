@@ -39,13 +39,13 @@ uz1_linpred <- function(start_formula = ~1, duration_formula = ~1, sigma_formula
     sigma_start = min(10,sd(standata$moult_dates))
     initfunc <- function(chain_id = 1) {
       # cat("chain_id =", chain_id, "\n")
-      list(beta_mu = as.array(c(mu_start,rep(0, standata$N_pred_mu - 1))),
+      list(beta_mu = as.array(c(mu_start,rep(0, standata$N_pred_mu - 1))), #initialize intercept term from data, set inits for all other effects to 0
            beta_tau = as.array(c(tau_start, rep(0, standata$N_pred_tau - 1))),
-           sigma = sigma_start)
+           beta_sigma = as.array(c(log(sigma_start)), rep(0, standata$N_pred_tau - 1)))#NB this is on log link scale
     }
-    out <- rstan::sampling(stanmodels$uz1_linpred, data = standata, init = initfunc, ...)
+    out <- rstan::sampling(stanmodels$uz1_linpred, data = standata, init = initfunc, pars = c('beta_mu','beta_tau','beta_sigma', 'log_lik'), ...)
   } else {
-    out <- rstan::sampling(stanmodels$uz1_linpred, data = standata, init = init, ...)
+    out <- rstan::sampling(stanmodels$uz1_linpred, data = standata, init = init, pars = c('beta_mu','beta_tau','beta_sigma', 'log_lik'), ...)
   }
 
   return(out)
