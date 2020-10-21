@@ -17,7 +17,7 @@ data {
   int N_pred_tau;//number of predictors for duration
   matrix[N_old+N_moult+N_new,N_pred_tau] X_tau;//design matrix for duration NB: when forming design matrix must paste together responses in blocks old, moult, new
   int N_pred_sigma;//number of predictors for start date sigma
-  matrix[N_old+N_moult+N_new,N_pred_tau] X_sigma;//design matrix for sigma start NB: when forming design matrix must paste together responses in blocks old, moult, new
+  matrix[N_old+N_moult+N_new,N_pred_sigma] X_sigma;//design matrix for sigma start NB: when forming design matrix must paste together responses in blocks old, moult, new
 }
 
 // The parameters accepted by the model. Our model

@@ -36,6 +36,12 @@ uz1_linpred <- function(moult_cat_column, date_column, start_formula = ~1, durat
                    N_pred_tau = ncol(X_tau),
                    X_sigma = X_sigma,
                    N_pred_sigma = ncol(X_sigma))
+  #include pointwise log_lik matrix  in output?
+  if(log_lik){
+    outpars <- c('beta_mu','beta_tau','beta_sigma', 'log_lik')
+  } else {
+    outpars <- c('beta_mu','beta_tau','beta_sigma')
+  }
   #guess initial values
   if(init == "auto"){
     mu_start = mean(max(standata$old_dates),min(standata$moult_dates))
@@ -47,12 +53,7 @@ uz1_linpred <- function(moult_cat_column, date_column, start_formula = ~1, durat
            beta_tau = as.array(c(tau_start, rep(0, standata$N_pred_tau - 1))),
            beta_sigma = as.array(c(log(sigma_start)), rep(0, standata$N_pred_tau - 1)))#NB this is on log link scale
     }
-    #include pointwise log_lik matrix  in output?
-    if(log_lik){
-      outpars <- c('beta_mu','beta_tau','beta_sigma', 'log_lik')
-    } else {
-      outpars <- c('beta_mu','beta_tau','beta_sigma')
-      }
+
     out <- rstan::sampling(stanmodels$uz1_linpred, data = standata, init = initfunc, pars = outpars, ...)
   } else {
     out <- rstan::sampling(stanmodels$uz1_linpred, data = standata, init = init, pars = outpars, ...)

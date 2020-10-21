@@ -5,15 +5,22 @@
 \title{Bayesian inference for the Type 2 moult model}
 \usage{
 uz2_linpred(
+  moult_index_column,
+  date_column,
   start_formula = ~1,
   duration_formula = ~1,
   sigma_formula = ~1,
   data,
   init = "auto",
+  log_lik = TRUE,
   ...
 )
 }
 \arguments{
+\item{moult_index_column}{the name the column in \code{data} containing moult indices, i.e. a numeric vector of (linearized) moult scores (0 = old plumage,1 = new plumage).}
+
+\item{date_column}{the name the column in \code{data} containing sampling dates, encoded as days since an arbitrary reference date, i.e. a numeric vector}
+
 \item{start_formula}{model formula for start date}
 
 \item{duration_formula}{model formula for duration}
@@ -23,6 +30,8 @@ uz2_linpred(
 \item{data}{Input data frame must contain a numeric column "date" and a column "moult_cat" which is a numeric vector of categorical moult codes (1 = old plumage,2 = moulting,3 = new plumage).}
 
 \item{init}{Specification of initial values for all or some parameters. Can be the string "auto" for an automatic guess based on the data, or any of the permitted rstan options: the digit 0, the strings "0" or "random", or a function. See the detailed documentation for the init argument in ?rstan::stan.}
+
+\item{log_lik}{boolean retain pointwise log-likelihood in output? This enables model assessment and selection via the loo package. Defaults to true, can lead to very large output arrays if sample size is large.}
 
 \item{...}{Arguments passed to \code{rstan::sampling} (e.g. iter, chains).}
 }
