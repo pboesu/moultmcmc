@@ -1,4 +1,11 @@
 # moultmcmc
+
+[![Travis-CI Build
+Status](https://api.travis-ci.org/pboesu/moultmcmc.svg?branch=master)](https://travis-ci.org/pboesu/moultmcmc)
+[![Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
+[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/moultmcmc)]()
+
+
 In most free-living bird populations moult progression and duration in individuals can not be observed fully.
 Instead snapshot measurements of (re)captured individuals are typically used to infer these parameters on a population level.
 As an additional complication, recording of moult in the field may take various forms both in terms of the subset of the population that is sampled and whether moult is recorded as a categorical state, or a (semi-)continuous progression.
