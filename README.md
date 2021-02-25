@@ -1,4 +1,4 @@
-# moultmcmc
+# moultmcmc: Bayesian inference for moult phenology models
 
 [![Travis-CI Build
 Status](https://api.travis-ci.org/pboesu/moultmcmc.svg?branch=master)](https://travis-ci.org/pboesu/moultmcmc)
