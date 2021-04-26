@@ -32,6 +32,10 @@ parameters {
   vector[N_pred_sigma] beta_sigma;//regression coefficients for sigma start date
 }
 
+transformed parameters{
+  real sigma_intercept = exp(beta_sigma[1]);
+}
+
 // The model to be estimated.
 model {
   vector[N_old] P;

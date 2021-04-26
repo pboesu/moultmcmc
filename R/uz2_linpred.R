@@ -39,9 +39,9 @@ uz2_linpred <- function(moult_index_column, date_column, start_formula = ~1, dur
                    N_pred_sigma = ncol(X_sigma))
   #include pointwise log_lik matrix  in output?
   if(log_lik){
-    outpars <- c('beta_mu','beta_tau','beta_sigma', 'log_lik')
+    outpars <- c('beta_mu','beta_tau','beta_sigma', 'sigma_intercept', 'log_lik')
   } else {
-    outpars <- c('beta_mu','beta_tau','beta_sigma')
+    outpars <- c('beta_mu','beta_tau','beta_sigma', 'sigma_intercept')
   }
   #guess initial values
   if(init == "auto"){
