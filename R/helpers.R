@@ -2,8 +2,18 @@
 
 #need to define generic function
 
+#' Summary Table  for moult model
+#'
+#' @param x moult model object created with moult::moult
+#' @param prob nominal coverage probability of confidence interval
+#'
+#' @return a tibble
+#' @export
+#'
+#' @examples
 summary_table.moult <-function(x, prob = 0.95){
-  plotdata <- tibble::tibble(param = names(coef(x)), estimate = coef(x), stderr = x$standard.errors, )
+  probs = c((1-prob)/2, 1 -(1-prob)/2)
+  plotdata <- tibble::tibble(parameter = names(coef(x)), estimate = coef(x), stderr = x$standard.errors, lci = coef(x) - qnorm(probs[1])*x$standard.errors, uci = coef(x) + qnorm(probs[1])*x$standard.errors, prob = prob)
 }
 
 
@@ -33,8 +43,8 @@ summary_table.moultmcmc <- function (x, pars = x@sim$pars_oi, prob = 0.95, inclu
   }
   if (!include)
     pars <- setdiff(x@sim$pars_oi, pars)
-  s <- summary(x, pars, probs, ...)
-  return(s$summary)
+  s <- as_tibble(summary(x, pars, probs, ...)$summary, rownames = "parameter")
+  return(s)
 }
 
 #' Plot method for moult models

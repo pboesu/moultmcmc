@@ -62,5 +62,6 @@ uz1_linpred <- function(moult_cat_column, date_column, start_formula = ~1, durat
   names(out)[grep('beta_mu', names(out))] <- paste('mu',colnames(X_mu), sep = '_')
   names(out)[grep('beta_tau', names(out))] <- paste('tau',colnames(X_tau), sep = '_')
   names(out)[grep('beta_sigma', names(out))] <- paste('log_sigma',colnames(X_sigma), sep = '_')
+
   return(out)
 }

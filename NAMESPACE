@@ -3,6 +3,7 @@
 S3method(loo,moultmcmc)
 S3method(plot,moult)
 export(lm_stan)
+export(summary_table.moult)
 export(summary_table.moultmcmc)
 export(uz1_linpred)
 export(uz1_simple)
