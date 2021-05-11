@@ -46,7 +46,7 @@ uz5_linpred <- function(moult_index_column, date_column, start_formula = ~1, dur
   #guess initial values
   if(init == "auto"){
     mu_start = mean(c(min(standata$moult_dates),max(standata$old_dates)))
-    tau_start = max(10, min(standata$moult_dates)-max(standata$old_dates))
+    tau_start = max(10, max(standata$moult_dates)-max(standata$old_dates))
     sigma_start = min(10,sd(standata$moult_dates))
     initfunc <- function(chain_id = 1) {
       # cat("chain_id =", chain_id, "\n")
