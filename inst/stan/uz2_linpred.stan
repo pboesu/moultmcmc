@@ -1,5 +1,5 @@
 //
-// This Stan program defines the Underhill-Zucchini Type 1 model
+// This Stan program defines the Underhill-Zucchini Type 2 model
 //
 
 // The input data is a vector 'y' of length 'N'.

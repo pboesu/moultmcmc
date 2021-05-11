@@ -45,8 +45,8 @@ uz2_linpred <- function(moult_index_column, date_column, start_formula = ~1, dur
   }
   #guess initial values
   if(init == "auto"){
-    mu_start = mean(max(standata$old_dates),min(standata$moult_dates))
-    tau_start = mean(max(standata$moult_dates),min(standata$new_dates)) - mu_start
+    mu_start = mean(c(max(standata$old_dates),min(standata$moult_dates)))
+    tau_start = max(10, mean(c(max(standata$moult_dates),min(standata$new_dates))) - mu_start)
     sigma_start = min(10,sd(standata$moult_dates))
     initfunc <- function(chain_id = 1) {
       # cat("chain_id =", chain_id, "\n")
@@ -59,9 +59,9 @@ uz2_linpred <- function(moult_index_column, date_column, start_formula = ~1, dur
     out <- rstan::sampling(stanmodels$uz2_linpred, data = standata, init = init, pars = outpars, ...)
   }
   #rename regression coefficients for output
-  names(out)[grep('beta_mu', names(out))] <- paste('mu',colnames(X_mu), sep = '_')
-  names(out)[grep('beta_tau', names(out))] <- paste('tau',colnames(X_tau), sep = '_')
-  names(out)[grep('beta_sigma', names(out))] <- paste('log_sigma',colnames(X_sigma), sep = '_')
-
+  names(out)[grep('beta_mu', names(out))] <- paste('mean',colnames(X_mu), sep = '_')
+  names(out)[grep('beta_tau', names(out))] <- paste('duration',colnames(X_tau), sep = '_')
+  names(out)[grep('beta_sigma', names(out))] <- paste('log_sd',colnames(X_sigma), sep = '_')
+  names(out)[grep('sigma_intercept', names(out))] <- 'sd_(Intercept)'
   return(out)
 }
