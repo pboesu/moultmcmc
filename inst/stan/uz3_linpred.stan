@@ -61,9 +61,9 @@ for (i in 1:N_moult) Q[i] = Phi((moult_dates[i] - mu[i])/sigma[i]) - Phi((moult_
 //print(sum(log(R)));
 target += sum(q - log(Q));
 //priors
-//mu ~ normal(0,10);
+mu[1] ~ uniform(0,366);
 //tau ~ normal(0,10);
-//sigma ~ normal(0,3);
+sigma[1] ~ normal(0,5);
 }
 
 generated quantities{

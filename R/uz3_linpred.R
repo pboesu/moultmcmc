@@ -59,5 +59,8 @@ uz3_linpred <- function(moult_index_column, date_column, start_formula = ~1, dur
   names(out)[grep('beta_tau', names(out))] <- paste('duration',colnames(X_tau), sep = '_')
   names(out)[grep('beta_sigma', names(out))] <- paste('log_sd',colnames(X_sigma), sep = '_')
   names(out)[grep('sigma_intercept', names(out))] <- 'sd_(Intercept)'
-  return(out)
+  out_struc <- list()
+  out_struc$stanfit <- out
+  class(out_struc) <- 'moultmcmc'
+  return(out_struc)
 }

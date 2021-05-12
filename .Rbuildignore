@@ -3,3 +3,4 @@
 Read-and-delete-me
 ^LICENSE\.md$
 ^\.travis\.yml$
+sandbox_script.R

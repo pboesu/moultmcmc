@@ -4,7 +4,7 @@
 \alias{summary_table.moult}
 \title{Summary Table  for moult model}
 \usage{
-summary_table.moult(x, prob = 0.95)
+\method{summary_table}{moult}(x, prob = 0.95, tidy_names = TRUE)
 }
 \arguments{
 \item{x}{moult model object created with moult::moult}

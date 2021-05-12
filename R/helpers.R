@@ -1,6 +1,14 @@
 #helper functions to plot moult and moultmcmc models
 
 #need to define generic function
+#' SUmmary table generic
+#'
+#' @param ... ...
+#'
+#' @return ...
+#' @export
+#'
+summary_table <- function(...){UseMethod("summary_table")}
 
 #' Summary Table  for moult model
 #'
@@ -10,10 +18,13 @@
 #' @return a tibble
 #' @export
 #'
-#' @examples
-summary_table.moult <-function(x, prob = 0.95){
+summary_table.moult <-function(x, prob = 0.95, tidy_names = TRUE){
   probs = c((1-prob)/2, 1 -(1-prob)/2)
-  plotdata <- tibble::tibble(parameter = names(coef(x)), estimate = coef(x), stderr = x$standard.errors, lci = coef(x) - qnorm(probs[1])*x$standard.errors, uci = coef(x) + qnorm(probs[1])*x$standard.errors, prob = prob)
+  plotdata <- tibble::tibble(parameter = names(coef(x)), estimate = coef(x), stderr = x$standard.errors, lci = coef(x) - qnorm(probs[1])*x$standard.errors, uci = coef(x) + qnorm(probs[1])*x$standard.errors, prob = prob, method = 'ML')
+  if (tidy_names)
+  plotdata <- mutate(plotdata, parameter = stringr::str_replace_all(parameter, "intercept.1", "(Intercept)"))
+  plotdata <- mutate(plotdata, parameter = stringr::str_replace_all(parameter, "intercept", "(Intercept)"))
+  return(plotdata)
 }
 
 
@@ -28,23 +39,44 @@ summary_table.moult <-function(x, prob = 0.95){
 #' @return
 #' @export
 #'
-summary_table.moultmcmc <- function (x, pars = x@sim$pars_oi, prob = 0.95, include = TRUE, ...){
+summary_table.moultmcmc <- function (x, pars = x$stanfit@sim$pars_oi, prob = 0.95, include = TRUE, ...){
   probs = c((1-prob)/2, 1 -(1-prob)/2)
 
-  if (x@mode == 1L) {
-    cat("Stan model '", x@model_name, "' is of mode 'test_grad';\n",
+  if (x$stanfit@mode == 1L) {
+    cat("Stan model '", x$stanfit@model_name, "' is of mode 'test_grad';\n",
         "sampling is not conducted.\n", sep = "")
     return(invisible(NULL))
   }
-  else if (x@mode == 2L) {
-    cat("Stan model '", x@model_name, "' does not contain samples.\n",
+  else if (x$stanfit@mode == 2L) {
+    cat("Stan model '", x$stanfit@model_name, "' does not contain samples.\n",
         sep = "")
     return(invisible(NULL))
   }
   if (!include)
-    pars <- setdiff(x@sim$pars_oi, pars)
-  s <- as_tibble(summary(x, pars, probs, ...)$summary, rownames = "parameter")
+    pars <- setdiff(x$stanfit@sim$pars_oi, pars)
+  s <- as_tibble(summary(x$stanfit, pars, probs, ...)$summary, rownames = "parameter") %>%
+    rename(estimate = mean) %>% rename(uci = `2.5%`, lci = `97.5%`) %>%
+    mutate(prob = 0.95, method = 'MCMC')
   return(s)
+}
+
+#' Visual comparison of ML and MCMC fits
+#'
+#' @param ml a moult model
+#' @param mcmc a moultmcmc model
+#'
+#' @return a plot
+#' @export
+#'
+compare_plot <- function(m1,m2,names = NULL){
+  #TODO:type checking etc
+  #TODO:import necessary dplyr and ggplot components
+  if(is.null(names)) names = as.character(1:2)
+
+  plotdata <- dplyr::bind_rows(summary_table(m1) %>% mutate(model = names[1]),
+                               summary_table(m2) %>% mutate(model = names[2]))
+  filter(plotdata, !(parameter %in% c('lp__', 'log_sd_(Intercept)'))) %>%
+    ggplot(aes(x = parameter, y = estimate, col = model, ymin = lci, ymax = uci)) + geom_pointrange(position = position_dodge(0.1))
 }
 
 #' Plot method for moult models
@@ -88,3 +120,5 @@ loo.moultmcmc <- function(x, cores = getOption("mc.cores", 1)){
   loo_1 <- loo::loo(log_lik_1, r_eff = r_eff, cores = cores)
   return(loo_1)
 }
+
+

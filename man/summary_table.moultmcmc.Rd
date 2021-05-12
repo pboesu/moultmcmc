@@ -4,9 +4,9 @@
 \alias{summary_table.moultmcmc}
 \title{Summary Table}
 \usage{
-summary_table.moultmcmc(
+\method{summary_table}{moultmcmc}(
   x,
-  pars = x@sim$pars_oi,
+  pars = x$stanfit@sim$pars_oi,
   prob = 0.95,
   include = TRUE,
   ...
