@@ -24,7 +24,7 @@
 \item{...}{Additional arguments passed to the summary method for stanfit objects.}
 }
 \value{
-
+a tibble
 }
 \description{
 Summary Table

@@ -4,3 +4,5 @@ Read-and-delete-me
 ^LICENSE\.md$
 sandbox_script.R
 ^\.github$
+^CODE_OF_CONDUCT\.md$
+^CONTRIBUTING\.md$

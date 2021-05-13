@@ -4,12 +4,16 @@
 \alias{summary_table.moult}
 \title{Summary Table  for moult model}
 \usage{
-\method{summary_table}{moult}(x, prob = 0.95, tidy_names = TRUE)
+\method{summary_table}{moult}(x, prob = 0.95, tidy_names = TRUE, ...)
 }
 \arguments{
 \item{x}{moult model object created with moult::moult}
 
 \item{prob}{nominal coverage probability of confidence interval}
+
+\item{tidy_names}{adjust default parameter names from moult() to follow consistent nomenclature of model.matrix()}
+
+\item{...}{not currently used}
 }
 \value{
 a tibble

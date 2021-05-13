@@ -9,7 +9,7 @@ uz2_simple(dates, moult_indices, init = "auto", ...)
 \arguments{
 \item{dates}{Numeric vector of input capture dates.}
 
-\item{moult_indices}{Numeric vector of numerical index of moult progression in \link{0,1}.}
+\item{moult_indices}{Numeric vector of numerical index of moult progression in \verb{[0,1]}.}
 
 \item{init}{Specification of initial values for all or some parameters. Can be the string "auto" for an automatic guess based on the data, or any of the permitted rstan options: the digit 0, the strings "0" or "random", or a function. See the detailed documentation for the init argument in ?rstan::stan.}
 

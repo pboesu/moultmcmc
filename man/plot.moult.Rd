@@ -4,7 +4,7 @@
 \alias{plot.moult}
 \title{Plot method for moult models}
 \usage{
-\method{plot}{moult}(x, prob = 0.95, scales = "free_x")
+\method{plot}{moult}(x, prob = 0.95, scales = "free_x", ...)
 }
 \arguments{
 \item{x}{maximum likelihood fit of a moult model from the moult package (class moult)}
@@ -12,6 +12,8 @@
 \item{prob}{coverage probability of the confidence interval}
 
 \item{scales}{argument to facet_wrap. default is "free_x", "free" may enable a better comparison if parameter values are disparate}
+
+\item{...}{not currently used}
 }
 \value{
 a plot

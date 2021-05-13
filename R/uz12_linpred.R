@@ -13,6 +13,8 @@
 #' @param ... Arguments passed to `rstan::sampling` (e.g. iter, chains).
 #' @return An object of class `stanfit` returned by `rstan::sampling`
 #'
+#' @importFrom stats sd model.matrix
+#'
 #TODO: implement an input data class which ensures column names and correct encoding for categorical variables
 uz12_linpred <- function(moult_index_column, moult_cat_column, date_column, start_formula = ~1, duration_formula = ~1, sigma_formula = ~1, data, init = "auto", log_lik = TRUE,...) {
   stopifnot(all((data[[moult_index_column]] >= 0 & data[[moult_index_column]] <= 1) | is.na(data[[moult_index_column]])))#need to handle NAs

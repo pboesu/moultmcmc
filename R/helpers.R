@@ -14,11 +14,15 @@ summary_table <- function(...){UseMethod("summary_table")}
 #'
 #' @param x moult model object created with moult::moult
 #' @param prob nominal coverage probability of confidence interval
+#' @param tidy_names adjust default parameter names from moult() to follow consistent nomenclature of model.matrix()
+#' @param ... not currently used
 #'
 #' @return a tibble
+#'
+#' @importFrom stats coef qnorm
 #' @export
 #'
-summary_table.moult <-function(x, prob = 0.95, tidy_names = TRUE){
+summary_table.moult <-function(x, prob = 0.95, tidy_names = TRUE, ...){
   probs = c((1-prob)/2, 1 -(1-prob)/2)
   plotdata <- tibble::tibble(parameter = names(coef(x)), estimate = coef(x), stderr = x$standard.errors, lci = coef(x) - qnorm(probs[1])*x$standard.errors, uci = coef(x) + qnorm(probs[1])*x$standard.errors, prob = prob, method = 'ML')
   if (tidy_names)
@@ -36,7 +40,8 @@ summary_table.moult <-function(x, prob = 0.95, tidy_names = TRUE){
 #' @param include Logical scalar (defaulting to TRUE) indicating whether to include or exclude the parameters named by the pars argument.
 #' @param ... Additional arguments passed to the summary method for stanfit objects.
 #' @importFrom rstan summary
-#' @return
+#' @importFrom tibble as_tibble
+#' @return a tibble
 #' @export
 #'
 summary_table.moultmcmc <- function (x, pars = x$stanfit@sim$pars_oi, prob = 0.95, include = TRUE, ...){
@@ -54,18 +59,22 @@ summary_table.moultmcmc <- function (x, pars = x$stanfit@sim$pars_oi, prob = 0.9
   }
   if (!include)
     pars <- setdiff(x$stanfit@sim$pars_oi, pars)
-  s <- as_tibble(summary(x$stanfit, pars, probs, ...)$summary, rownames = "parameter") %>%
-    rename(estimate = mean) %>% rename(uci = `2.5%`, lci = `97.5%`) %>%
+  s <- tibble::as_tibble(summary(x$stanfit, pars, probs, ...)$summary, rownames = "parameter") %>%
+    dplyr::rename(estimate = mean) %>% dplyr::rename(uci = `2.5%`, lci = `97.5%`) %>%
     mutate(prob = 0.95, method = 'MCMC')
   return(s)
 }
 
 #' Visual comparison of ML and MCMC fits
 #'
-#' @param ml a moult model
-#' @param mcmc a moultmcmc model
+#' @param m1 a moult or moultmcmc model
+#' @param m2 a moult or moultmcmc model
+#' @param names optional character vector of model names
 #'
 #' @return a plot
+#'
+#' @importFrom dplyr bind_rows mutate filter
+#' @importFrom ggplot2 ggplot geom_pointrange aes position_dodge
 #' @export
 #'
 compare_plot <- function(m1,m2,names = NULL){
@@ -73,9 +82,9 @@ compare_plot <- function(m1,m2,names = NULL){
   #TODO:import necessary dplyr and ggplot components
   if(is.null(names)) names = as.character(1:2)
 
-  plotdata <- dplyr::bind_rows(summary_table(m1) %>% mutate(model = names[1]),
-                               summary_table(m2) %>% mutate(model = names[2]))
-  filter(plotdata, !(parameter %in% c('lp__', 'log_sd_(Intercept)'))) %>%
+  plotdata <- dplyr::bind_rows(summary_table(m1) %>% dplyr::mutate(model = names[1]),
+                               summary_table(m2) %>% dplyr::mutate(model = names[2]))
+  dplyr::filter(plotdata, !(parameter %in% c('lp__', 'log_sd_(Intercept)'))) %>%
     ggplot(aes(x = parameter, y = estimate, col = model, ymin = lci, ymax = uci)) + geom_pointrange(position = position_dodge(0.1))
 }
 
@@ -84,11 +93,13 @@ compare_plot <- function(m1,m2,names = NULL){
 #' @param x maximum likelihood fit of a moult model from the moult package (class moult)
 #' @param prob coverage probability of the confidence interval
 #' @param scales argument to facet_wrap. default is "free_x", "free" may enable a better comparison if parameter values are disparate
+#' @param ... not currently used
 #'
 #' @return a plot
+#' @importFrom ggplot2 facet_wrap
 #' @export
 #'
-plot.moult <- function(x, prob = 0.95,scales = "free_x"){
+plot.moult <- function(x, prob = 0.95,scales = "free_x", ...){
   plotdata <- tibble::tibble(param = names(coef(x)), estimate = coef(x), stderr = x$standard.errors)
   #plot(as.factor(names(coef(x))), coef(x))
   #dotchart(coef(x))

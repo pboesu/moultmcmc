@@ -7,9 +7,11 @@
 compare_plot(m1, m2, names = NULL)
 }
 \arguments{
-\item{ml}{a moult model}
+\item{m1}{a moult or moultmcmc model}
 
-\item{mcmc}{a moultmcmc model}
+\item{m2}{a moult or moultmcmc model}
+
+\item{names}{optional character vector of model names}
 }
 \value{
 a plot

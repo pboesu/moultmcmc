@@ -2,10 +2,12 @@
 #'
 #' @export
 #' @param dates Numeric vector of input capture dates.
-#' @param moult_indices Numeric vector of numerical index of moult progression in [0,1].
+#' @param moult_indices Numeric vector of numerical index of moult progression in `[0,1]`.
 #' @param init Specification of initial values for all or some parameters. Can be the string "auto" for an automatic guess based on the data, or any of the permitted rstan options: the digit 0, the strings "0" or "random", or a function. See the detailed documentation for the init argument in ?rstan::stan.
 #' @param ... Arguments passed to `rstan::sampling` (e.g. iter, chains).
 #' @return An object of class `stanfit` returned by `rstan::sampling`
+#'
+#' @importFrom stats sd model.matrix
 #'
 uz2_simple <- function(dates, moult_indices, init = "auto",...) {
   stopifnot(all(moult_indices >= 0 & moult_indices <= 1))
