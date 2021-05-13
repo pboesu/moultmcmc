@@ -20,3 +20,5 @@ Both models are special cases of more general categorical regression models.
 3) hierarchical spatial/temporal effects for multi-site/multi-season data sets.
 
 `moultmcmc` implements fast inference for these models using Hamiltonian Monte Carlo samplers from Stan. 
+
+Please note that `moultmcmc` is under active development, and API changes may still occur.
