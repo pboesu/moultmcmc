@@ -93,18 +93,28 @@ remove_m_scores <- function(data, prop = 0.5){
   return(data)}
 table(sanderlings_combined$MCat)
 
-uz12_03 <- uz12_linpred("MIndex",
+uz12_25 <- uz12_linpred("MIndex",
              "MCat",
              date_column = "Day",
-             data = remove_m_scores(sanderlings_combined, 0.3),
+             data = remove_m_scores(sanderlings_combined, 0.25),
              log_lik = FALSE)
 
-uz12_05 <- uz12_linpred("MIndex",
+uz12_50 <- uz12_linpred("MIndex",
                         "MCat",
                         date_column = "Day",
                         data = remove_m_scores(sanderlings_combined, 0.5),
                         log_lik = FALSE)
-uz12_09 <- uz12_linpred("MIndex",
+uz12_75 <- uz12_linpred("MIndex",
+                        "MCat",
+                        date_column = "Day",
+                        data = remove_m_scores(sanderlings_combined, 0.75),
+                        log_lik = FALSE)
+uz12_80 <- uz12_linpred("MIndex",
+                        "MCat",
+                        date_column = "Day",
+                        data = remove_m_scores(sanderlings_combined, 0.8),
+                        log_lik = FALSE)
+uz12_90 <- uz12_linpred("MIndex",
                         "MCat",
                         date_column = "Day",
                         data = remove_m_scores(sanderlings_combined, 0.9),
@@ -116,9 +126,13 @@ compare_plot(uz1,uz12)
 compare_plot(uz2,uz12)
 
 bind_rows(summary_table(uz1),
-          summary_table(uz12_05),
-          summary_table(uz12_03),
+          #summary_table(uz12_90),
+          #summary_table(uz12_80),
+          summary_table(uz12_75),
+          summary_table(uz12_50),
+          summary_table(uz12_25),
           summary_table(uz2),
           .id='prop_cat') %>%
+  left_join(tibble(prop_cat = as.character(1:5), prop_score = c(0,25,50,75,100))) %>%
   filter(!(parameter %in% c('lp__', 'log_sd_(Intercept)'))) %>%
-  ggplot(aes(x = parameter, y = estimate, col = prop_cat, ymin = lci, ymax = uci)) + geom_pointrange(position = position_dodge(0.2))
+  ggplot(aes(x = prop_score, y = estimate, ymin = lci, ymax = uci)) + geom_pointrange() + facet_wrap(~parameter, scales = 'free_y') + xlab("Proportion of scored birds in active moult category") + theme_classic()
