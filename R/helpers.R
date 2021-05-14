@@ -1,7 +1,7 @@
 #helper functions to plot moult and moultmcmc models
 
 #need to define generic function
-#' SUmmary table generic
+#' Summary table generic
 #'
 #' @param ... ...
 #'
