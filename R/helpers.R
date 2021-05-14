@@ -22,6 +22,9 @@ summary_table <- function(...){UseMethod("summary_table")}
 #' @importFrom stats coef qnorm
 #' @export
 #'
+#' @examples \dontrun{m1 <- moult::moult(Mindex ~ Day, data = sanderlings)}
+#'\dontrun{summary_table(m1)}
+#'
 summary_table.moult <-function(x, prob = 0.95, tidy_names = TRUE, ...){
   probs = c((1-prob)/2, 1 -(1-prob)/2)
   plotdata <- tibble::tibble(parameter = names(coef(x)), estimate = coef(x), stderr = x$standard.errors, lci = coef(x) - qnorm(probs[1])*x$standard.errors, uci = coef(x) + qnorm(probs[1])*x$standard.errors, prob = prob, method = 'ML')

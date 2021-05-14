@@ -21,3 +21,8 @@ a tibble
 \description{
 Summary Table  for moult model
 }
+\examples{
+\dontrun{m1 <- moult::moult(Mindex ~ Day, data = sanderlings)}
+\dontrun{summary_table(m1)}
+
+}
