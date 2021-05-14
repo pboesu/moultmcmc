@@ -2,7 +2,7 @@
 % Please edit documentation in R/helpers.R
 \name{summary_table}
 \alias{summary_table}
-\title{SUmmary table generic}
+\title{Summary table generic}
 \usage{
 summary_table(...)
 }
@@ -13,5 +13,5 @@ summary_table(...)
 ...
 }
 \description{
-SUmmary table generic
+Summary table generic
 }

@@ -11,3 +11,4 @@ test_that("uz1 works", {
                   chains = 1)
 expect_s3_class(uz1, "moultmcmc")
 })
+
