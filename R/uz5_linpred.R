@@ -52,7 +52,7 @@ uz5_linpred <- function(moult_index_column, date_column, start_formula = ~1, dur
       # cat("chain_id =", chain_id, "\n")
       list(beta_mu = as.array(c(mu_start,rep(0, standata$N_pred_mu - 1))), #initialize intercept term from data, set inits for all other effects to 0
            beta_tau = as.array(c(tau_start, rep(0, standata$N_pred_tau - 1))),
-           beta_sigma = as.array(c(log(sigma_start)), rep(0, standata$N_pred_tau - 1)))#NB this is on log link scale
+           beta_sigma = as.array(c(log(sigma_start), rep(0, standata$N_pred_sigma - 1))))#NB this is on log link scale
     }
     out <- rstan::sampling(stanmodels$uz5_linpred, data = standata, init = initfunc, pars = outpars, ...)
   } else {
