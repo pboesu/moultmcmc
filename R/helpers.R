@@ -20,6 +20,7 @@ summary_table <- function(...){UseMethod("summary_table")}
 #' @return a tibble
 #'
 #' @importFrom stats coef qnorm
+#' @importFrom rlang .data
 #' @export
 #'
 #' @examples \dontrun{m1 <- moult::moult(Mindex ~ Day, data = sanderlings)}
@@ -29,8 +30,8 @@ summary_table.moult <-function(x, prob = 0.95, tidy_names = TRUE, ...){
   probs = c((1-prob)/2, 1 -(1-prob)/2)
   plotdata <- tibble::tibble(parameter = names(coef(x)), estimate = coef(x), stderr = x$standard.errors, lci = coef(x) - qnorm(probs[1])*x$standard.errors, uci = coef(x) + qnorm(probs[1])*x$standard.errors, prob = prob, method = 'ML')
   if (tidy_names)
-  plotdata <- mutate(plotdata, parameter = stringr::str_replace_all(parameter, "intercept.1", "(Intercept)"))
-  plotdata <- mutate(plotdata, parameter = stringr::str_replace_all(parameter, "intercept", "(Intercept)"))
+  plotdata <- mutate(plotdata, parameter = stringr::str_replace_all(.data$parameter, "intercept.1", "(Intercept)"))
+  plotdata <- mutate(plotdata, parameter = stringr::str_replace_all(.data$parameter, "intercept", "(Intercept)"))
   return(plotdata)
 }
 
@@ -44,6 +45,7 @@ summary_table.moult <-function(x, prob = 0.95, tidy_names = TRUE, ...){
 #' @param ... Additional arguments passed to the summary method for stanfit objects.
 #' @importFrom rstan summary
 #' @importFrom tibble as_tibble
+#' @importFrom rlang .data
 #' @return a tibble
 #' @export
 #'
@@ -63,7 +65,7 @@ summary_table.moultmcmc <- function (x, pars = x$stanfit@sim$pars_oi, prob = 0.9
   if (!include)
     pars <- setdiff(x$stanfit@sim$pars_oi, pars)
   s <- tibble::as_tibble(summary(x$stanfit, pars, probs, ...)$summary, rownames = "parameter") %>%
-    dplyr::rename(estimate = mean) %>% dplyr::rename(uci = `2.5%`, lci = `97.5%`) %>%
+    dplyr::rename(estimate = mean) %>% dplyr::rename(lci = .data$`2.5%`, uci = .data$`97.5%`) %>% #TODO: this falls over when prob != 0.95. need to select by position or by assembling column names from prob or the stanfit summary
     mutate(prob = 0.95, method = 'MCMC')
   return(s)
 }
@@ -78,6 +80,7 @@ summary_table.moultmcmc <- function (x, pars = x$stanfit@sim$pars_oi, prob = 0.9
 #'
 #' @importFrom dplyr bind_rows mutate filter
 #' @importFrom ggplot2 ggplot geom_pointrange aes position_dodge
+#' @importFrom rlang .data
 #' @export
 #'
 compare_plot <- function(m1,m2,names = NULL){
@@ -87,8 +90,8 @@ compare_plot <- function(m1,m2,names = NULL){
 
   plotdata <- dplyr::bind_rows(summary_table(m1) %>% dplyr::mutate(model = names[1]),
                                summary_table(m2) %>% dplyr::mutate(model = names[2]))
-  dplyr::filter(plotdata, !(parameter %in% c('lp__', 'log_sd_(Intercept)'))) %>%
-    ggplot(aes(x = parameter, y = estimate, col = model, ymin = lci, ymax = uci)) + geom_pointrange(position = position_dodge(0.1))
+  dplyr::filter(plotdata, !(.data$parameter %in% c('lp__', 'log_sd_(Intercept)'))) %>%
+    ggplot(aes(x = .data$parameter, y = .data$estimate, col = .data$model, ymin = .data$lci, ymax = .data$uci)) + geom_pointrange(position = position_dodge(0.1))
 }
 
 #' Plot method for moult models
@@ -100,13 +103,15 @@ compare_plot <- function(m1,m2,names = NULL){
 #'
 #' @return a plot
 #' @importFrom ggplot2 facet_wrap
+#' @importFrom rlang .data
+#'
 #' @export
 #'
 plot.moult <- function(x, prob = 0.95,scales = "free_x", ...){
   plotdata <- tibble::tibble(param = names(coef(x)), estimate = coef(x), stderr = x$standard.errors)
   #plot(as.factor(names(coef(x))), coef(x))
   #dotchart(coef(x))
-  ggplot(plotdata, aes(x = param, y = estimate, ymin = estimate - qnorm(prob)*stderr, ymax = estimate + qnorm(prob)*stderr)) + geom_pointrange() + facet_wrap(~param, scales = scales)
+  ggplot(plotdata, aes(x = .data$param, y = .data$estimate, ymin = .data$estimate - qnorm(prob)*stderr, ymax = .data$estimate + qnorm(prob)*stderr)) + geom_pointrange() + facet_wrap(~.data$param, scales = scales)
 }
 
 #' Efficient approximate leave-one-out cross-validation (LOO)
