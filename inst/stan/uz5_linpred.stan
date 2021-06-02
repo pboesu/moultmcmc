@@ -57,7 +57,7 @@ for (i in 1:N_old) {
   Rt[i] = Phi((old_dates[i] - tau[i] - mu[i])/sigma[i]);
 }
 for (i in 1:N_moult){
-   Ru[i] = 1 - Phi((moult_dates[i] - mu[i + N_old])/sigma[i + N_old]);
+   Ru[i] = Phi((moult_dates[i] - tau[i + N_old] - mu[i + N_old])/sigma[i + N_old]);
    q[i] = log(tau[i + N_old]) + normal_lpdf((moult_dates[i] - moult_indices[i]*tau[i + N_old]) | mu[i + N_old], sigma[i + N_old]);//N.B. unlike P and R this returns a log density
 }
 
@@ -98,9 +98,8 @@ for (i in 1:N_old) {
   Rt[i] = Phi((old_dates[i] - tau[i] - mu[i])/sigma[i]);
 }
 for (i in 1:N_moult){
-   Ru[i] = 1 - Phi((moult_dates[i] - mu[i + N_old])/sigma[i + N_old]);
+   Ru[i] = Phi((moult_dates[i] - tau[i + N_old] - mu[i + N_old])/sigma[i + N_old]);
    q[i] = log(tau[i + N_old]) + normal_lpdf((moult_dates[i] - moult_indices[i]*tau[i + N_old]) | mu[i + N_old], sigma[i + N_old]);//N.B. unlike P and R this returns a log density
 }
-
-log_lik = append_row((log(P) - log(1 - Rt)), (q - log(1 - Ru)));
+log_lik = append_row((log(P) - log1m(Rt)), (q - log1m(Ru)));
 }

@@ -13,9 +13,10 @@ m1 = moult(MIndex ~ Day,data = sanderlings, type = 1)
 uz1 = uz1_linpred(moult_cat_column = "MCat",
             date_column = "Day",
             data = sanderlings,
-            log_lik = FALSE,
+            log_lik = TRUE,
             cores = 4)
 summary_table(m1)
+logLik(m1)
 summary_table(uz1)
 compare_plot(m1, uz1, names = c('ml','mcmc'))
 
@@ -23,18 +24,22 @@ m2 = moult(MIndex ~ Day,data = sanderlings, type = 2)
 uz2 = uz2_linpred("MIndex",
                   date_column = "Day",
                   data = sanderlings,
-                  log_lik = FALSE)
+                  log_lik = FALSE,
+                  cores = 4)
 compare_plot(m2, uz2, names = c('ml','mcmc'))
+logLik(m2)
+summary_table(uz2)
 
 #compare type 1/2
-compare_plot(m1,m2)
-compare_plot(uz1,uz2)
+compare_plot(m1,m2, names = c('Type1','Type2'))
+compare_plot(uz1,uz2, names = c('Type1','Type2'))
 
 m3 = moult(MIndex ~ Day,data = sanderlings, type = 3)
 uz3 = uz3_linpred("MIndex",
                   date_column = "Day",
                   data = sanderlings,
-                  log_lik = FALSE)
+                  log_lik = FALSE,
+                  cores = 4)
 compare_plot(m3, uz3)
 stan_trace(uz3$stanfit)
 
@@ -42,16 +47,33 @@ m4 = moult(MIndex ~ Day,data = sanderlings, type = 4)
 uz4 = uz4_linpred("MIndex",
                   date_column = "Day",
                   data = sanderlings,
-                  log_lik = FALSE)
+                  log_lik = FALSE,
+                  cores = 4)
 compare_plot(m4, uz4)
 
 m5 = moult(MIndex ~ Day,data = sanderlings, type = 5)
 uz5 = uz5_linpred("MIndex",
                   date_column = "Day",
                   data = sanderlings,
-                  log_lik = FALSE,
+                  log_lik = TRUE,
                   cores = 4)
 compare_plot(m5,uz5)
+
+plot(MIndex ~ Day,data = sanderlings, col = sanderlings$MCat)
+segments(coef(m5)[2], 0, coef(m5)[2]+coef(m5)[1], 1)
+segments(fixef(uz5)[1,1], 0, fixef(uz5)[1,1]+fixef(uz5)[2,1], 1, lty = 2)
+lines(1:365, dnorm(1:365, mean = coef(m5)[2], sd = coef(m5)[3]))
+lines(1:365, dnorm(1:365, mean = fixef(uz5)[1,1], sd = fixef(uz5)[4,1]), lty = 2)
+lines(1:365, pnorm(1:365, mean = coef(m5)[2], sd = coef(m5)[3], lower.tail = FALSE))
+lines(1:365, pnorm(1:365, fixef(uz5)[1,1], sd = fixef(uz5)[4,1], lower.tail = FALSE), lty = 2)
+
+
+summary_table(m5)
+logLik(m5)
+summary_table(uz5)
+rstan::stan_trace(uz5$stanfit)
+
+
 
 data(weavers)
 if (is.numeric(weavers$Moult)) {
