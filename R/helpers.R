@@ -1,5 +1,51 @@
 #helper functions to plot moult and moultmcmc models
 
+#' Extract Population-Level Estimates
+#'
+#' Extract the population-level ('fixed') effects
+#' from a \code{moultmcmc} object.
+#'
+#' @aliases fixef
+#'
+#' @param pars Optional names of coefficients to extract.
+#'   By default, all coefficients are extracted.
+#' @param ... Currently ignored.
+#'
+#' @return If \code{summary} is \code{TRUE}, a matrix returned
+#'   by \code{\link{posterior_summary}} for the population-level effects.
+#'   If \code{summary} is \code{FALSE}, a matrix with one row per
+#'   posterior draw and one column per population-level effect.
+#'
+#' @examples
+#' \dontrun{
+#' fit <- brm(time | cens(censored) ~ age + sex + disease,
+#'            data = kidney, family = "exponential")
+#' fixef(fit)
+#' # extract only some coefficients
+#' fixef(fit, pars = c("age", "sex"))
+#' }
+#'
+#' @method fixef moultmcmc
+#' @export
+#' @export fixef
+#' @importFrom nlme fixef
+fixef.moultmcmc <-  function(object, summary = TRUE,
+                           probs = c(0.025, 0.975), pars = NULL, ...) {
+  fpars <- names(object$stanfit)
+  if (!is.null(pars)) {
+    fpars <- as.character(pars)
+  }
+  if (!length(fpars)) {
+    return(NULL)
+  }
+  out <- as.matrix(object$stanfit, pars = fpars)
+  if (summary) {
+    out <- summary(object$stanfit, probs = probs)$summary
+  }
+  out
+}
+
+
 #need to define generic function
 #' Summary table generic
 #'
@@ -90,7 +136,7 @@ compare_plot <- function(m1,m2,names = NULL){
 
   plotdata <- dplyr::bind_rows(summary_table(m1) %>% dplyr::mutate(model = names[1]),
                                summary_table(m2) %>% dplyr::mutate(model = names[2]))
-  dplyr::filter(plotdata, !(.data$parameter %in% c('lp__', 'log_sd_(Intercept)'))) %>%
+  dplyr::filter(plotdata, !grepl("lp__|log_sd_\\(Intercept\\)|\\blp\\b|log_lik[[0-9]+]", .data$parameter)) %>%
     ggplot(aes(x = .data$parameter, y = .data$estimate, col = .data$model, ymin = .data$lci, ymax = .data$uci)) + geom_pointrange(position = position_dodge(0.1))
 }
 
