@@ -62,7 +62,7 @@ for (i in 1:N_moult) Q[i] = Phi((moult_dates[i] - mu[i])/sigma[i]) - Phi((moult_
 target += sum(q - log(Q));
 //priors
 beta_mu[1] ~ uniform(0,366);
-//beta_tau ~ normal(0,10);
+beta_tau[1] ~ uniform(0,366);
 beta_sigma[1] ~ normal(0,5);
 }
 

@@ -13,17 +13,18 @@ m1 = moult(MIndex ~ Day,data = sanderlings, type = 1)
 uz1 = uz1_linpred(moult_cat_column = "MCat",
             date_column = "Day",
             data = sanderlings,
-            log_lik = FALSE)
+            log_lik = FALSE,
+            cores = 4)
 summary_table(m1)
 summary_table(uz1)
-compare_plot(m1, uz1)
+compare_plot(m1, uz1, names = c('ml','mcmc'))
 
 m2 = moult(MIndex ~ Day,data = sanderlings, type = 2)
 uz2 = uz2_linpred("MIndex",
                   date_column = "Day",
                   data = sanderlings,
                   log_lik = FALSE)
-compare_plot(m2, uz2)
+compare_plot(m2, uz2, names = c('ml','mcmc'))
 
 #compare type 1/2
 compare_plot(m1,m2)
@@ -35,7 +36,7 @@ uz3 = uz3_linpred("MIndex",
                   data = sanderlings,
                   log_lik = FALSE)
 compare_plot(m3, uz3)
-stan_trace(uz3)
+stan_trace(uz3$stanfit)
 
 m4 = moult(MIndex ~ Day,data = sanderlings, type = 4)
 uz4 = uz4_linpred("MIndex",
@@ -48,7 +49,8 @@ m5 = moult(MIndex ~ Day,data = sanderlings, type = 5)
 uz5 = uz5_linpred("MIndex",
                   date_column = "Day",
                   data = sanderlings,
-                  log_lik = FALSE)
+                  log_lik = FALSE,
+                  cores = 4)
 compare_plot(m5,uz5)
 
 data(weavers)
@@ -70,6 +72,7 @@ points(pfmg ~ day, weavers_trunc, col = 'green')
                        log_lik = FALSE,
                        data = weavers_trunc)#type 2 fails on start values. possibly numerical underflow with bad start values?? - but ML converges, so a smarter way of estimating start values necessary? Type 3 works, but highly heterogeneous sampling times for each chain - use non-flat priors??
 summary(m88.3)
+stan_trace(uz88.3$stanfit)
 compare_plot(m88.3,uz88.3)
 weavers$MCat <- case_when(weavers$pfmg == 0 ~ 1,
                           weavers$pfmg == 1 ~3,

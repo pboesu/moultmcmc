@@ -67,9 +67,9 @@ for (i in 1:N_new) {
 //print(sum(log(R)));
 target += sum(q - log(1 - Pu)) + sum(log(R) - log(1 - Pv));
 //priors
-//mu ~ normal(0,10);
-//tau ~ normal(0,10);
-//sigma ~ normal(0,3);
+beta_mu[1] ~ uniform(0,366);
+beta_tau[1] ~ uniform(0,366);
+beta_sigma[1] ~ normal(0,5);
 }
 
 generated quantities{

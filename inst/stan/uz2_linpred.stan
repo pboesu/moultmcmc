@@ -61,9 +61,9 @@ for (i in 1:N_new) R[i] = Phi((new_dates[i] - tau[i + N_old + N_moult] - mu[i + 
 //print(sum(log(R)));
 target += sum(log(P))+sum(q)+sum(log(R));
 //priors
-//mu ~ normal(0,10);
-//tau ~ normal(0,10);
-//sigma ~ normal(0,3);
+beta_mu[1] ~ uniform(0,366);
+beta_tau[1] ~ uniform(0,366);
+beta_sigma[1] ~ normal(0,5);
 }
 
 generated quantities{

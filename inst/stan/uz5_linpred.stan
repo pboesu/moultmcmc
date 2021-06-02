@@ -61,15 +61,15 @@ for (i in 1:N_moult){
    q[i] = log(tau[i + N_old]) + normal_lpdf((moult_dates[i] - moult_indices[i]*tau[i + N_old]) | mu[i + N_old], sigma[i + N_old]);//N.B. unlike P and R this returns a log density
 }
 
-//print(R);
+//print(sum(q));
 //print(sum(log(P)));
-//print(sum(log(Q)));
-//print(sum(log(R)));
-target += sum(log(P) - log(1 - Rt)) + sum(q - log(1 - Ru)) ;
+//print(sum(log(1-Rt)));
+//print(sum(log(1-Ru)));
+target += sum(log(P) - log1m(Rt)) + sum(q - log1m(Ru)) ;
 //priors
-//mu ~ normal(0,10);
-//tau ~ normal(0,10);
-//sigma ~ normal(0,3);
+beta_mu[1] ~ uniform(0,366);
+beta_tau[1] ~ uniform(0,366);
+beta_sigma[1] ~ normal(0,5);
 }
 
 generated quantities{
