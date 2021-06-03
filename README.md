@@ -21,7 +21,7 @@ Both models are special cases of more general categorical regression models.    
 2) individual heterogeneity in moult timing and progression, and 
 3) hierarchical spatial/temporal effects for multi-site/multi-season data sets.
 
-`moultmcmc` implements fast inference for these models using Hamiltonian Monte Carlo samplers from [Stan](https://mc-stan.org/). The currently implemented models are described in detail in the vignette 'Moult data likelihoods'.
+`moultmcmc` implements fast inference for these models using Hamiltonian Monte Carlo samplers from [Stan](https://mc-stan.org/). The currently implemented models are described in detail in the vignette ['Moult data likelihoods'](https://pboesu.github.io/moultmcmc/articles/moult-likelihoods.html).
 
 # Installation
 To install `moultmcmc` from the github source:

@@ -44,6 +44,7 @@ Type 3 data consist of observations of actively moulting birds only, and a suffi
 $$
 \mathcal{L}(\theta,u,y) = \prod_{j = 1}^J\frac{q(u_j,y_j)}{Q(u_j)}.
 $$
+
 ## Type 4
 Type 4 data consist of observations of birds in active moult and post-moult only. Sampling is representative for these two categories, and for actively moulting birds a sufficiently linear moult index $y$ (e.g. percent feather mass grown) is known. The likelihood of these observations is
 $$
