@@ -4,4 +4,4 @@
 *.dll
 *.so
 inst/doc
-docs
+
