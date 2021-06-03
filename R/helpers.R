@@ -9,6 +9,7 @@
 #'
 #' @param object a moultmcmc model
 #' @param summary logical, should posterior samples be summarised for each parameter
+#' @param probs numeric, desired quantiles for summary statistics
 #' @param pars Optional names of coefficients to extract.
 #'   By default, all coefficients are extracted.
 #' @param ... Currently ignored.

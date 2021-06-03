@@ -12,6 +12,8 @@
 
 \item{summary}{logical, should posterior samples be summarised for each parameter}
 
+\item{probs}{numeric, desired quantiles for summary statistics}
+
 \item{pars}{Optional names of coefficients to extract.
 By default, all coefficients are extracted.}
 
