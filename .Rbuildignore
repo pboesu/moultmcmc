@@ -7,3 +7,6 @@ sandbox_script_sim.R
 ^\.github$
 ^CODE_OF_CONDUCT\.md$
 ^CONTRIBUTING\.md$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$

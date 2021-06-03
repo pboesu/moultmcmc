@@ -1,0 +1,66 @@
+---
+title: "Moult data likelihoods"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Moult data likelihoods}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: moultmcmc.bib
+---
+
+The `moultmcmc` package implements the regression models outlined in @underhill1988model and @underhill1990model. In their notation, samples consist of $I$ pre-moult birds, $J$ birds in active moult, and $K$ post-moult birds. Birds in each category are observed on days $t = t_1,\ldots,t_I$; $u = u_1,\ldots,u_J$; $v = v_1,\ldots,v_K$, respectively. Moult scores for actively moulting birds, where available, are encoded as $y = y_1,\ldots,y_J$.
+
+Each moult state has a probability of occurrence
+$$
+\begin{aligned}
+P(t) &= \Pr\{Y(t)=0\} &=&1-F_T(t)\\
+Q(t) &= \Pr\{0<Y(t)<1\} &=&F_T(t)-F_T(t-\tau)\\
+R(t) &= \Pr\{Y(t)=1\} &=&1-F_T(t-\tau)\\
+\end{aligned}
+$$
+Further, assuming a linear progression of the moult indices over time, the probability density of a particular moult score at time $t$ is
+$$
+f_Y(t)(y)=\tau f_T(t-y\tau),\quad0 < y < 1,
+$$
+In `moultmcmc` the unobserved start date is assumed to follow a normal distribution, such that $$F_T(t)=\Phi(\frac{t-\mu}{\sigma})$$
+where \Phi is the standard normal distribution function and 
+$$f_T(t) = \phi(t) = \frac{1}{\sqrt{2\pi}}\exp\frac{-t^2}{2}$$.
+
+## Type 1
+Type 1 data consist of observations of categorical moult state (pre-moult, active moult, post-moult) and sampling is representative in all three categories. The likelihood of these observations is 
+$$
+\mathcal{L}(\theta,t,u,v) = \prod_{i=1}^IP(t_i)\prod_{j = 1}^JQ(u_j)\prod_{k=1}^KR(v_k).
+$$
+
+## Type 2
+Type 2 data consist of observations of birds in all three moult states (pre-moult, active moult, post-moult). Sampling is representative for all three categories, and for actively moulting birds a sufficiently linear moult index $y$ (e.g. percent feather mass grown) is known. The likelihood of these observations is
+$$
+\mathcal{L}(\theta,t,u,y,v) = \prod_{i=1}^IP(t_i)\prod_{j = 1}^Jq(u_j,y_j)\prod_{k=1}^KR(v_k),
+$$
+where $q(u_j,y_j) = \tau f_T(u_j-y_j\tau).$
+
+## Type 3
+Type 3 data consist of observations of actively moulting birds only, and a sufficiently linear moult index $y$ (e.g. percent feather mass grown) is known for each individual. The likelihood of these observations is
+$$
+\mathcal{L}(\theta,u,y) = \prod_{j = 1}^J\frac{q(u_j,y_j)}{Q(u_j)}.
+$$
+## Type 4
+Type 4 data consist of observations of birds in active moult and post-moult only. Sampling is representative for these two categories, and for actively moulting birds a sufficiently linear moult index $y$ (e.g. percent feather mass grown) is known. The likelihood of these observations is
+$$
+\mathcal{L}(\theta,u,y,v) = \prod_{j = 1}^J\frac{q(u_j,y_j)}{1-P(u_j)}\prod_{k=1}^K\frac{R(v_k)}{1-P(v_k)}.
+$$
+
+## Type 5
+Type 5 data consist of observations of birds in pre-moult and active moult. Sampling is representative for these two categories, and for actively moulting birds a sufficiently linear moult index $y$ (e.g. percent feather mass grown) is known. The likelihood of these observations is
+$$
+\mathcal{L}(\theta,t,u,y) = \prod_{i=1}^I\frac{P(t_i)}{1-R(t_i)}\prod_{j = 1}^J\frac{q(u_j,y_j)}{1-R(u_j)}.
+$$
+
+## Type 1 + 2
+As outlined in @underhill1988model estimates can also be derived from mixtures of data types. Type 1 + 2 data consist of observations of birds in all three moult states (pre-moult, active moult, post-moult). Sampling is representative for all three categories, but a sufficiently linear moult index $y$ (e.g. percent feather mass grown) is known only for some of the actively moulting birds. This means the sample consist of $I$ pre-moult birds, $J$ birds in active moult with known indices, $L$ birds in active moult without known indices, and $K$ post-moult birds.
+The likelihood of these observations is
+$$
+\mathcal{L}(\theta,t,u,y,u',v) = \prod_{i=1}^IP(t_i)\prod_{j = 1}^Jq(u_j,y_j)\prod_{l = 1}^{L}Q(u'_{l})\prod_{k=1}^KR(v_k),
+$$
+
+# References
