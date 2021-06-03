@@ -29,7 +29,8 @@ Imports:
     ggplot2,
     stats,
     magrittr,
-    rlang
+    rlang,
+    nlme
 LinkingTo: 
     BH (>= 1.66.0),
     Rcpp (>= 0.12.0),
