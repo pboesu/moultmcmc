@@ -8,28 +8,21 @@
 \method{fixef}{moultmcmc}(object, summary = TRUE, probs = c(0.025, 0.975), pars = NULL, ...)
 }
 \arguments{
+\item{object}{a moultmcmc model}
+
+\item{summary}{logical, should posterior samples be summarised for each parameter}
+
 \item{pars}{Optional names of coefficients to extract.
 By default, all coefficients are extracted.}
 
 \item{...}{Currently ignored.}
 }
 \value{
-If \code{summary} is \code{TRUE}, a matrix returned
-by \code{\link{posterior_summary}} for the population-level effects.
+If \code{summary} is \code{TRUE}, a matrix for the population-level effects.
 If \code{summary} is \code{FALSE}, a matrix with one row per
 posterior draw and one column per population-level effect.
 }
 \description{
 Extract the population-level ('fixed') effects
 from a \code{moultmcmc} object.
-}
-\examples{
-\dontrun{
-fit <- brm(time | cens(censored) ~ age + sex + disease,
-           data = kidney, family = "exponential")
-fixef(fit)
-# extract only some coefficients
-fixef(fit, pars = c("age", "sex"))
-}
-
 }

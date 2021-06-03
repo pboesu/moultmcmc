@@ -7,23 +7,16 @@
 #'
 #' @aliases fixef
 #'
+#' @param object a moultmcmc model
+#' @param summary logical, should posterior samples be summarised for each parameter
 #' @param pars Optional names of coefficients to extract.
 #'   By default, all coefficients are extracted.
 #' @param ... Currently ignored.
 #'
-#' @return If \code{summary} is \code{TRUE}, a matrix returned
-#'   by \code{\link{posterior_summary}} for the population-level effects.
+#' @return If \code{summary} is \code{TRUE}, a matrix for the population-level effects.
 #'   If \code{summary} is \code{FALSE}, a matrix with one row per
 #'   posterior draw and one column per population-level effect.
 #'
-#' @examples
-#' \dontrun{
-#' fit <- brm(time | cens(censored) ~ age + sex + disease,
-#'            data = kidney, family = "exponential")
-#' fixef(fit)
-#' # extract only some coefficients
-#' fixef(fit, pars = c("age", "sex"))
-#' }
 #'
 #' @method fixef moultmcmc
 #' @export
