@@ -23,7 +23,7 @@ $$
 f_Y(t)(y)=\tau f_T(t-y\tau),\quad0 < y < 1,
 $$
 In `moultmcmc` the unobserved start date is assumed to follow a normal distribution, such that $$F_T(t)=\Phi\left(\frac{t-\mu}{\sigma}\right)$$
-where \Phi is the standard normal distribution function and 
+where $\Phi$ is the standard normal distribution function and 
 $$f_T(t) = \phi(t) = \frac{1}{\sqrt{2\pi}}\exp\frac{-t^2}{2}$$.
 
 ## Type 1
