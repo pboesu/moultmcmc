@@ -94,7 +94,7 @@ R(t) &amp;= \Pr\{Y(t)=1\}&amp;= &amp;1-F_T(t-\tau)\\
 \end{aligned}
 \]</span> Further, assuming a linear progression of the moult indices over time, the probability density of a particular moult score at time <span class="math inline">\(t\)</span> is <span class="math display">\[
 f_Y(t)(y)=\tau f_T(t-y\tau),\quad0 &lt; y &lt; 1,
-\]</span> In <code>moultmcmc</code> the unobserved start date is assumed to follow a normal distribution, such that <span class="math display">\[F_T(t)=\Phi\left(\frac{t-\mu}{\sigma}\right)\]</span> where is the standard normal distribution function and <span class="math display">\[f_T(t) = \phi(t) = \frac{1}{\sqrt{2\pi}}\exp\frac{-t^2}{2}\]</span>.</p>
+\]</span> In <code>moultmcmc</code> the unobserved start date is assumed to follow a normal distribution, such that <span class="math display">\[F_T(t)=\Phi\left(\frac{t-\mu}{\sigma}\right)\]</span> where <span class="math inline">\(\Phi\)</span> is the standard normal distribution function and <span class="math display">\[f_T(t) = \phi(t) = \frac{1}{\sqrt{2\pi}}\exp\frac{-t^2}{2}\]</span>.</p>
 <div id="type-1" class="section level2">
 <h2 class="hasAnchor">
 <a href="#type-1" class="anchor"></a>Type 1</h2>
