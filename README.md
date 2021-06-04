@@ -32,6 +32,7 @@ remotes::install_github("pboesu/moultmcmc")
 ```
 
 # Usage
+Basic usage is described in the vignette ['Getting started with moultmcmc'](https://pboesu.github.io/moultmcmc/articles/getting-started.html)    
 **Please note that `moultmcmc` is under active development and API changes may still occur.**
 
 

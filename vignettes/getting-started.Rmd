@@ -1,0 +1,86 @@
+---
+title: "Getting started with moultmcmc"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting started with moultmcmc}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: moultmcmc.bib
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup, warning=FALSE, message=FALSE}
+library(moult)
+library(moultmcmc)
+library(dplyr)
+library(ggplot2)
+library(rstan)
+```
+
+For demonstration purposes we use the `sanderlings` dataset from @underhill1988model. It contains observations of sampling dates `Day` and moult indices `MIndex` for 164 adult Sanderlings (*Calidris alba*) trapped on 11 days in the South Africa in the austral summer of 1978/79. The sample contains 85 pre-moult individuals, 66 in active moult and 13 post-moult individuals. The data are augmented with a column describing categorical moult status `MCat`, so we can demonstrate fitting Type 1 models.
+
+```{r data-preparation, fig.width=7}
+data("sanderlings")
+sanderlings$MCat <- case_when(sanderlings$MIndex == 0 ~ 1,
+                              sanderlings$MIndex == 1 ~3,
+                              TRUE ~ 2)
+#plot the data
+ggplot(sanderlings, aes(y=MIndex, x=Day, col = factor(MCat))) + geom_point() +theme_classic()
+```
+
+At present, each Underhill-Zucchini model type is implemented as a standalone function in `moultmcmc`. Function names are composed of the prefix `uz` followed by the numeral for the relevant data type and the postfix `_linpred`. To fit the type 1 model we therefore use the `uz1_linpred()` function. As there are no covariates in the data each linear predictor is specified as an intercept only model using the formula notation `~1`:
+```{r uz1-model-mcmc}
+uz1 = uz1_linpred(moult_cat_column = "MCat",
+            date_column = "Day",
+            data = sanderlings,
+            start_formula = ~1,
+            duration_formula = ~1,
+            sigma_formula = ~1,
+            init = "auto",
+            log_lik = FALSE)
+```
+A summary table of parameter estimates can be displayed with
+```{r uz1-model-summary}
+summary_table(uz1)
+```
+and standard model assessment can be done as for any posterior sample from Stan, by directly accessing the `stanfit` slot of the returned S3 object. For example we can look at the traceplots for the model using `rstan::stan_trace`
+```{r uz1-trace-plot, fig.width=7}
+stan_trace(uz1$stanfit)
+```
+
+For comparison we can fit the same model using maximum likelihood estimation via the `moult` package [@erni2013moult]
+```{r uz1-model-ml, fig.width=7}
+m1 = moult(MIndex ~ Day,data = sanderlings, type = 1)
+summary_table(m1)
+compare_plot(m1, uz1, names = c('ML','MCMC'))
+```
+
+The comparison plot shows very similar estimates for both methods, but much more narrow uncertainty intervals around the standard deviation parameter for the MCMC method. The MCMC method provides full posterior intervals, whereas the ML approach relies on the Delta method approximation.
+
+Similarly we can fit the corresponding Type 2 model, that makes use of the full information contained in the moult indices, using the `uz2_linpred()` function. All `moultmcmc` model functions default to an intercept only model, so we do not need to explicitly specify the individual linear predictors here.
+
+```{r uz2-model, fig.width=7}
+#fit using MCMC
+uz2 = uz2_linpred("MIndex",
+                  date_column = "Day",
+                  data = sanderlings,
+                  log_lik = FALSE)
+#fit using ML
+m2 = moult(MIndex ~ Day,data = sanderlings, type = 2)
+#compare parameter estimates
+compare_plot(m2, uz2, names = c('ML','MCMC'))
+```
+
+As before the comparison plot shows very similar estimates for both methods, but much more narrow uncertainty intervals around the standard deviation parameter for the MCMC method. Perhaps more interesting is a comparison of the two model types, which illustrates the gain in precision achieved by exploiting the information contained in the moult indices.
+```{r data-type-comparison, fig.width=7}
+compare_plot(uz1, uz2, names = c('UZ1','UZ2'))
+```
+
+# References
+
