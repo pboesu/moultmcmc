@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Visual comparison of moult models — compare_plot • moultmcmc</title>
+<title>Moult plot for moultmcmc model — moult_plot.moultmcmc • moultmcmc</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Visual comparison of moult models — compare_plot" />
-<meta property="og:description" content="Visual comparison of moult models" />
+<meta property="og:title" content="Moult plot for moultmcmc model — moult_plot.moultmcmc" />
+<meta property="og:description" content="Moult plot for moultmcmc model" />
 
 
 
@@ -118,37 +118,46 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Visual comparison of moult models</h1>
+    <h1>Moult plot for moultmcmc model</h1>
     
-    <div class="hidden name"><code>compare_plot.Rd</code></div>
+    <div class="hidden name"><code>moult_plot.moultmcmc.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Visual comparison of moult models</p>
+    <p>Moult plot for moultmcmc model</p>
     </div>
 
-    <pre class="usage"><span class='fu'>compare_plot</span><span class='op'>(</span><span class='va'>m1</span>, <span class='va'>m2</span>, names <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='co'># S3 method for moultmcmc</span>
+<span class='fu'><a href='moult_plot.html'>moult_plot</a></span><span class='op'>(</span><span class='va'>x</span>, prob <span class='op'>=</span> <span class='fl'>0.95</span>, prob_ci <span class='op'>=</span> <span class='cn'>NULL</span>, data <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>m1</th>
-      <td><p>a moult or moultmcmc model</p></td>
+      <th>x</th>
+      <td><p>moultmcmc model object</p></td>
     </tr>
     <tr>
-      <th>m2</th>
-      <td><p>a moult or moultmcmc model</p></td>
+      <th>prob</th>
+      <td><p>coverage probability of active moult in the sampled population</p></td>
     </tr>
     <tr>
-      <th>names</th>
-      <td><p>optional character vector of model names</p></td>
+      <th>prob_ci</th>
+      <td><p>coverage probability of credible interval</p></td>
+    </tr>
+    <tr>
+      <th>data</th>
+      <td><p>optional data.frame of observations, column names need to match model date and moult index variables</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>not currently used</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a plot comparing parameter estimates and their uncertainties</p>
+    <p>a plot - currently only the intercept terms are taken into account</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
