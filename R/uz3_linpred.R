@@ -61,6 +61,9 @@ uz3_linpred <- function(moult_index_column, date_column, start_formula = ~1, dur
   names(out)[grep('sigma_intercept', names(out))] <- 'sd_(Intercept)'
   out_struc <- list()
   out_struc$stanfit <- out
+  out_struc$terms$date_column <- date_column
+  out_struc$terms$moult_index_column <- moult_index_column
+  out_struc$terms$moult_cat_column <- NA
   class(out_struc) <- 'moultmcmc'
   return(out_struc)
 }

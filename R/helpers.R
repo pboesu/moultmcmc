@@ -110,13 +110,13 @@ summary_table.moultmcmc <- function (x, pars = x$stanfit@sim$pars_oi, prob = 0.9
   return(s)
 }
 
-#' Visual comparison of ML and MCMC fits
+#' Visual comparison of moult models
 #'
 #' @param m1 a moult or moultmcmc model
 #' @param m2 a moult or moultmcmc model
 #' @param names optional character vector of model names
 #'
-#' @return a plot
+#' @return a plot comparing parameter estimates and their uncertainties
 #'
 #' @importFrom dplyr bind_rows mutate filter
 #' @importFrom ggplot2 ggplot geom_pointrange aes position_dodge
@@ -181,3 +181,90 @@ loo.moultmcmc <- function(x, cores = getOption("mc.cores", 1)){
 }
 
 
+#' moult_plot generic
+#'
+#' @param ... ...
+#'
+#' @return ...
+#' @export
+#'
+moult_plot <- function(...){UseMethod("moult_plot")}
+
+#' Moult plot for moult model
+#'
+#' @param x moult model object created with moult::moult
+#' @param prob coverage probability of active moult in the sampled population
+#' @param data optional data.frame of observations, column names need to match model date and moult index variables
+#' @param ... not currently used
+#'
+#' @return a plot
+#'
+#' @importFrom stats coef qnorm
+#' @importFrom ggplot2 geom_segment aes scale_linetype_manual ggplot theme_classic xlab ylab geom_point
+#' @export
+#'
+#'
+moult_plot.moult <-function(x, prob = 0.95, data = NULL, ...){
+  probs = c((1-prob)/2, 1 -(1-prob)/2)
+  quantile_name <- paste(prob*100, '% quantile')
+  data_x <- strsplit(as.character(x$terms$full)[3], split = ' ')[[1]][1]
+  data_y <- as.character(x$terms$full)[2]
+  plotdata <- tibble::tibble(start_date = c(coef(x)['mean_intercept'],
+                                            qnorm(probs[1])*coef(x)['sd_(Intercept)']+coef(x)['mean_intercept'],
+                                            qnorm(probs[2])*coef(x)['sd_(Intercept)']+coef(x)['mean_intercept']),
+                             end_date = c(coef(x)['mean_intercept']+coef(x)['duration_intercept.1'],
+                                            qnorm(probs[1])*coef(x)['sd_(Intercept)']+coef(x)['mean_intercept']+coef(x)['duration_intercept.1'],
+                                            qnorm(probs[2])*coef(x)['sd_(Intercept)']+coef(x)['mean_intercept']+coef(x)['duration_intercept.1']),
+                             line_type = c('Population mean', quantile_name, quantile_name))
+
+    mplot <- ggplot(plotdata, aes(x = start_date, xend = end_date, y = 0, yend = 1, lty = line_type)) + scale_linetype_manual(values = c(3,1), name = '') + geom_segment() + theme_classic() + xlab('Date') + ylab('Moult Index')
+    if(!is.null(data)){
+    #check data matches model
+    if(data_x %in% names(data) & data_y %in% names(data)){
+      mplot <- ggplot(data = data, aes(x = get(data_x), y = get(data_y))) + scale_linetype_manual(values = c(3,1), name = '') + geom_point(col = 'darkgrey') + geom_segment(data = plotdata, aes(x = start_date, xend = end_date, y = 0, yend = 1, lty = line_type)) + theme_classic() + xlab('Date') + ylab('Moult Index')}
+    else {warning(paste('data does not contain model date and moult variables:',data_x, data_y, ' - plotting model only'))}
+  }
+  return(mplot)
+}
+
+#' Moult plot for moultmcmc model
+#'
+#' @param x moultmcmc model object
+#' @param prob coverage probability of active moult in the sampled population
+#' @param prob_ci coverage probability of credible interval
+#' @param data optional data.frame of observations, column names need to match model date and moult index variables
+#' @param ... not currently used
+#'
+#' @return a plot - currently only the intercept terms are taken into account
+#'
+#' @importFrom stats coef qnorm
+#' @importFrom rlang .data
+#' @importFrom ggplot2 geom_segment aes scale_linetype_manual ggplot theme_classic xlab ylab geom_point
+#' @export
+#'
+#'
+moult_plot.moultmcmc <-function(x, prob = 0.95, prob_ci = NULL, data = NULL, ...){
+  probs = c((1-prob)/2, 1 -(1-prob)/2)
+  if(!is.null(prob_ci)) probs_ci = c((1-prob_ci)/2, 1 -(1-prob_ci)/2)
+  quantile_name <- paste(prob*100, '% quantile')
+  data_x <- x$terms$date_column
+  data_y <- ifelse(!is.na(x$terms$moult_index_column), x$terms$moult_index_column, x$terms$moult_cat_column)
+  plotdata <- tibble::tibble(start_date = c(fixef(x)['mean_(Intercept)',1],
+                                            qnorm(probs[1])*fixef(x)['sd_(Intercept)',1]+fixef(x)['mean_(Intercept)',1],
+                                            qnorm(probs[2])*fixef(x)['sd_(Intercept)',1]+fixef(x)['mean_(Intercept)',1]),
+                             end_date = c(fixef(x)['mean_(Intercept)',1]+fixef(x)['duration_(Intercept)',1],
+                                          qnorm(probs[1])*fixef(x)['sd_(Intercept)',1]+fixef(x)['mean_(Intercept)',1]+fixef(x)['duration_(Intercept)',1],
+                                          qnorm(probs[2])*fixef(x)['sd_(Intercept)',1]+fixef(x)['mean_(Intercept)',1]+fixef(x)['duration_(Intercept)',1]),
+                             line_type = c('Population mean', quantile_name, quantile_name))
+  if(!is.null(prob_ci)){
+  }
+
+  mplot <- ggplot(plotdata, aes(x = start_date, xend = end_date, y = 0, yend = 1, lty = line_type)) + scale_linetype_manual(values = c(3,1), name = '') + geom_segment() + theme_classic() + xlab('Date') + ylab('Moult Index')
+  if(!is.null(data)){
+    #check data matches model
+    if(data_x %in% names(data) & data_y %in% names(data)){
+      mplot <- ggplot(data = data, aes(x = get(data_x), y = get(data_y))) + scale_linetype_manual(values = c(3,1), name = '') + geom_point(col = 'darkgrey') + geom_segment(data = plotdata, aes(x = start_date, xend = end_date, y = 0, yend = 1, lty = line_type)) + theme_classic() + xlab('Date') + ylab('Moult Index')}
+    else {warning(paste('data does not contain model date and moult variables:',data_x, data_y, ' - plotting model only'))}
+  }
+  return(mplot)
+}

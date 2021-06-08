@@ -2,7 +2,7 @@
 % Please edit documentation in R/helpers.R
 \name{compare_plot}
 \alias{compare_plot}
-\title{Visual comparison of ML and MCMC fits}
+\title{Visual comparison of moult models}
 \usage{
 compare_plot(m1, m2, names = NULL)
 }
@@ -14,8 +14,8 @@ compare_plot(m1, m2, names = NULL)
 \item{names}{optional character vector of model names}
 }
 \value{
-a plot
+a plot comparing parameter estimates and their uncertainties
 }
 \description{
-Visual comparison of ML and MCMC fits
+Visual comparison of moult models
 }
