@@ -5,13 +5,13 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Moult data likelihoods • moultmcmc</title>
+<title>Moult data likelihoods and model priors • moultmcmc</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="Moult data likelihoods">
+<script src="../pkgdown.js"></script><meta property="og:title" content="Moult data likelihoods and model priors">
 <meta property="og:description" content="moultmcmc">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -57,7 +57,7 @@
       <a href="../articles/getting-started.html">Getting started with moultmcmc</a>
     </li>
     <li>
-      <a href="../articles/moult-likelihoods.html">Moult data likelihoods</a>
+      <a href="../articles/moult-likelihoods.html">Moult data likelihoods and model priors</a>
     </li>
   </ul>
 </li>
@@ -75,7 +75,7 @@
       </header><script src="moult-likelihoods_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Moult data likelihoods</h1>
+      <h1 data-toc-skip>Moult data likelihoods and model priors</h1>
             
       
       
@@ -94,7 +94,8 @@ R(t) &amp;= \Pr\{Y(t)=1\}&amp;= &amp;1-F_T(t-\tau)\\
 \end{aligned}
 \]</span> Further, assuming a linear progression of the moult indices over time, the probability density of a particular moult score at time <span class="math inline">\(t\)</span> is <span class="math display">\[
 f_Y(t)(y)=\tau f_T(t-y\tau),\quad0 &lt; y &lt; 1,
-\]</span> In <code>moultmcmc</code> the unobserved start date is assumed to follow a normal distribution, such that <span class="math display">\[F_T(t)=\Phi\left(\frac{t-\mu}{\sigma}\right)\]</span> where <span class="math inline">\(\Phi\)</span> is the standard normal distribution function and <span class="math display">\[f_T(t) = \phi(t) = \frac{1}{\sqrt{2\pi}}\exp\frac{-t^2}{2}\]</span>.</p>
+\]</span> In <code>moultmcmc</code> the unobserved start date of the study population is assumed to follow a normal distribution with mean <span class="math inline">\(\mu\)</span> and standard deviation <span class="math inline">\(\sigma\)</span>, such that <span class="math display">\[F_T(t)=\Phi\left(\frac{t-\mu}{\sigma}\right)\]</span> where <span class="math inline">\(\Phi\)</span> is the standard normal distribution function and <span class="math display">\[f_T(t) = \phi(t) = \frac{1}{\sqrt{2\pi}}\exp\frac{-t^2}{2}\]</span>.</p>
+<p>We further assume that <span class="math inline">\(F_T(t)\)</span> has <span class="math inline">\(p\)</span> parameters <span class="math inline">\(\mathbf{\theta} = \theta_1, \theta_2, \ldots, \theta_p\)</span> and for convenience the start date <span class="math inline">\(\mu\)</span>, duration <span class="math inline">\(\tau\)</span>, and population standard deviation of moult <span class="math inline">\(\sigma\)</span> will be elements of <span class="math inline">\(\mathbf{\theta}\)</span>.</p>
 <div id="type-1" class="section level2">
 <h2 class="hasAnchor">
 <a href="#type-1" class="anchor"></a>Type 1</h2>
@@ -136,6 +137,13 @@ f_Y(t)(y)=\tau f_T(t-y\tau),\quad0 &lt; y &lt; 1,
 <p>As outlined in <span class="citation">Underhill and Zucchini (1988)</span> estimates can also be derived from mixtures of data types. Type 1 + 2 data consist of observations of birds in all three moult states (pre-moult, active moult, post-moult). Sampling is representative for all three categories, but a sufficiently linear moult index <span class="math inline">\(y\)</span> (e.g. percent feather mass grown) is known only for some of the actively moulting birds. This means the sample consist of <span class="math inline">\(I\)</span> pre-moult birds, <span class="math inline">\(J\)</span> birds in active moult with known indices, <span class="math inline">\(L\)</span> birds in active moult without known indices but known capture dates <span class="math inline">\(u'=u'_l,\ldots,u'_L\)</span>, and <span class="math inline">\(K\)</span> post-moult birds. The likelihood of these observations is <span class="math display">\[
 \mathcal{L}(\theta,t,u,y,u',v) = \prod_{i=1}^IP(t_i)\prod_{j = 1}^Jq(u_j,y_j)\prod_{l = 1}^{L}Q(u'_{l})\prod_{k=1}^KR(v_k),
 \]</span></p>
+</div>
+<div id="priors" class="section level1">
+<h1 class="hasAnchor">
+<a href="#priors" class="anchor"></a>Priors</h1>
+<p>The following priors are currently hard-coded for the intercept terms of the linear predictors on <span class="math inline">\(\mu\)</span>, <span class="math inline">\(\tau\)</span>, and <span class="math inline">\(\sigma\)</span>, respectively, in all <code>moultmcmc</code> models:</p>
+<p><span class="math inline">\(\mu_0 \sim \mathrm{Uniform(0,366)}\)</span><br><span class="math inline">\(\tau_0 \sim \mathrm{Uniform(0,366)}\)</span><br><span class="math inline">\(\ln(\sigma_0) \sim \mathrm{Normal(0,5)}\)</span></p>
+<p>Any additional regression coefficients will use the Stan default of an improper flat prior.</p>
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="hasAnchor">
