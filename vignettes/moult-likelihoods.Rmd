@@ -1,5 +1,5 @@
 ---
-title: "Moult data likelihoods"
+title: "Moult data likelihoods and model priors"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Moult data likelihoods}
@@ -22,9 +22,11 @@ Further, assuming a linear progression of the moult indices over time, the proba
 $$
 f_Y(t)(y)=\tau f_T(t-y\tau),\quad0 < y < 1,
 $$
-In `moultmcmc` the unobserved start date is assumed to follow a normal distribution, such that $$F_T(t)=\Phi\left(\frac{t-\mu}{\sigma}\right)$$
+In `moultmcmc` the unobserved start date of the study population is assumed to follow a normal distribution with mean $\mu$ and standard deviation $\sigma$, such that $$F_T(t)=\Phi\left(\frac{t-\mu}{\sigma}\right)$$
 where $\Phi$ is the standard normal distribution function and 
 $$f_T(t) = \phi(t) = \frac{1}{\sqrt{2\pi}}\exp\frac{-t^2}{2}$$.
+
+We further assume that $F_T(t)$ has $p$ parameters $\mathbf{\theta} = \theta_1, \theta_2, \ldots, \theta_p$ and for convenience the start date $\mu$, duration $\tau$, and population standard deviation of moult $\sigma$ will be elements of $\mathbf{\theta}$.
 
 ## Type 1
 Type 1 data consist of observations of categorical moult state (pre-moult, active moult, post-moult) and sampling is representative in all three categories. The likelihood of these observations is 
@@ -63,5 +65,15 @@ The likelihood of these observations is
 $$
 \mathcal{L}(\theta,t,u,y,u',v) = \prod_{i=1}^IP(t_i)\prod_{j = 1}^Jq(u_j,y_j)\prod_{l = 1}^{L}Q(u'_{l})\prod_{k=1}^KR(v_k),
 $$
+
+# Priors
+The following priors are currently hard-coded for the intercept terms of the linear predictors on $\mu$, $\tau$, and $\sigma$, respectively, in all `moultmcmc` models:
+
+$\mu_0 \sim \mathrm{Uniform(0,366)}$   
+$\tau_0 \sim \mathrm{Uniform(0,366)}$    
+$\ln(\sigma_0) \sim \mathrm{Normal(0,5)}$
+
+Any additional regression coefficients will use the Stan default of an improper flat prior.
+
 
 # References
