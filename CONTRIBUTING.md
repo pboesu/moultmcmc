@@ -4,11 +4,11 @@ Any constructive contributions &ndash; bug reports, pull requests (code or docum
 
 ## Discussions
 
-Discussion is welcome by creating a new issue [in this repository](https://github.com/pboesu/rucrdtw/issues).
+Discussion is welcome by creating a new issue [in this repository](https://github.com/pboesu/moultmcmc/issues).
 
 ## Conduct
 
-Everyone is asked to read and respect the [code of conduct](https://github.com/pboesu/rucrdtw/blob/master/CODE_OF_CONDUCT.md) before participating directly in this project.
+Everyone is asked to read and respect the [code of conduct](https://github.com/pboesu/moultmcmc/blob/master/CODE_OF_CONDUCT.md) before participating directly in this project.
 
 ## How to contribute text, edits, and other materials
 
@@ -23,12 +23,12 @@ Everyone is asked to read and respect the [code of conduct](https://github.com/p
 
 ### Using Git
 
-1. Fork the repository, for example to https://github.com/YOUR-GITHUB-ACCOUNT/rucrdtw
+1. Fork the repository, for example to https://github.com/YOUR-GITHUB-ACCOUNT/moultmcmc
 1. Clone your fork locally
 1. Create a branch to hold your changes (`git checkout -b my-changes`)
 1. Commit the changes you've made (`git commit -am "Some descriptive text around what you've added"`)
 1. Push your branch to GitHub (`git push origin my-changes`)
-1. Create a pull request, for example at https://github.com/YOUR-GITHUB-ACCOUNT/rucrdtw/pull/new/master
+1. Create a pull request, for example at https://github.com/YOUR-GITHUB-ACCOUNT/moultmcmc/pull/new/master
 
 ## License
 

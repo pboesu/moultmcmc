@@ -28,6 +28,8 @@ $$f_T(t) = \phi(t) = \frac{1}{\sqrt{2\pi}}\exp\frac{-t^2}{2}$$.
 
 We further assume that $F_T(t)$ has $p$ parameters $\mathbf{\theta} = \theta_1, \theta_2, \ldots, \theta_p$ and for convenience the start date $\mu$, duration $\tau$, and population standard deviation of moult $\sigma$ will be elements of $\mathbf{\theta}$.
 
+# Likelihoods
+
 ## Type 1
 Type 1 data consist of observations of categorical moult state (pre-moult, active moult, post-moult) and sampling is representative in all three categories. The likelihood of these observations is 
 $$
