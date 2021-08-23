@@ -96,6 +96,9 @@ R(t) &amp;= \Pr\{Y(t)=1\}&amp;= &amp;1-F_T(t-\tau)\\
 f_Y(t)(y)=\tau f_T(t-y\tau),\quad0 &lt; y &lt; 1,
 \]</span> In <code>moultmcmc</code> the unobserved start date of the study population is assumed to follow a normal distribution with mean <span class="math inline">\(\mu\)</span> and standard deviation <span class="math inline">\(\sigma\)</span>, such that <span class="math display">\[F_T(t)=\Phi\left(\frac{t-\mu}{\sigma}\right)\]</span> where <span class="math inline">\(\Phi\)</span> is the standard normal distribution function and <span class="math display">\[f_T(t) = \phi(t) = \frac{1}{\sqrt{2\pi}}\exp\frac{-t^2}{2}\]</span>.</p>
 <p>We further assume that <span class="math inline">\(F_T(t)\)</span> has <span class="math inline">\(p\)</span> parameters <span class="math inline">\(\mathbf{\theta} = \theta_1, \theta_2, \ldots, \theta_p\)</span> and for convenience the start date <span class="math inline">\(\mu\)</span>, duration <span class="math inline">\(\tau\)</span>, and population standard deviation of moult <span class="math inline">\(\sigma\)</span> will be elements of <span class="math inline">\(\mathbf{\theta}\)</span>.</p>
+<div id="likelihoods" class="section level1">
+<h1 class="hasAnchor">
+<a href="#likelihoods" class="anchor"></a>Likelihoods</h1>
 <div id="type-1" class="section level2">
 <h2 class="hasAnchor">
 <a href="#type-1" class="anchor"></a>Type 1</h2>
@@ -137,6 +140,7 @@ f_Y(t)(y)=\tau f_T(t-y\tau),\quad0 &lt; y &lt; 1,
 <p>As outlined in <span class="citation">Underhill and Zucchini (1988)</span> estimates can also be derived from mixtures of data types. Type 1 + 2 data consist of observations of birds in all three moult states (pre-moult, active moult, post-moult). Sampling is representative for all three categories, but a sufficiently linear moult index <span class="math inline">\(y\)</span> (e.g. percent feather mass grown) is known only for some of the actively moulting birds. This means the sample consist of <span class="math inline">\(I\)</span> pre-moult birds, <span class="math inline">\(J\)</span> birds in active moult with known indices, <span class="math inline">\(L\)</span> birds in active moult without known indices but known capture dates <span class="math inline">\(u'=u'_l,\ldots,u'_L\)</span>, and <span class="math inline">\(K\)</span> post-moult birds. The likelihood of these observations is <span class="math display">\[
 \mathcal{L}(\theta,t,u,y,u',v) = \prod_{i=1}^IP(t_i)\prod_{j = 1}^Jq(u_j,y_j)\prod_{l = 1}^{L}Q(u'_{l})\prod_{k=1}^KR(v_k),
 \]</span></p>
+</div>
 </div>
 <div id="priors" class="section level1">
 <h1 class="hasAnchor">
