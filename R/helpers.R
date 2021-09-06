@@ -130,8 +130,8 @@ compare_plot <- function(m1,m2,names = NULL){
 
   plotdata <- dplyr::bind_rows(summary_table(m1) %>% dplyr::mutate(model = names[1]),
                                summary_table(m2) %>% dplyr::mutate(model = names[2]))
-  dplyr::filter(plotdata, !grepl("lp__|log_sd_\\(Intercept\\)|\\blp\\b|log_lik[[0-9]+]", .data$parameter)) %>%
-    ggplot(aes(x = .data$parameter, y = .data$estimate, col = .data$model, ymin = .data$lci, ymax = .data$uci)) + geom_pointrange(position = position_dodge(0.1))
+  dplyr::filter(plotdata, !grepl("lp__|log_sd_\\(Intercept\\)|\\blp\\b|log_lik[[0-9]+]|mu_ind[[0-9]+]", .data$parameter)) %>%
+    ggplot(aes(x = .data$model, y = .data$estimate, col = .data$model, ymin = .data$lci, ymax = .data$uci)) + geom_pointrange(position = position_dodge(0.1)) + facet_wrap(~ .data$parameter, scales = 'free')
 }
 
 #' Plot method for moult models
