@@ -61,7 +61,7 @@ summary_table(m1)
 compare_plot(m1, uz1, names = c('ML','MCMC'))
 ```
 
-The comparison plot shows very similar estimates for both methods, but much more narrow uncertainty intervals around the standard deviation parameter for the MCMC method. The MCMC method provides full posterior intervals, whereas the ML approach relies on the Delta method approximation.
+The comparison plot shows very similar estimates for both methods.
 
 Similarly we can fit the corresponding Type 2 model, that makes use of the full information contained in the moult indices, using the `uz2_linpred()` function. All `moultmcmc` model functions default to an intercept only model, so we do not need to explicitly specify the individual linear predictors here.
 
@@ -77,7 +77,7 @@ m2 = moult(MIndex ~ Day,data = sanderlings, type = 2)
 compare_plot(m2, uz2, names = c('ML','MCMC'))
 ```
 
-As before the comparison plot shows very similar estimates for both methods, but much more narrow uncertainty intervals around the standard deviation parameter for the MCMC method. Perhaps more interesting is a comparison of the two model types, which illustrates the gain in precision achieved by exploiting the information contained in the moult indices.
+As before the comparison plot shows very similar estimates for both methods. Perhaps more interesting is a comparison of the two model types, which illustrates the gain in precision achieved by exploiting the information contained in the moult indices.
 ```{r data-type-comparison, fig.width=7}
 compare_plot(uz1, uz2, names = c('UZ1','UZ2'))
 ```
