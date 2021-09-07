@@ -25,7 +25,7 @@
 #' @importFrom nlme fixef
 fixef.moultmcmc <-  function(object, summary = TRUE,
                            probs = c(0.025, 0.975), pars = NULL, ...) {
-  fpars <- names(object$stanfit)
+  fpars <- names(object$stanfit) #TODO: need to filter out hierarchical pars here and things like lp__ and log_lik
   if (!is.null(pars)) {
     fpars <- as.character(pars)
   }
