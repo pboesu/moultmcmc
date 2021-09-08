@@ -18,7 +18,7 @@ uz5_linpred <- function(moult_index_column, date_column, start_formula = ~1, dur
   stopifnot(is.numeric(data[[date_column]]))
   stopifnot(is.data.frame(data))
   #remove  old data by moult category
-  data <- subset(data, get(moult_index_column) != 1)
+  data <- subset(data, get(moult_index_column) != 1)#TODO:record / notice of how many obs removed missing
   #order data by moult category
   data <- data[order(data[[moult_index_column]]),]
   #setup model matrices
@@ -26,6 +26,7 @@ uz5_linpred <- function(moult_index_column, date_column, start_formula = ~1, dur
   X_tau <- model.matrix(duration_formula, data)
   X_sigma <- model.matrix(sigma_formula, data)
   #prepare data structure for stan
+  #TODO: all of these need to be as.array if they are not generally a scalar, otherwise stan indexing falls over for length-one vectors
   standata <- list(moult_dates  = data[[date_column]][(data[[moult_index_column]] > 0 & data[[moult_index_column]] < 1)],
                    moult_indices = data[[moult_index_column]][(data[[moult_index_column]] > 0 & data[[moult_index_column]] < 1)],
                    N_moult = length(data[[date_column]][(data[[moult_index_column]] > 0 & data[[moult_index_column]] < 1)]),
