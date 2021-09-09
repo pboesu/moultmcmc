@@ -61,7 +61,7 @@ mu_ind ~ normal(0, sigma[individual_first_index]);//short cut for now - sampling
 //print(sum(log(P)));
 //print(sum(log(Q)));
 //print(sum(log(R)));
-target += sum(q);// - log(Q));
+target += sum(q);// - log(Q));//TODO: Why does this differ from the likelihood for the non-recaptures model?!
 //priors
 beta_mu[1] ~ uniform(0,366);
 beta_tau[1] ~ uniform(0,366);
