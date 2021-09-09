@@ -27,10 +27,10 @@ uz5_linpred <- function(moult_index_column, date_column, start_formula = ~1, dur
   X_sigma <- model.matrix(sigma_formula, data)
   #prepare data structure for stan
   #TODO: all of these need to be as.array if they are not generally a scalar, otherwise stan indexing falls over for length-one vectors
-  standata <- list(moult_dates  = data[[date_column]][(data[[moult_index_column]] > 0 & data[[moult_index_column]] < 1)],
-                   moult_indices = data[[moult_index_column]][(data[[moult_index_column]] > 0 & data[[moult_index_column]] < 1)],
+  standata <- list(moult_dates  = as.array(data[[date_column]][(data[[moult_index_column]] > 0 & data[[moult_index_column]] < 1)]),
+                   moult_indices = as.array(data[[moult_index_column]][(data[[moult_index_column]] > 0 & data[[moult_index_column]] < 1)]),
                    N_moult = length(data[[date_column]][(data[[moult_index_column]] > 0 & data[[moult_index_column]] < 1)]),
-                   old_dates = data[[date_column]][data[[moult_index_column]]==0],
+                   old_dates = as.array(data[[date_column]][data[[moult_index_column]]==0]),
                    N_old = length(data[[date_column]][data[[moult_index_column]]==0]),#TODO: this is not robust to NA's being thrown out by model.matrix/model.frame
                    X_mu = X_mu,
                    N_pred_mu = ncol(X_mu),
