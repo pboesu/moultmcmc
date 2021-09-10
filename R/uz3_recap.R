@@ -3,7 +3,7 @@
 #' @export
 #' @param date_column the name the column in `data` containing sampling dates, encoded as days since an arbitrary reference date, i.e. a numeric vector
 #' @param moult_index_column the name the column in `data` containing moult indices, i.e. a numeric vector of (linearized) moult scores (0 = old plumage,1 = new plumage).
-#' @param id_colum identifier. Usually a season-individual combination to encode within-season recaptures
+#' @param id_column identifier. Usually a season-individual combination to encode within-season recaptures
 #' @param start_formula model formula for start date
 #' @param duration_formula model formula for duration
 #' @param sigma_formula model formula for start date sigma
@@ -20,20 +20,26 @@ uz3_linpred_recap <- function(moult_index_column, date_column, id_column, start_
   stopifnot(is.factor(data[[id_column]]))
   stopifnot(is.data.frame(data))
   #remove new and old data by moult category
-  data <- subset(data, get(moult_index_column) != 0 & get(moult_index_column) != 1)
+  data <- droplevels(subset(data, get(moult_index_column) != 0 & get(moult_index_column) != 1))
   #setup model matrices NB: do these need to be reduced to N_ind?? or does there need to be checking that they are identical for recaptures?
   X_mu <- model.matrix(start_formula, data)#TODO: na.action missing
   X_tau <- model.matrix(duration_formula, data)
   X_sigma <- model.matrix(sigma_formula, data)
   #create a vector of the first occurrence of each individual in the model matrices
   id_first <- match(unique(data[[id_column]]), data[[id_column]])
+  #create vectors of indices of replicated/non_replicated observations
+  replicated <- which(data[[id_column]] %in% names(table(data[[id_column]])[table(data[[id_column]])>1]))
+  not_replicated <- which(data[[id_column]] %in% names(table(data[[id_column]])[table(data[[id_column]])==1]))
   #prepare data structure for stan
   standata <- list(moult_dates  = data[[date_column]],
-                   moult_indices = data[[moult_index_column]],
+                   moult_indices = data[[moult_index_column]],#TODO this is not robust to Os and Ns being deleted from the data - if the factor passed in has more levels than are represented in the data, so needs more care to reassign numerical indicies for stan indexing from R's factor level numerical codes
                    N_moult = length(data[[date_column]]),#TODO: this is not robust to NA's being thrown out by model.matrix/model.frame
                    N_ind = length(unique(data[[id_column]])),
                    individual = as.numeric(data[[id_column]]),
                    individual_first_index = id_first,
+                   replicated = replicated,
+                   not_replicated = not_replicated,
+                   Nobs_replicated <- length(replicated),
                    X_mu = X_mu,
                    N_pred_mu = ncol(X_mu),
                    X_tau = X_tau,

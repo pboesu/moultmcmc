@@ -5,10 +5,13 @@
 data {
   int<lower=0> N_ind;//number of recaptured individuals
   int<lower=0> N_moult;//J
+  int<lower=0> Nobs_replicated;//number of observations from individuals with repeat measures
   vector[N_moult] moult_dates;//u_j
   vector<lower=0,upper=1>[N_moult] moult_indices;//index of moult
   int<lower=0>individual[N_moult];//individual identifier
   int<lower=0>individual_first_index[N_ind];//row first occurrence of each individual in the model frame
+  int<lower=0>replicated[Nobs_replicated];//indices of obs from individuals with repeat measures
+  int<lower=0>not_replicated[N_moult - Nobs_replicated];//indices of obs from individuals without repeat measures
   //int<lower=0> N_new;//K
   //vector[N_new] new_dates;//v_k
   //predictors
@@ -54,14 +57,14 @@ model {
 //for (i in 1:N_old) P[i] = 1 - Phi((old_dates[i] - mu[i])/sigma[i]);
 //print(P);
 for (i in 1:N_moult) q[i] = log(tau[i]) + normal_lpdf((moult_dates[i] - moult_indices[i]*tau[i]) | mu[i] + mu_ind[individual[i]], sigma[i]);//N.B. unlike P and R this returns a log density
-for (i in 1:N_moult) Q[i] = Phi((moult_dates[i] - (mu[i]+ mu_ind[individual[i]]))/sigma[i]) - Phi((moult_dates[i] - tau[i] - (mu[i]+ mu_ind[individual[i]]))/sigma[i]);
+for (i in 1:N_moult) Q[i] = Phi((moult_dates[i] - (mu[i]+ mu_ind[individual[i]]))/sigma[i]) - Phi((moult_dates[i] - tau[i] - (mu[i]+ mu_ind[individual[i]]))/sigma[i]);//this should only be relevant for observations that don't arise from repeated measures
 //individual effects are drawn from the population distribution of start dates
 mu_ind ~ normal(0, sigma[individual_first_index]);//short cut for now - sampling the first sigma for each individual - input function needs to check these are representative for each individual!
 //print(R);
 //print(sum(log(P)));
 //print(sum(log(Q)));
 //print(sum(log(R)));
-target += sum(q);// - log(Q));//TODO: Why does this differ from the likelihood for the non-recaptures model?!
+target += sum(q[not_replicated] - log(Q[not_replicated])) + sum(q[replicated]);// mixed likelihood where unreplicated individuals are treated like the standard UZ3, but replicated ones are treated like a regular LMM!
 //priors
 beta_mu[1] ~ uniform(0,366);
 beta_tau[1] ~ uniform(0,366);
