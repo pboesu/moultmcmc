@@ -36,9 +36,9 @@ uz3_linpred_recap <- function(moult_index_column, date_column, id_column, start_
                    N_moult = length(data[[date_column]]),#TODO: this is not robust to NA's being thrown out by model.matrix/model.frame
                    N_ind = length(unique(data[[id_column]])),
                    individual = as.numeric(data[[id_column]]),
-                   individual_first_index = id_first,
-                   replicated = replicated,
-                   not_replicated = not_replicated,
+                   individual_first_index = as.array(id_first),
+                   replicated = as.array(replicated),
+                   not_replicated = as.array(not_replicated),
                    Nobs_replicated <- length(replicated),
                    X_mu = X_mu,
                    N_pred_mu = ncol(X_mu),
