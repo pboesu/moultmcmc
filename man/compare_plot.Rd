@@ -4,7 +4,7 @@
 \alias{compare_plot}
 \title{Visual comparison of moult models}
 \usage{
-compare_plot(..., names = NULL, check_convergence = TRUE)
+compare_plot(..., names = NULL)
 }
 \arguments{
 \item{...}{two or a moult or moultmcmc model}

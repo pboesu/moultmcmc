@@ -22,8 +22,6 @@ uz3_linpred_recap(
 
 \item{date_column}{the name the column in \code{data} containing sampling dates, encoded as days since an arbitrary reference date, i.e. a numeric vector}
 
-\item{id_column}{identifier. Usually a season-individual combination to encode within-season recaptures}
-
 \item{start_formula}{model formula for start date}
 
 \item{duration_formula}{model formula for duration}
@@ -37,6 +35,8 @@ uz3_linpred_recap(
 \item{log_lik}{boolean retain pointwise log-likelihood in output? This enables model assessment and selection via the loo package. Defaults to true, can lead to very large output arrays if sample size is large.}
 
 \item{...}{Arguments passed to \code{rstan::sampling} (e.g. iter, chains).}
+
+\item{id_colum}{identifier. Usually a season-individual combination to encode within-season recaptures}
 }
 \value{
 An object of class \code{stanfit} returned by \code{rstan::sampling}
