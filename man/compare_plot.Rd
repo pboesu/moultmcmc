@@ -4,12 +4,10 @@
 \alias{compare_plot}
 \title{Visual comparison of moult models}
 \usage{
-compare_plot(m1, m2, names = NULL)
+compare_plot(..., names = NULL, check_convergence = TRUE)
 }
 \arguments{
-\item{m1}{a moult or moultmcmc model}
-
-\item{m2}{a moult or moultmcmc model}
+\item{...}{two or a moult or moultmcmc model}
 
 \item{names}{optional character vector of model names}
 }

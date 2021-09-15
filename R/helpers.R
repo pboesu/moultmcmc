@@ -112,9 +112,9 @@ summary_table.moultmcmc <- function (x, pars = x$stanfit@sim$pars_oi, prob = 0.9
 
 #' Visual comparison of moult models
 #'
-#' @param m1 a moult or moultmcmc model
-#' @param m2 a moult or moultmcmc model
+#' @param ... two or a moult or moultmcmc model
 #' @param names optional character vector of model names
+#'
 #'
 #' @return a plot comparing parameter estimates and their uncertainties
 #'
@@ -123,15 +123,18 @@ summary_table.moultmcmc <- function (x, pars = x$stanfit@sim$pars_oi, prob = 0.9
 #' @importFrom rlang .data
 #' @export
 #'
-compare_plot <- function(m1,m2,names = NULL){
+compare_plot <- function(...,names = NULL){
+  parlist <- list(...)
+  stopifnot(all(sapply(parlist, class) %in% c('moult','moultmcmc')))
   #TODO:type checking etc
   #TODO:import necessary dplyr and ggplot components
-  if(is.null(names)) names = as.character(1:2)
+  if(is.null(names)) names = as.character(seq(1, length(parlist), by = 1))
+  names(parlist) <- names
 
-  plotdata <- dplyr::bind_rows(summary_table(m1) %>% dplyr::mutate(model = names[1]),
-                               summary_table(m2) %>% dplyr::mutate(model = names[2]))
-  dplyr::filter(plotdata, !grepl("lp__|log_sd_\\(Intercept\\)|\\blp\\b|log_lik[[0-9]+]|mu_ind[[0-9]+]", .data$parameter)) %>%
-    ggplot(aes(x = .data$model, y = .data$estimate, col = .data$model, ymin = .data$lci, ymax = .data$uci)) + geom_pointrange(position = position_dodge(0.1)) + facet_wrap(~ .data$parameter, scales = 'free')
+  plotdata <- dplyr::bind_rows(lapply(parlist, function(x){summary_table(x)}), .id = 'model')
+  plotdata$not_converged <- ifelse(plotdata$Rhat > 1.05 & !is.na(plotdata$Rhat), TRUE, FALSE)
+  dplyr::filter(plotdata, !grepl("lp__|log_sd_\\(Intercept\\)|\\blp\\b|log_lik[[0-9]+]|mu_ind[[0-9]+]|mu_ind_star", .data$parameter)) %>%
+    ggplot(aes(x = .data$model, y = .data$estimate, col = .data$model, ymin = .data$lci, ymax = .data$uci, shape = .data$not_converged)) + geom_pointrange(position = position_dodge(0.1)) + facet_wrap(~ .data$parameter, scales = 'free')
 }
 
 #' Plot method for moult models

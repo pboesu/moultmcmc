@@ -33,6 +33,7 @@ parameters {
   vector[N_pred_tau] beta_tau;//regression coefficients for duration
   vector[N_pred_sigma] beta_sigma;//regression coefficients for sigma start date
   vector[N_ind] mu_ind;//individual effect on sigma start date
+  real<lower=0> sigma_tau;//residual variance in duration
 }
 
 transformed parameters{
@@ -56,7 +57,8 @@ model {
 
 //for (i in 1:N_old) P[i] = 1 - Phi((old_dates[i] - mu[i])/sigma[i]);
 //print(P);
-for (i in 1:N_moult) q[i] = log(tau[i]) + normal_lpdf((moult_dates[i] - moult_indices[i]*tau[i]) | mu[i] + mu_ind[individual[i]], sigma[i]);//N.B. unlike P and R this returns a log density
+for (i in 1:N_moult) q[i] = log(tau[i]) + normal_lpdf((moult_dates[i] - moult_indices[i]*tau[i]) | mu[i] + mu_ind[individual[i]], sigma_tau);//N.B. unlike P and R this returns a log density
+//TODO: q needs to be different for replicated and unreplicated individuals. as written now the sigma in this represents unexplained variance around the regression line, not the population distribution of start dates
 for (i in 1:N_moult) Q[i] = Phi((moult_dates[i] - (mu[i]+ mu_ind[individual[i]]))/sigma[i]) - Phi((moult_dates[i] - tau[i] - (mu[i]+ mu_ind[individual[i]]))/sigma[i]);//this should only be relevant for observations that don't arise from repeated measures
 //individual effects are drawn from the population distribution of start dates
 mu_ind ~ normal(0, sigma[individual_first_index]);//short cut for now - sampling the first sigma for each individual - input function needs to check these are representative for each individual!
@@ -69,6 +71,7 @@ target += sum(q[not_replicated] - log(Q[not_replicated])) + sum(q[replicated]);/
 beta_mu[1] ~ uniform(0,366);
 beta_tau[1] ~ uniform(0,366);
 beta_sigma[1] ~ normal(0,5);
+sigma_tau ~ normal(0,1);
 }
 
 generated quantities{
