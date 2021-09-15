@@ -3,7 +3,7 @@
 #' @export
 #' @param date_column the name the column in `data` containing sampling dates, encoded as days since an arbitrary reference date, i.e. a numeric vector
 #' @param moult_index_column the name the column in `data` containing moult indices, i.e. a numeric vector of (linearized) moult scores (0 = old plumage,1 = new plumage).
-#' @param id_column identifier. Usually a season-individual combination to encode within-season recaptures
+#' @param id_colum identifier. Usually a season-individual combination to encode within-season recaptures
 #' @param start_formula model formula for start date
 #' @param duration_formula model formula for duration
 #' @param sigma_formula model formula for start date sigma
@@ -30,6 +30,7 @@ uz3_linpred_recap <- function(moult_index_column, date_column, id_column, start_
   #create vectors of indices of replicated/non_replicated observations
   replicated <- which(data[[id_column]] %in% names(table(data[[id_column]])[table(data[[id_column]])>1]))
   not_replicated <- which(data[[id_column]] %in% names(table(data[[id_column]])[table(data[[id_column]])==1]))
+  is_replicated <- ifelse(table(data[[id_column]])>1, 1,0)
   #prepare data structure for stan
   standata <- list(moult_dates  = data[[date_column]],
                    moult_indices = data[[moult_index_column]],#TODO this is not robust to Os and Ns being deleted from the data - if the factor passed in has more levels than are represented in the data, so needs more care to reassign numerical indicies for stan indexing from R's factor level numerical codes
@@ -39,6 +40,7 @@ uz3_linpred_recap <- function(moult_index_column, date_column, id_column, start_
                    individual_first_index = as.array(id_first),
                    replicated = as.array(replicated),
                    not_replicated = as.array(not_replicated),
+                   is_replicated = as.array(is_replicated),
                    Nobs_replicated <- length(replicated),
                    X_mu = X_mu,
                    N_pred_mu = ncol(X_mu),
@@ -48,9 +50,9 @@ uz3_linpred_recap <- function(moult_index_column, date_column, id_column, start_
                    N_pred_sigma = ncol(X_sigma))
   #include pointwise log_lik matrix  in output?
   if(log_lik){
-    outpars <- c('beta_mu','beta_tau','beta_sigma', 'sigma_intercept', 'mu_ind', 'log_lik')
+    outpars <- c('beta_mu','beta_tau','beta_sigma', 'sigma_intercept', 'sigma_mu_ind','beta_star','finite_sd', 'mu_ind_star', 'mu_ind', 'log_lik')
   } else {
-    outpars <- c('beta_mu','beta_tau','beta_sigma', 'sigma_intercept', 'mu_ind')
+    outpars <- c('beta_mu','beta_tau','beta_sigma', 'sigma_intercept', 'sigma_mu_ind','beta_star','finite_sd', 'mu_ind_star', 'mu_ind')
   }
   #guess initial values
   if(init == "auto"){
