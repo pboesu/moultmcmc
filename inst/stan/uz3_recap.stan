@@ -70,9 +70,13 @@ for (i in 1:N_moult) {
   }
 }
 //for (i in 1:N_moult) q[i] = normal_lpdf((moult_dates[i] - moult_indices[i]*tau[i]) | mu[i], sigma_mu_ind);//N.B. unlike P and R this returns a log density
-for (i in 1:N_moult) if (is_replicated[individual[i]] == 1) {Q[i] = Phi((moult_dates[i] - (mu[i]))/sigma[i]) - Phi((moult_dates[i] - tau[i] - (mu[i]))/sigma[i]);}
+for (i in 1:N_moult) {
+  //if (is_replicated[individual[i]] == 1) { //this appears to break initialisation
+    Q[i] = Phi((moult_dates[i] - (mu[i]))/sigma[i]) - Phi((moult_dates[i] - tau[i] - (mu[i]))/sigma[i]);
+  //}
+  }
 //individual start dates are drawn from the population distribution of start dates - TODO: this is slow, so don't calculate it for replicated obs
-mu_ind ~ normal(0, sigma[individual_first_index]);//only estimate this for replicated individuals?
+mu_ind ~ normal(0, sigma[individual_first_index]);//only estimate this for replicated individuals? shouldn't this be mu[i] for replicated individuals??
 //print(R);
 //print(sum(log(P)));
 //print(sum(log(Q)));
