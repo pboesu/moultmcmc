@@ -34,7 +34,7 @@ parameters {
   vector[N_pred_tau] beta_tau;//regression coefficients for duration
   vector[N_pred_sigma] beta_sigma;//regression coefficients for sigma start date
   vector[N_ind] mu_ind;//individual effect on sigma start date
-  real<lower=0> sigma_mu_ind;
+  real<lower=0> sigma_mu_ind;//?residual variance in regression of score on date within individuals
 }
 
 transformed parameters{
