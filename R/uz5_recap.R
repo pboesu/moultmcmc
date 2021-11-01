@@ -19,17 +19,23 @@ uz5_linpred_recap <- function(moult_index_column, date_column, id_column, start_
   stopifnot(is.numeric(data[[date_column]]))
   stopifnot(is.factor(data[[id_column]]))
   stopifnot(is.data.frame(data))
-  #remove  old data by moult category
-  data <- subset(data, get(moult_index_column) != 1)#TODO:record / notice of how many obs removed missing
+  #remove new data by moult category
+  data <- droplevels(subset(data, get(moult_index_column) != 1))#TODO:record / notice of how many obs removed missing
+  #TODO: remove consecutive old captures within a season ?
   #order data by moult category
   data <- data[order(data[[moult_index_column]]),]
   #setup model matrices
   #TODO: check for consistency of covariates among recaptures?!
+  #TODO: do these need to be reduced to N_ind?? or does there need to be checking that they are identical for recaptures?
   X_mu <- model.matrix(start_formula, data)#TODO: na.action missing
   X_tau <- model.matrix(duration_formula, data)
   X_sigma <- model.matrix(sigma_formula, data)
   #create vector of first occurrence of each individual in the model matrix to index unique linear predictor values for each individual
   id_first <- match(unique(data[[id_column]]), data[[id_column]])
+#create vectors of indices of replicated/non_replicated observations
+  replicated <- which(data[[id_column]] %in% names(table(data[[id_column]])[table(data[[id_column]])>1]))
+  not_replicated <- which(data[[id_column]] %in% names(table(data[[id_column]])[table(data[[id_column]])==1]))
+  is_replicated <- ifelse(table(data[[id_column]])>1, 1,0)
   #prepare data structure for stan
   #TODO: all of these need to be as.array if they are not generally a scalar, otherwise stan indexing falls over for length-one vectors
   standata <- list(moult_dates  = as.array(data[[date_column]][(data[[moult_index_column]] > 0 & data[[moult_index_column]] < 1)]),
@@ -38,8 +44,13 @@ uz5_linpred_recap <- function(moult_index_column, date_column, id_column, start_
                    old_dates = as.array(data[[date_column]][data[[moult_index_column]]==0]),
                    N_old = length(data[[date_column]][data[[moult_index_column]]==0]),#TODO: this is not robust to NA's being thrown out by model.matrix/model.frame
                    N_ind = length(unique(data[[id_column]])),
+                   
                    individual = as.numeric(data[[id_column]]),#TODO: the resultant individual intercepts are hard to map onto original factor levels - this should be handled in the postprocessing of the model output
-                   individual_first_index = id_first,
+                   individual_first_index = as.array(id_first),
+                   replicated = as.array(replicated),
+                   not_replicated = as.array(not_replicated),
+                   is_replicated = as.array(is_replicated),
+                   Nobs_replicated <- length(replicated),
                    X_mu = X_mu,
                    N_pred_mu = ncol(X_mu),
                    X_tau = X_tau,
@@ -48,9 +59,9 @@ uz5_linpred_recap <- function(moult_index_column, date_column, id_column, start_
                    N_pred_sigma = ncol(X_sigma))
   #include pointwise log_lik matrix  in output?
   if(log_lik){
-    outpars <- c('beta_mu','beta_tau','beta_sigma', 'sigma_intercept', 'mu_ind', 'log_lik')
+    outpars <- c('beta_mu','beta_tau','beta_sigma', 'sigma_intercept', 'sigma_mu_ind','beta_star','finite_sd', 'mu_ind_star', 'mu_ind', 'log_lik')
   } else {
-    outpars <- c('beta_mu','beta_tau','beta_sigma', 'sigma_intercept', 'mu_ind')
+    outpars <- c('beta_mu','beta_tau','beta_sigma', 'sigma_intercept', 'sigma_mu_ind','beta_star','finite_sd', 'mu_ind_star', 'mu_ind')
   }
   #guess initial values
   if(init == "auto"){
@@ -78,6 +89,6 @@ uz5_linpred_recap <- function(moult_index_column, date_column, id_column, start_
   out_struc$terms$moult_index_column <- moult_index_column
   out_struc$terms$moult_cat_column <- NA
   out_struc$terms$id_column <- id_column
-    class(out_struc) <- 'moultmcmc'
+  class(out_struc) <- 'moultmcmc'
   return(out_struc)
 }

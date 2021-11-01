@@ -65,12 +65,20 @@ model {
   sigma = exp(X_sigma * beta_sigma);//use log link for variance lin pred
 
 for (i in 1:N_old) {
-  P[i] = 1 - Phi((old_dates[i] - mu[i] + mu_ind[individual[i]])/sigma[i]);
-  Rt[i] = Phi((old_dates[i] - tau[i] - mu[i] + mu_ind[individual[i]])/sigma[i]);
+	if (is_replicated[individual[i]] == 1) {//longitudinal tobit-like likelihood (this only makes sense if within year recaptures contain at least one active moult score?!)
+	  P[i] = 1 - Phi((old_dates[i] - mu[i] + mu_ind[individual[i]])/sigma_mu_ind);
+	} else {//standard likelihood for Type 5 model
+    P[i] = 1 - Phi((old_dates[i] - mu[i])/sigma[i]);
+    Rt[i] = Phi((old_dates[i] - tau[i] - mu[i])/sigma[i]);
+	}
 }
 for (i in 1:N_moult){
+  if (is_replicated[individual[i]] == 1) {
+   q[i] = normal_lpdf((moult_dates[i] - moult_indices[i]*tau[i]) | mu[i] + mu_ind[individual[i]], sigma_mu_ind);//replicated individuals
+  } else {
    Ru[i] = Phi((moult_dates[i] - tau[i + N_old] - mu[i + N_old] + + mu_ind[individual[i + N_old]])/sigma[i + N_old]);
    q[i] = log(tau[i + N_old]) + normal_lpdf((moult_dates[i] - moult_indices[i]*tau[i + N_old]) | mu[i + N_old] + mu_ind[individual[i + N_old]], sigma[i + N_old]);//N.B. unlike P and R this returns a log density
+  }
 }
 mu_ind ~ normal(0, sigma[individual_first_index]);//
 

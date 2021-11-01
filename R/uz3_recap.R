@@ -3,7 +3,7 @@
 #' @export
 #' @param date_column the name the column in `data` containing sampling dates, encoded as days since an arbitrary reference date, i.e. a numeric vector
 #' @param moult_index_column the name the column in `data` containing moult indices, i.e. a numeric vector of (linearized) moult scores (0 = old plumage,1 = new plumage).
-#' @param id_column identifier. Usually a season-individual combination to encode within-season recaptures
+#' @param id_column factor identifier. Usually a season-individual combination to encode within-season recaptures
 #' @param start_formula model formula for start date
 #' @param duration_formula model formula for duration
 #' @param sigma_formula model formula for start date sigma
