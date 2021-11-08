@@ -17,9 +17,9 @@ As an additional complication, recording of moult in the field may take various 
 Both models are special cases of more general categorical regression models.    -->
 
 `moultmcmc` implements a Bayesian inference framework for this class of models with the aim of (eventually) allowing the inclusion of hierarchical model structures to accommodate 
-1) the integration of moult data sets using different modes of recording, 
-2) individual heterogeneity in moult timing and progression, and 
-3) hierarchical spatial/temporal effects for multi-site/multi-season data sets.
+1) the integration of moult data sets using different modes of recording (☑), 
+2) individual heterogeneity in moult timing (☑) and progression (☐), and 
+3) hierarchical spatial/temporal effects for multi-site/multi-season data sets (☐).
 
 `moultmcmc` implements fast inference for these models using Hamiltonian Monte Carlo samplers from [Stan](https://mc-stan.org/). The currently implemented models are described in detail in the vignette ['Moult data likelihoods'](https://pboesu.github.io/moultmcmc/articles/moult-likelihoods.html).
 
