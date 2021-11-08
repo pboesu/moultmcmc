@@ -94,11 +94,13 @@ Both models are special cases of more general categorical regression models.    
 <h1 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h1>
 <p>The package <code>moultmcmc</code> is built around pre-compiled <a href="https://mc-stan.org/">Stan</a> models, the easiest and quickest way of installing it is to install the package from <a href="https://pboesu.r-universe.dev/">R-universe</a> use the following code:</p>
-<pre><code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages("moultmcmc", repos = "https://pboesu.r-universe.dev")</a></code></pre>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"moultmcmc"</span>, repos <span class="op">=</span> <span class="st">"https://pboesu.r-universe.dev"</span><span class="op">)</span></code></pre></div>
 <p>On Mac and Windows systems this will make use of pre-compiled binaries, which means the models can be run without having to install a C++ compiler. On Linux this will install the package from a source tarball. Because of the way the Stan models are currently structured, compilation from source can be a lengthy process (15-45 minutes), depending on system setup and compiler toolchain.</p>
 <p>To install <code>moultmcmc</code> from the github source (not generally recommended for Windows users) use the following code. This requires a working C++ compiler and a working installation of <a href="https://mc-stan.org/rstan">rstan</a>:</p>
-<pre><code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages("remotes")
-remotes::install_github("pboesu/moultmcmc")</a></code></pre>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span>
+<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"pboesu/moultmcmc"</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="usage" class="section level1">
 <h1 class="hasAnchor">
