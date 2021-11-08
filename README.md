@@ -17,23 +17,23 @@ As an additional complication, recording of moult in the field may take various 
 Both models are special cases of more general categorical regression models.    -->
 
 `moultmcmc` implements a Bayesian inference framework for this class of models with the aim of (eventually) allowing the inclusion of hierarchical model structures to accommodate 
-1) the integration of moult data sets using different modes of recording, 
-2) individual heterogeneity in moult timing and progression, and 
-3) hierarchical spatial/temporal effects for multi-site/multi-season data sets.
+1) the integration of moult data sets using different modes of recording (☑), 
+2) individual heterogeneity in moult timing (☑) and progression (☐), and 
+3) hierarchical spatial/temporal effects for multi-site/multi-season data sets (☐).
 
 `moultmcmc` implements fast inference for these models using Hamiltonian Monte Carlo samplers from [Stan](https://mc-stan.org/). The currently implemented models are described in detail in the vignette ['Moult data likelihoods'](https://pboesu.github.io/moultmcmc/articles/moult-likelihoods.html).
 
 # Installation
 The package `moultmcmc` is built around pre-compiled [Stan](https://mc-stan.org/) models, the easiest and quickest way of installing it is to install the package from [R-universe](https://pboesu.r-universe.dev/) use the following code:
 
-```
+```r
 install.packages("moultmcmc", repos = "https://pboesu.r-universe.dev")
 ```
 On Mac and Windows systems this will make use of pre-compiled binaries, which means the models can be run  without having to install a C++ compiler. On Linux this will install the package from a source tarball. Because of the way the Stan models are currently structured, compilation from source can be a lengthy process (15-45 minutes), depending on system setup and compiler toolchain.
 
 To install `moultmcmc` from the github source (not generally recommended for Windows users) use the following code. This requires a working C++ compiler and a working installation of [rstan](https://mc-stan.org/rstan):
 
-```
+```r
 install.packages("remotes")
 remotes::install_github("pboesu/moultmcmc")
 ```
