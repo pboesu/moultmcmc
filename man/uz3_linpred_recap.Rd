@@ -13,6 +13,7 @@ uz3_linpred_recap(
   sigma_formula = ~1,
   data,
   init = "auto",
+  flat_prior = TRUE,
   log_lik = TRUE,
   ...
 )
@@ -22,7 +23,7 @@ uz3_linpred_recap(
 
 \item{date_column}{the name the column in \code{data} containing sampling dates, encoded as days since an arbitrary reference date, i.e. a numeric vector}
 
-\item{id_column}{identifier. Usually a season-individual combination to encode within-season recaptures}
+\item{id_column}{factor identifier. Usually a season-individual combination to encode within-season recaptures}
 
 \item{start_formula}{model formula for start date}
 
@@ -33,6 +34,8 @@ uz3_linpred_recap(
 \item{data}{Input data frame}
 
 \item{init}{Specification of initial values for all or some parameters. Can be the string "auto" for an automatic guess based on the data, or any of the permitted rstan options: the digit 0, the strings "0" or "random", or a function. See the detailed documentation for the init argument in ?rstan::stan.}
+
+\item{flat_prior}{use uniform prior on start date and duration (TRUE) or vaguely informative truncated normal prior (FALSE). Defaults to TRUE.}
 
 \item{log_lik}{boolean retain pointwise log-likelihood in output? This enables model assessment and selection via the loo package. Defaults to true, can lead to very large output arrays if sample size is large.}
 

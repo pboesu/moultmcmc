@@ -3,6 +3,7 @@
 // covariates need to be on the individual level, not the observation model
 //
 data {
+  int<lower=0,upper=1> flat_prior;//translated logical use flat prior on start and duration?
   int<lower=0> N_ind;//number of recaptured individuals
   int<lower=0> N_moult;//J
   int<lower=0> Nobs_replicated;//number of observations from individuals with repeat measures
@@ -83,8 +84,13 @@ mu_ind ~ normal(0, sigma[individual_first_index]);//only estimate this for repli
 //print(sum(log(R)));
 target += sum(q) - sum(log(Q[not_replicated]));
 //priors
-beta_mu[1] ~ uniform(0,366);
-beta_tau[1] ~ uniform(0,366);
+if (flat_prior == 1) {
+ beta_mu[1] ~ uniform(0,366);
+ beta_tau[1] ~ uniform(0,366);
+  } else {
+ beta_mu[1] ~ normal(150,50)T[0,366];
+ beta_tau[1] ~ normal(100,30)T[0,366];
+}
 beta_sigma[1] ~ normal(0,5);
 sigma_mu_ind ~ normal(0,1);
 }

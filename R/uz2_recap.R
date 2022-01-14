@@ -1,4 +1,4 @@
-#' Bayesian inference for the Type 5 moult model with repeat measures
+#' Bayesian inference for the Type 2 moult model with repeat measures
 #'
 #' @export
 #' @param date_column the name the column in `data` containing sampling dates, encoded as days since an arbitrary reference date, i.e. a numeric vector
@@ -15,7 +15,7 @@
 #' @return An object of class `stanfit` returned by `rstan::sampling`
 #'
 #TODO: implement an input data class which ensures column names and correct encoding for categorical variables
-uz5_linpred_recap <- function(moult_index_column, date_column, id_column, start_formula = ~1, duration_formula = ~1, sigma_formula = ~1, data, init = "auto", flat_prior = TRUE, log_lik = TRUE,...) {
+uz2_linpred_recap <- function(moult_index_column, date_column, id_column, start_formula = ~1, duration_formula = ~1, sigma_formula = ~1, data, init = "auto", flat_prior = TRUE, log_lik = TRUE,...) {
   stopifnot(all(data[[moult_index_column]] >= 0 & data[[moult_index_column]] <= 1))
   #TODO: Assess the relative amount of old vs moult data, and especially fail/warn when there is no data of either category
   stopifnot(is.numeric(data[[date_column]]))
@@ -37,6 +37,8 @@ uz5_linpred_recap <- function(moult_index_column, date_column, id_column, start_
   #create vectors of indices of replicated/non_replicated observations
   N_moult = length(data[[date_column]][(data[[moult_index_column]] > 0 & data[[moult_index_column]] < 1)])
   N_old = length(data[[date_column]][data[[moult_index_column]]==0])#TODO: this is not robust to NA's being thrown out by model.matrix/model.frame
+  new_dates = data[[date_column]][data[[moult_index_column]]==1]
+  N_new = length(data[[date_column]][data[[moult_index_column]]==1])
   replicated <- which(data[[id_column]] %in% names(table(data[[id_column]])[table(data[[id_column]])>1]))
   not_replicated <- which(data[[id_column]] %in% names(table(data[[id_column]])[table(data[[id_column]])==1]))
   is_replicated <- ifelse(table(data[[id_column]])>1, 1,0)
@@ -47,6 +49,8 @@ uz5_linpred_recap <- function(moult_index_column, date_column, id_column, start_
                    N_moult = N_moult,
                    old_dates = as.array(data[[date_column]][data[[moult_index_column]]==0]),
                    N_old = N_old,#TODO: this is not robust to NA's being thrown out by model.matrix/model.frame
+                   new_dates = new_dates,
+                   N_new = N_new,
                    N_ind = length(unique(data[[id_column]])),
 
                    individual = as.numeric(data[[id_column]]),#TODO: the resultant individual intercepts are hard to map onto original factor levels - this should be handled in the postprocessing of the model output
@@ -83,9 +87,9 @@ uz5_linpred_recap <- function(moult_index_column, date_column, id_column, start_
            beta_sigma = as.array(c(log(sigma_start), rep(0, standata$N_pred_sigma - 1))),#NB this is on log link scale
            mu_ind = as.array(rep(0, standata$N_ind)))
     }
-    out <- rstan::sampling(stanmodels$uz5_recap, data = standata, init = initfunc, pars = outpars, ...)
+    out <- rstan::sampling(stanmodels$uz2_recap, data = standata, init = initfunc, pars = outpars, ...)
   } else {
-    out <- rstan::sampling(stanmodels$uz5_recap, data = standata, init = init, pars = outpars, ...)
+    out <- rstan::sampling(stanmodels$uz2_recap, data = standata, init = init, pars = outpars, ...)
   }
   #rename regression coefficients for output
   names(out)[grep('beta_mu', names(out))] <- paste('mean',colnames(X_mu), sep = '_')
