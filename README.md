@@ -5,6 +5,7 @@
 [![R-CMD-check](https://github.com/pboesu/moultmcmc/workflows/R-CMD-check/badge.svg)](https://github.com/pboesu/moultmcmc/actions)
 [![codecov](https://codecov.io/gh/pboesu/moultmcmc/branch/master/graph/badge.svg?token=Y7PB0302FH)](https://codecov.io/gh/pboesu/moultmcmc)
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/moultmcmc)]()
+[![moultmcmc status badge](https://pboesu.r-universe.dev/badges/moultmcmc)](https://pboesu.r-universe.dev)
 <!-- badges: end -->
 
 # Introduction
