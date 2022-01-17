@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,18 +33,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">moultmcmc</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.0.9000</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
@@ -86,19 +82,19 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">moult</span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">moultmcmc</span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://mc-stan.org/rstan">rstan</a></span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">moult</span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">moultmcmc</span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://mc-stan.org/rstan/" class="external-link">rstan</a></span><span class="op">)</span></code></pre></div>
 <p>For demonstration purposes we use the <code>sanderlings</code> dataset from <span class="citation">Underhill and Zucchini (1988)</span>. It contains observations of sampling dates <code>Day</code> and moult indices <code>MIndex</code> for 164 adult Sanderlings (<em>Calidris alba</em>) trapped on 11 days in the South Africa in the austral summer of 1978/79. The sample contains 85 pre-moult individuals, 66 in active moult and 13 post-moult individuals. The data are augmented with a column describing categorical moult status <code>MCat</code>, so we can demonstrate fitting Type 1 models.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"sanderlings"</span><span class="op">)</span>
-<span class="va">sanderlings</span><span class="op">$</span><span class="va">MCat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html">case_when</a></span><span class="op">(</span><span class="va">sanderlings</span><span class="op">$</span><span class="va">MIndex</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">~</span> <span class="fl">1</span>,
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"sanderlings"</span><span class="op">)</span>
+<span class="va">sanderlings</span><span class="op">$</span><span class="va">MCat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html" class="external-link">case_when</a></span><span class="op">(</span><span class="va">sanderlings</span><span class="op">$</span><span class="va">MIndex</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">~</span> <span class="fl">1</span>,
                               <span class="va">sanderlings</span><span class="op">$</span><span class="va">MIndex</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">~</span><span class="fl">3</span>,
                               <span class="cn">TRUE</span> <span class="op">~</span> <span class="fl">2</span><span class="op">)</span>
 <span class="co">#plot the data</span>
-<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">sanderlings</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>y<span class="op">=</span><span class="va">MIndex</span>, x<span class="op">=</span><span class="va">Day</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">MCat</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_classic</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">sanderlings</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>y<span class="op">=</span><span class="va">MIndex</span>, x<span class="op">=</span><span class="va">Day</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">MCat</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_classic</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <p><img src="getting-started_files/figure-html/data-preparation-1.png" width="672"></p>
 <p>At present, each Underhill-Zucchini model type is implemented as a standalone function in <code>moultmcmc</code>. Function names are composed of the prefix <code>uz</code> followed by the numeral for the relevant data type and the postfix <code>_linpred</code>. To fit the type 1 model we therefore use the <code><a href="../reference/uz1_linpred.html">uz1_linpred()</a></code> function. As there are no covariates in the data each linear predictor is specified as an intercept only model using the formula notation <code>~1</code>:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
@@ -113,8 +109,8 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; SAMPLING FOR MODEL 'uz1_linpred' NOW (CHAIN 1).</span>
 <span class="co">#&gt; Chain 1: </span>
-<span class="co">#&gt; Chain 1: Gradient evaluation took 0.000134 seconds</span>
-<span class="co">#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 1.34 seconds.</span>
+<span class="co">#&gt; Chain 1: Gradient evaluation took 0.00015 seconds</span>
+<span class="co">#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 1.5 seconds.</span>
 <span class="co">#&gt; Chain 1: Adjust your expectations accordingly!</span>
 <span class="co">#&gt; Chain 1: </span>
 <span class="co">#&gt; Chain 1: </span>
@@ -131,15 +127,15 @@
 <span class="co">#&gt; Chain 1: Iteration: 1800 / 2000 [ 90%]  (Sampling)</span>
 <span class="co">#&gt; Chain 1: Iteration: 2000 / 2000 [100%]  (Sampling)</span>
 <span class="co">#&gt; Chain 1: </span>
-<span class="co">#&gt; Chain 1:  Elapsed Time: 0.65976 seconds (Warm-up)</span>
-<span class="co">#&gt; Chain 1:                0.327371 seconds (Sampling)</span>
-<span class="co">#&gt; Chain 1:                0.987131 seconds (Total)</span>
+<span class="co">#&gt; Chain 1:  Elapsed Time: 0.746776 seconds (Warm-up)</span>
+<span class="co">#&gt; Chain 1:                0.343075 seconds (Sampling)</span>
+<span class="co">#&gt; Chain 1:                1.08985 seconds (Total)</span>
 <span class="co">#&gt; Chain 1: </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; SAMPLING FOR MODEL 'uz1_linpred' NOW (CHAIN 2).</span>
 <span class="co">#&gt; Chain 2: </span>
-<span class="co">#&gt; Chain 2: Gradient evaluation took 9.4e-05 seconds</span>
-<span class="co">#&gt; Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.94 seconds.</span>
+<span class="co">#&gt; Chain 2: Gradient evaluation took 5.7e-05 seconds</span>
+<span class="co">#&gt; Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.57 seconds.</span>
 <span class="co">#&gt; Chain 2: Adjust your expectations accordingly!</span>
 <span class="co">#&gt; Chain 2: </span>
 <span class="co">#&gt; Chain 2: </span>
@@ -156,15 +152,15 @@
 <span class="co">#&gt; Chain 2: Iteration: 1800 / 2000 [ 90%]  (Sampling)</span>
 <span class="co">#&gt; Chain 2: Iteration: 2000 / 2000 [100%]  (Sampling)</span>
 <span class="co">#&gt; Chain 2: </span>
-<span class="co">#&gt; Chain 2:  Elapsed Time: 0.626215 seconds (Warm-up)</span>
-<span class="co">#&gt; Chain 2:                0.350096 seconds (Sampling)</span>
-<span class="co">#&gt; Chain 2:                0.976311 seconds (Total)</span>
+<span class="co">#&gt; Chain 2:  Elapsed Time: 0.741275 seconds (Warm-up)</span>
+<span class="co">#&gt; Chain 2:                0.342768 seconds (Sampling)</span>
+<span class="co">#&gt; Chain 2:                1.08404 seconds (Total)</span>
 <span class="co">#&gt; Chain 2: </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; SAMPLING FOR MODEL 'uz1_linpred' NOW (CHAIN 3).</span>
 <span class="co">#&gt; Chain 3: </span>
-<span class="co">#&gt; Chain 3: Gradient evaluation took 5.2e-05 seconds</span>
-<span class="co">#&gt; Chain 3: 1000 transitions using 10 leapfrog steps per transition would take 0.52 seconds.</span>
+<span class="co">#&gt; Chain 3: Gradient evaluation took 9.5e-05 seconds</span>
+<span class="co">#&gt; Chain 3: 1000 transitions using 10 leapfrog steps per transition would take 0.95 seconds.</span>
 <span class="co">#&gt; Chain 3: Adjust your expectations accordingly!</span>
 <span class="co">#&gt; Chain 3: </span>
 <span class="co">#&gt; Chain 3: </span>
@@ -181,15 +177,15 @@
 <span class="co">#&gt; Chain 3: Iteration: 1800 / 2000 [ 90%]  (Sampling)</span>
 <span class="co">#&gt; Chain 3: Iteration: 2000 / 2000 [100%]  (Sampling)</span>
 <span class="co">#&gt; Chain 3: </span>
-<span class="co">#&gt; Chain 3:  Elapsed Time: 0.590586 seconds (Warm-up)</span>
-<span class="co">#&gt; Chain 3:                0.351145 seconds (Sampling)</span>
-<span class="co">#&gt; Chain 3:                0.941731 seconds (Total)</span>
+<span class="co">#&gt; Chain 3:  Elapsed Time: 0.668492 seconds (Warm-up)</span>
+<span class="co">#&gt; Chain 3:                0.3379 seconds (Sampling)</span>
+<span class="co">#&gt; Chain 3:                1.00639 seconds (Total)</span>
 <span class="co">#&gt; Chain 3: </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; SAMPLING FOR MODEL 'uz1_linpred' NOW (CHAIN 4).</span>
 <span class="co">#&gt; Chain 4: </span>
-<span class="co">#&gt; Chain 4: Gradient evaluation took 4.9e-05 seconds</span>
-<span class="co">#&gt; Chain 4: 1000 transitions using 10 leapfrog steps per transition would take 0.49 seconds.</span>
+<span class="co">#&gt; Chain 4: Gradient evaluation took 5.4e-05 seconds</span>
+<span class="co">#&gt; Chain 4: 1000 transitions using 10 leapfrog steps per transition would take 0.54 seconds.</span>
 <span class="co">#&gt; Chain 4: Adjust your expectations accordingly!</span>
 <span class="co">#&gt; Chain 4: </span>
 <span class="co">#&gt; Chain 4: </span>
@@ -206,36 +202,36 @@
 <span class="co">#&gt; Chain 4: Iteration: 1800 / 2000 [ 90%]  (Sampling)</span>
 <span class="co">#&gt; Chain 4: Iteration: 2000 / 2000 [100%]  (Sampling)</span>
 <span class="co">#&gt; Chain 4: </span>
-<span class="co">#&gt; Chain 4:  Elapsed Time: 0.591817 seconds (Warm-up)</span>
-<span class="co">#&gt; Chain 4:                0.323337 seconds (Sampling)</span>
-<span class="co">#&gt; Chain 4:                0.915154 seconds (Total)</span>
+<span class="co">#&gt; Chain 4:  Elapsed Time: 0.64164 seconds (Warm-up)</span>
+<span class="co">#&gt; Chain 4:                0.360181 seconds (Sampling)</span>
+<span class="co">#&gt; Chain 4:                1.00182 seconds (Total)</span>
 <span class="co">#&gt; Chain 4:</span></code></pre></div>
 <p>A summary table of parameter estimates can be displayed with</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/summary_table.html">summary_table</a></span><span class="op">(</span><span class="va">uz1</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 5 × 10</span>
+<span class="co">#&gt; <span style="color: #949494;"># A tibble: 5 × 10</span></span>
 <span class="co">#&gt;   parameter     estimate se_mean     sd     lci     uci n_eff  Rhat  prob method</span>
-<span class="co">#&gt;   &lt;chr&gt;            &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt; </span>
-<span class="co">#&gt; 1 mean_(Interc…   134.   0.0742   3.37   128.    141.   2067.  1.00  0.95 MCMC  </span>
-<span class="co">#&gt; 2 duration_(In…    97.9  0.223   10.9     77.6   121.   2417.  1.00  0.95 MCMC  </span>
-<span class="co">#&gt; 3 log_sd_(Inte…     3.33 0.00505  0.232    2.87    3.76 2108.  1.00  0.95 MCMC  </span>
-<span class="co">#&gt; 4 sd_(Intercep…    28.7  0.144    6.62    17.6    42.9  2115.  1.00  0.95 MCMC  </span>
-<span class="co">#&gt; 5 lp__           -104.   0.0290   1.22  -107.   -103.   1778.  1.00  0.95 MCMC</span></code></pre></div>
-<p>and standard model assessment can be done as for any posterior sample from Stan, by directly accessing the <code>stanfit</code> slot of the returned S3 object. For example we can look at the traceplots for the model using <code><a href="https://mc-stan.org/rstan/reference/stan_plot.html">rstan::stan_trace</a></code></p>
+<span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">1</span> mean_(Interc…   134.   0.067<span style="text-decoration: underline;">9</span>   3.43   128.    141.   <span style="text-decoration: underline;">2</span>555.  1.00  0.95 MCMC  </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">2</span> duration_(In…    97.8  0.218   10.7     77.1   119.   <span style="text-decoration: underline;">2</span>425.  1.00  0.95 MCMC  </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">3</span> log_sd_(Inte…     3.33 0.004<span style="text-decoration: underline;">68</span>  0.228    2.86    3.75 <span style="text-decoration: underline;">2</span>378.  1.00  0.95 MCMC  </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">4</span> sd_(Intercep…    28.7  0.132    6.51    17.4    42.7  <span style="text-decoration: underline;">2</span>432.  1.00  0.95 MCMC  </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">5</span> lp__           -<span style="color: #BB0000;">104.</span>   0.029<span style="text-decoration: underline;">3</span>   1.24  -<span style="color: #BB0000;">107.</span>   -<span style="color: #BB0000;">103.</span>   <span style="text-decoration: underline;">1</span>805.  1.00  0.95 MCMC</span></code></pre></div>
+<p>and standard model assessment can be done as for any posterior sample from Stan, by directly accessing the <code>stanfit</code> slot of the returned S3 object. For example we can look at the traceplots for the model using <code><a href="https://mc-stan.org/rstan/reference/stan_plot.html" class="external-link">rstan::stan_trace</a></code></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://mc-stan.org/rstan/reference/stan_plot.html">stan_trace</a></span><span class="op">(</span><span class="va">uz1</span><span class="op">$</span><span class="va">stanfit</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://mc-stan.org/rstan/reference/stan_plot.html" class="external-link">stan_trace</a></span><span class="op">(</span><span class="va">uz1</span><span class="op">$</span><span class="va">stanfit</span><span class="op">)</span></code></pre></div>
 <p><img src="getting-started_files/figure-html/uz1-trace-plot-1.png" width="672"></p>
 <p>For comparison we can fit the same model using maximum likelihood estimation via the <code>moult</code> package <span class="citation">(Erni et al. 2013)</span></p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">m1</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/moult/man/moult.html">moult</a></span><span class="op">(</span><span class="va">MIndex</span> <span class="op">~</span> <span class="va">Day</span>,data <span class="op">=</span> <span class="va">sanderlings</span>, type <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">m1</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/moult/man/moult.html" class="external-link">moult</a></span><span class="op">(</span><span class="va">MIndex</span> <span class="op">~</span> <span class="va">Day</span>,data <span class="op">=</span> <span class="va">sanderlings</span>, type <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
 <span class="fu"><a href="../reference/summary_table.html">summary_table</a></span><span class="op">(</span><span class="va">m1</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 3 × 8</span>
+<span class="co">#&gt; <span style="color: #949494;"># A tibble: 3 × 8</span></span>
 <span class="co">#&gt;   parameter            estimate stderr   lci   uci  prob method Rhat </span>
-<span class="co">#&gt;   &lt;chr&gt;                   &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;  &lt;lgl&gt;</span>
-<span class="co">#&gt; 1 duration_(Intercept)     96.6  10.5   75.9 117.   0.95 ML     NA   </span>
-<span class="co">#&gt; 2 mean_(Intercept)        133.    3.25 127.  140.   0.95 ML     NA   </span>
-<span class="co">#&gt; 3 sd_(Intercept)           26.6   7.02  12.8  40.3  0.95 ML     NA</span>
-<span class="fu"><a href="../reference/compare_plot.html">compare_plot</a></span><span class="op">(</span><span class="va">m1</span>, <span class="va">uz1</span>, names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'ML'</span>,<span class="st">'MCMC'</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">1</span> duration_(Intercept)     96.6  10.5   75.9 117.   0.95 ML     <span style="color: #BB0000;">NA</span>   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">2</span> mean_(Intercept)        133.    3.25 127.  140.   0.95 ML     <span style="color: #BB0000;">NA</span>   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">3</span> sd_(Intercept)           26.6   7.02  12.8  40.3  0.95 ML     <span style="color: #BB0000;">NA</span></span>
+<span class="fu"><a href="../reference/compare_plot.html">compare_plot</a></span><span class="op">(</span><span class="va">m1</span>, <span class="va">uz1</span>, names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'ML'</span>,<span class="st">'MCMC'</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="getting-started_files/figure-html/uz1-model-ml-1.png" width="672"></p>
 <p>The comparison plot shows very similar estimates for both methods.</p>
 <p>Similarly we can fit the corresponding Type 2 model, that makes use of the full information contained in the moult indices, using the <code><a href="../reference/uz2_linpred.html">uz2_linpred()</a></code> function. All <code>moultmcmc</code> model functions default to an intercept only model, so we do not need to explicitly specify the individual linear predictors here.</p>
@@ -248,8 +244,8 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; SAMPLING FOR MODEL 'uz2_linpred' NOW (CHAIN 1).</span>
 <span class="co">#&gt; Chain 1: </span>
-<span class="co">#&gt; Chain 1: Gradient evaluation took 5.8e-05 seconds</span>
-<span class="co">#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.58 seconds.</span>
+<span class="co">#&gt; Chain 1: Gradient evaluation took 0.00012 seconds</span>
+<span class="co">#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 1.2 seconds.</span>
 <span class="co">#&gt; Chain 1: Adjust your expectations accordingly!</span>
 <span class="co">#&gt; Chain 1: </span>
 <span class="co">#&gt; Chain 1: </span>
@@ -266,15 +262,15 @@
 <span class="co">#&gt; Chain 1: Iteration: 1800 / 2000 [ 90%]  (Sampling)</span>
 <span class="co">#&gt; Chain 1: Iteration: 2000 / 2000 [100%]  (Sampling)</span>
 <span class="co">#&gt; Chain 1: </span>
-<span class="co">#&gt; Chain 1:  Elapsed Time: 0.556104 seconds (Warm-up)</span>
-<span class="co">#&gt; Chain 1:                0.282659 seconds (Sampling)</span>
-<span class="co">#&gt; Chain 1:                0.838763 seconds (Total)</span>
+<span class="co">#&gt; Chain 1:  Elapsed Time: 0.722639 seconds (Warm-up)</span>
+<span class="co">#&gt; Chain 1:                0.326377 seconds (Sampling)</span>
+<span class="co">#&gt; Chain 1:                1.04902 seconds (Total)</span>
 <span class="co">#&gt; Chain 1: </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; SAMPLING FOR MODEL 'uz2_linpred' NOW (CHAIN 2).</span>
 <span class="co">#&gt; Chain 2: </span>
-<span class="co">#&gt; Chain 2: Gradient evaluation took 4.2e-05 seconds</span>
-<span class="co">#&gt; Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.42 seconds.</span>
+<span class="co">#&gt; Chain 2: Gradient evaluation took 4.8e-05 seconds</span>
+<span class="co">#&gt; Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.48 seconds.</span>
 <span class="co">#&gt; Chain 2: Adjust your expectations accordingly!</span>
 <span class="co">#&gt; Chain 2: </span>
 <span class="co">#&gt; Chain 2: </span>
@@ -291,15 +287,15 @@
 <span class="co">#&gt; Chain 2: Iteration: 1800 / 2000 [ 90%]  (Sampling)</span>
 <span class="co">#&gt; Chain 2: Iteration: 2000 / 2000 [100%]  (Sampling)</span>
 <span class="co">#&gt; Chain 2: </span>
-<span class="co">#&gt; Chain 2:  Elapsed Time: 0.566422 seconds (Warm-up)</span>
-<span class="co">#&gt; Chain 2:                0.324194 seconds (Sampling)</span>
-<span class="co">#&gt; Chain 2:                0.890616 seconds (Total)</span>
+<span class="co">#&gt; Chain 2:  Elapsed Time: 0.701931 seconds (Warm-up)</span>
+<span class="co">#&gt; Chain 2:                0.338935 seconds (Sampling)</span>
+<span class="co">#&gt; Chain 2:                1.04087 seconds (Total)</span>
 <span class="co">#&gt; Chain 2: </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; SAMPLING FOR MODEL 'uz2_linpred' NOW (CHAIN 3).</span>
 <span class="co">#&gt; Chain 3: </span>
-<span class="co">#&gt; Chain 3: Gradient evaluation took 4.4e-05 seconds</span>
-<span class="co">#&gt; Chain 3: 1000 transitions using 10 leapfrog steps per transition would take 0.44 seconds.</span>
+<span class="co">#&gt; Chain 3: Gradient evaluation took 4.9e-05 seconds</span>
+<span class="co">#&gt; Chain 3: 1000 transitions using 10 leapfrog steps per transition would take 0.49 seconds.</span>
 <span class="co">#&gt; Chain 3: Adjust your expectations accordingly!</span>
 <span class="co">#&gt; Chain 3: </span>
 <span class="co">#&gt; Chain 3: </span>
@@ -316,15 +312,15 @@
 <span class="co">#&gt; Chain 3: Iteration: 1800 / 2000 [ 90%]  (Sampling)</span>
 <span class="co">#&gt; Chain 3: Iteration: 2000 / 2000 [100%]  (Sampling)</span>
 <span class="co">#&gt; Chain 3: </span>
-<span class="co">#&gt; Chain 3:  Elapsed Time: 0.667591 seconds (Warm-up)</span>
-<span class="co">#&gt; Chain 3:                0.283862 seconds (Sampling)</span>
-<span class="co">#&gt; Chain 3:                0.951453 seconds (Total)</span>
+<span class="co">#&gt; Chain 3:  Elapsed Time: 0.654521 seconds (Warm-up)</span>
+<span class="co">#&gt; Chain 3:                0.317565 seconds (Sampling)</span>
+<span class="co">#&gt; Chain 3:                0.972086 seconds (Total)</span>
 <span class="co">#&gt; Chain 3: </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; SAMPLING FOR MODEL 'uz2_linpred' NOW (CHAIN 4).</span>
 <span class="co">#&gt; Chain 4: </span>
-<span class="co">#&gt; Chain 4: Gradient evaluation took 4.2e-05 seconds</span>
-<span class="co">#&gt; Chain 4: 1000 transitions using 10 leapfrog steps per transition would take 0.42 seconds.</span>
+<span class="co">#&gt; Chain 4: Gradient evaluation took 4.7e-05 seconds</span>
+<span class="co">#&gt; Chain 4: 1000 transitions using 10 leapfrog steps per transition would take 0.47 seconds.</span>
 <span class="co">#&gt; Chain 4: Adjust your expectations accordingly!</span>
 <span class="co">#&gt; Chain 4: </span>
 <span class="co">#&gt; Chain 4: </span>
@@ -341,28 +337,28 @@
 <span class="co">#&gt; Chain 4: Iteration: 1800 / 2000 [ 90%]  (Sampling)</span>
 <span class="co">#&gt; Chain 4: Iteration: 2000 / 2000 [100%]  (Sampling)</span>
 <span class="co">#&gt; Chain 4: </span>
-<span class="co">#&gt; Chain 4:  Elapsed Time: 0.601152 seconds (Warm-up)</span>
-<span class="co">#&gt; Chain 4:                0.286081 seconds (Sampling)</span>
-<span class="co">#&gt; Chain 4:                0.887233 seconds (Total)</span>
+<span class="co">#&gt; Chain 4:  Elapsed Time: 0.780733 seconds (Warm-up)</span>
+<span class="co">#&gt; Chain 4:                0.328904 seconds (Sampling)</span>
+<span class="co">#&gt; Chain 4:                1.10964 seconds (Total)</span>
 <span class="co">#&gt; Chain 4:</span>
 <span class="co">#fit using ML</span>
-<span class="va">m2</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/moult/man/moult.html">moult</a></span><span class="op">(</span><span class="va">MIndex</span> <span class="op">~</span> <span class="va">Day</span>,data <span class="op">=</span> <span class="va">sanderlings</span>, type <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
+<span class="va">m2</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/moult/man/moult.html" class="external-link">moult</a></span><span class="op">(</span><span class="va">MIndex</span> <span class="op">~</span> <span class="va">Day</span>,data <span class="op">=</span> <span class="va">sanderlings</span>, type <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
 <span class="co">#compare parameter estimates</span>
-<span class="fu"><a href="../reference/compare_plot.html">compare_plot</a></span><span class="op">(</span><span class="va">m2</span>, <span class="va">uz2</span>, names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'ML'</span>,<span class="st">'MCMC'</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="../reference/compare_plot.html">compare_plot</a></span><span class="op">(</span><span class="va">m2</span>, <span class="va">uz2</span>, names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'ML'</span>,<span class="st">'MCMC'</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="getting-started_files/figure-html/uz2-model-1.png" width="672"></p>
 <p>As before the comparison plot shows very similar estimates for both methods. Perhaps more interesting is a comparison of the two model types, which illustrates the gain in precision achieved by exploiting the information contained in the moult indices.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/compare_plot.html">compare_plot</a></span><span class="op">(</span><span class="va">uz1</span>, <span class="va">uz2</span>, names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'UZ1'</span>,<span class="st">'UZ2'</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../reference/compare_plot.html">compare_plot</a></span><span class="op">(</span><span class="va">uz1</span>, <span class="va">uz2</span>, names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'UZ1'</span>,<span class="st">'UZ2'</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="getting-started_files/figure-html/data-type-comparison-1.png" width="672"></p>
-<div id="references" class="section level1 unnumbered">
-<h1 class="hasAnchor">
-<a href="#references" class="anchor"></a>References</h1>
+<div class="section level2">
+<h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+</h2>
 <div id="refs" class="references">
 <div id="ref-erni2013moult">
-<p>Erni, Birgit, Bo T. Bonnevie, Hans-Dieter Oschadleus, Res Altwegg, and Les G. Underhill. 2013. “Moult: An R Package to Analyze Moult in Birds.” <em>Journal of Statistical Software</em> 52. <a href="https://doi.org/10.18637/jss.v052.i08">https://doi.org/10.18637/jss.v052.i08</a>.</p>
+<p>Erni, Birgit, Bo T. Bonnevie, Hans-Dieter Oschadleus, Res Altwegg, and Les G. Underhill. 2013. “Moult: An R Package to Analyze Moult in Birds.” <em>Journal of Statistical Software</em> 52. <a href="https://doi.org/10.18637/jss.v052.i08" class="external-link">https://doi.org/10.18637/jss.v052.i08</a>.</p>
 </div>
 <div id="ref-underhill1988model">
-<p>Underhill, Les G., and Walter Zucchini. 1988. “A Model for Avian Primary Moult.” <em>Ibis</em> 130: 358–72. <a href="https://doi.org/10.1111/j.1474-919x.1988.tb00993.x">https://doi.org/10.1111/j.1474-919x.1988.tb00993.x</a>.</p>
+<p>Underhill, Les G., and Walter Zucchini. 1988. “A Model for Avian Primary Moult.” <em>Ibis</em> 130: 358–72. <a href="https://doi.org/10.1111/j.1474-919x.1988.tb00993.x" class="external-link">https://doi.org/10.1111/j.1474-919x.1988.tb00993.x</a>.</p>
 </div>
 </div>
 </div>
@@ -379,11 +375,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Philipp Boersch-Supan.</p>
+  <p></p>
+<p>Developed by Philipp Boersch-Supan.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
 </div>
 
       </footer>
@@ -391,6 +389,8 @@
 
   
 
+
+  
 
   </body>
 </html>

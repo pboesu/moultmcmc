@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,18 +33,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">moultmcmc</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.0.9000</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
@@ -96,68 +92,68 @@ R(t) &amp;= \Pr\{Y(t)=1\}&amp;= &amp;1-F_T(t-\tau)\\
 f_Y(t)(y)=\tau f_T(t-y\tau),\quad0 &lt; y &lt; 1,
 \]</span> In <code>moultmcmc</code> the unobserved start date of the study population is assumed to follow a normal distribution with mean <span class="math inline">\(\mu\)</span> and standard deviation <span class="math inline">\(\sigma\)</span>, such that <span class="math display">\[F_T(t)=\Phi\left(\frac{t-\mu}{\sigma}\right)\]</span> where <span class="math inline">\(\Phi\)</span> is the standard normal distribution function and <span class="math display">\[f_T(t) = \phi(t) = \frac{1}{\sqrt{2\pi}}\exp\frac{-t^2}{2}\]</span>.</p>
 <p>We further assume that <span class="math inline">\(F_T(t)\)</span> has <span class="math inline">\(p\)</span> parameters <span class="math inline">\(\mathbf{\theta} = \theta_1, \theta_2, \ldots, \theta_p\)</span> and for convenience the start date <span class="math inline">\(\mu\)</span>, duration <span class="math inline">\(\tau\)</span>, and population standard deviation of moult <span class="math inline">\(\sigma\)</span> will be elements of <span class="math inline">\(\mathbf{\theta}\)</span>.</p>
-<div id="likelihoods" class="section level1">
-<h1 class="hasAnchor">
-<a href="#likelihoods" class="anchor"></a>Likelihoods</h1>
-<div id="type-1" class="section level2">
-<h2 class="hasAnchor">
-<a href="#type-1" class="anchor"></a>Type 1</h2>
+<div class="section level2">
+<h2 id="likelihoods">Likelihoods<a class="anchor" aria-label="anchor" href="#likelihoods"></a>
+</h2>
+<div class="section level3">
+<h3 id="type-1">Type 1<a class="anchor" aria-label="anchor" href="#type-1"></a>
+</h3>
 <p>Type 1 data consist of observations of categorical moult state (pre-moult, active moult, post-moult) and sampling is representative in all three categories. The likelihood of these observations is <span class="math display">\[
 \mathcal{L}(\theta,t,u,v) = \prod_{i=1}^IP(t_i)\prod_{j = 1}^JQ(u_j)\prod_{k=1}^KR(v_k).
 \]</span></p>
 </div>
-<div id="type-2" class="section level2">
-<h2 class="hasAnchor">
-<a href="#type-2" class="anchor"></a>Type 2</h2>
+<div class="section level3">
+<h3 id="type-2">Type 2<a class="anchor" aria-label="anchor" href="#type-2"></a>
+</h3>
 <p>Type 2 data consist of observations of birds in all three moult states (pre-moult, active moult, post-moult). Sampling is representative for all three categories, and for actively moulting birds a sufficiently linear moult index <span class="math inline">\(y\)</span> (e.g. percent feather mass grown) is known. The likelihood of these observations is <span class="math display">\[
 \mathcal{L}(\theta,t,u,y,v) = \prod_{i=1}^IP(t_i)\prod_{j = 1}^Jq(u_j,y_j)\prod_{k=1}^KR(v_k),
 \]</span> where <span class="math inline">\(q(u_j,y_j) = \tau f_T(u_j-y_j\tau).\)</span></p>
 </div>
-<div id="type-3" class="section level2">
-<h2 class="hasAnchor">
-<a href="#type-3" class="anchor"></a>Type 3</h2>
+<div class="section level3">
+<h3 id="type-3">Type 3<a class="anchor" aria-label="anchor" href="#type-3"></a>
+</h3>
 <p>Type 3 data consist of observations of actively moulting birds only, and a sufficiently linear moult index <span class="math inline">\(y\)</span> (e.g. percent feather mass grown) is known for each individual. The likelihood of these observations is <span class="math display">\[
 \mathcal{L}(\theta,u,y) = \prod_{j = 1}^J\frac{q(u_j,y_j)}{Q(u_j)}.
 \]</span></p>
 </div>
-<div id="type-4" class="section level2">
-<h2 class="hasAnchor">
-<a href="#type-4" class="anchor"></a>Type 4</h2>
+<div class="section level3">
+<h3 id="type-4">Type 4<a class="anchor" aria-label="anchor" href="#type-4"></a>
+</h3>
 <p>Type 4 data consist of observations of birds in active moult and post-moult only. Sampling is representative for these two categories, and for actively moulting birds a sufficiently linear moult index <span class="math inline">\(y\)</span> (e.g. percent feather mass grown) is known. The likelihood of these observations is <span class="math display">\[
 \mathcal{L}(\theta,u,y,v) = \prod_{j = 1}^J\frac{q(u_j,y_j)}{1-P(u_j)}\prod_{k=1}^K\frac{R(v_k)}{1-P(v_k)}.
 \]</span></p>
 </div>
-<div id="type-5" class="section level2">
-<h2 class="hasAnchor">
-<a href="#type-5" class="anchor"></a>Type 5</h2>
+<div class="section level3">
+<h3 id="type-5">Type 5<a class="anchor" aria-label="anchor" href="#type-5"></a>
+</h3>
 <p>Type 5 data consist of observations of birds in pre-moult and active moult. Sampling is representative for these two categories, and for actively moulting birds a sufficiently linear moult index <span class="math inline">\(y\)</span> (e.g. percent feather mass grown) is known. The likelihood of these observations is <span class="math display">\[
 \mathcal{L}(\theta,t,u,y) = \prod_{i=1}^I\frac{P(t_i)}{1-R(t_i)}\prod_{j = 1}^J\frac{q(u_j,y_j)}{1-R(u_j)}.
 \]</span></p>
 </div>
-<div id="type-1-2" class="section level2">
-<h2 class="hasAnchor">
-<a href="#type-1-2" class="anchor"></a>Type 1 + 2</h2>
+<div class="section level3">
+<h3 id="type-1-2">Type 1 + 2<a class="anchor" aria-label="anchor" href="#type-1-2"></a>
+</h3>
 <p>As outlined in <span class="citation">Underhill and Zucchini (1988)</span> estimates can also be derived from mixtures of data types. Type 1 + 2 data consist of observations of birds in all three moult states (pre-moult, active moult, post-moult). Sampling is representative for all three categories, but a sufficiently linear moult index <span class="math inline">\(y\)</span> (e.g. percent feather mass grown) is known only for some of the actively moulting birds. This means the sample consist of <span class="math inline">\(I\)</span> pre-moult birds, <span class="math inline">\(J\)</span> birds in active moult with known indices, <span class="math inline">\(L\)</span> birds in active moult without known indices but known capture dates <span class="math inline">\(u'=u'_l,\ldots,u'_L\)</span>, and <span class="math inline">\(K\)</span> post-moult birds. The likelihood of these observations is <span class="math display">\[
 \mathcal{L}(\theta,t,u,y,u',v) = \prod_{i=1}^IP(t_i)\prod_{j = 1}^Jq(u_j,y_j)\prod_{l = 1}^{L}Q(u'_{l})\prod_{k=1}^KR(v_k),
 \]</span></p>
 </div>
 </div>
-<div id="priors" class="section level1">
-<h1 class="hasAnchor">
-<a href="#priors" class="anchor"></a>Priors</h1>
+<div class="section level2">
+<h2 id="priors">Priors<a class="anchor" aria-label="anchor" href="#priors"></a>
+</h2>
 <p>The following priors are currently hard-coded for the intercept terms of the linear predictors on <span class="math inline">\(\mu\)</span>, <span class="math inline">\(\tau\)</span>, and <span class="math inline">\(\sigma\)</span>, respectively, in all <code>moultmcmc</code> models:</p>
 <p><span class="math inline">\(\mu_0 \sim \mathrm{Uniform(0,366)}\)</span><br><span class="math inline">\(\tau_0 \sim \mathrm{Uniform(0,366)}\)</span><br><span class="math inline">\(\ln(\sigma_0) \sim \mathrm{Normal(0,5)}\)</span></p>
 <p>Any additional regression coefficients will use the Stan default of an improper flat prior.</p>
 </div>
-<div id="references" class="section level1 unnumbered">
-<h1 class="hasAnchor">
-<a href="#references" class="anchor"></a>References</h1>
+<div class="section level2">
+<h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+</h2>
 <div id="refs" class="references">
 <div id="ref-underhill1988model">
-<p>Underhill, Les G., and Walter Zucchini. 1988. “A Model for Avian Primary Moult.” <em>Ibis</em> 130: 358–72. <a href="https://doi.org/10.1111/j.1474-919x.1988.tb00993.x">https://doi.org/10.1111/j.1474-919x.1988.tb00993.x</a>.</p>
+<p>Underhill, Les G., and Walter Zucchini. 1988. “A Model for Avian Primary Moult.” <em>Ibis</em> 130: 358–72. <a href="https://doi.org/10.1111/j.1474-919x.1988.tb00993.x" class="external-link">https://doi.org/10.1111/j.1474-919x.1988.tb00993.x</a>.</p>
 </div>
 <div id="ref-underhill1990model">
-<p>Underhill, L. G., W. Zucchini, and R. W. Summers. 1990. “A Model for Avian Primary Moult-Data Types Based on Migration Strategies and an Example Using the Redshank <em>Tringa Totanus</em>.” <em>Ibis</em> 132: 118–23. <a href="https://doi.org/10.1111/j.1474-919x.1990.tb01024.x">https://doi.org/10.1111/j.1474-919x.1990.tb01024.x</a>.</p>
+<p>Underhill, L. G., W. Zucchini, and R. W. Summers. 1990. “A Model for Avian Primary Moult-Data Types Based on Migration Strategies and an Example Using the Redshank <em>Tringa Totanus</em>.” <em>Ibis</em> 132: 118–23. <a href="https://doi.org/10.1111/j.1474-919x.1990.tb01024.x" class="external-link">https://doi.org/10.1111/j.1474-919x.1990.tb01024.x</a>.</p>
 </div>
 </div>
 </div>
@@ -180,11 +176,13 @@ f_Y(t)(y)=\tau f_T(t-y\tau),\quad0 &lt; y &lt; 1,
 
 
       <footer><div class="copyright">
-  <p>Developed by Philipp Boersch-Supan.</p>
+  <p></p>
+<p>Developed by Philipp Boersch-Supan.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
 </div>
 
       </footer>
@@ -192,6 +190,8 @@ f_Y(t)(y)=\tau f_T(t-y\tau),\quad0 &lt; y &lt; 1,
 
   
 
+
+  
 
   </body>
 </html>
