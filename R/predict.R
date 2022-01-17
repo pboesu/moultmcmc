@@ -4,7 +4,7 @@
 #' @param newdata dataframe with explanatory variables for which to make predictions
 #' @param predict.type specifies form of predictions, see details.
 #' @param intervals not currently used
-#' @param ...
+#' @param ... further arguments
 #'
 #' @return a data.frame?!
 #' @export
