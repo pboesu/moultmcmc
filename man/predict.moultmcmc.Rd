@@ -15,7 +15,7 @@
 
 \item{intervals}{not currently used}
 
-\item{...}{}
+\item{...}{further arguments}
 }
 \value{
 a data.frame?!
