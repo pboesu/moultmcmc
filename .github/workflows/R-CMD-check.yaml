@@ -76,7 +76,7 @@ jobs:
       
       - name: install libcurl-devel on linux
         if: runner.os == 'Linux'
-        run: sudo apt-get install -y libcurl-devel
+        run: sudo apt-get install -y libcurl4-openssl-dev
 
       - name: Install dependencies
         run: |
