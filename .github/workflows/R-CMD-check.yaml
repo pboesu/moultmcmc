@@ -67,7 +67,8 @@ jobs:
       - name: Check libcurl dependencies
         if: runner.os == 'Linux'
         run: |
-          system('curl-config --version')
+          system('which curl')
+          system('curl --version')
         shell: Rscript {0}
 
       - name: Install dependencies
