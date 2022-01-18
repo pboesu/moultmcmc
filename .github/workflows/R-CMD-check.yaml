@@ -67,9 +67,12 @@ jobs:
       - name: Check libcurl dependencies
         if: runner.os == 'Linux'
         run: |
+          system("which curl")
+          system("curl --version")
+          system("which pkg-config")
           Sys.getenv("PATH")
           Sys.getenv("PKG_CONFIG_PATH")
-          shell: Rscript {0}
+        shell: Rscript {0}
 
       - name: Install dependencies
         run: |
