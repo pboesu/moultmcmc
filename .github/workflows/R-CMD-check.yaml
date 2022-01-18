@@ -69,7 +69,7 @@ jobs:
         run: |
           #system('which curl')
           #system('curl --version')
-          system('which pkg-config')
+          #system('which pkg-config')
           Sys.getenv('PATH')
           Sys.getenv('PKG_CONFIG_PATH')
           shell: Rscript {0}
