@@ -45,6 +45,7 @@ Suggests:
     testthat (>= 3.0.0),
     moult,
     knitr,
-    rmarkdown
+    rmarkdown,
+    remotes
 Config/testthat/edition: 3
 VignetteBuilder: knitr

@@ -15,6 +15,11 @@ knitr::opts_chunk$set(
 )
 ```
 
+```{r setup0, warning=FALSE, message=FALSE}
+#install patched moult package from github to avoid R CMD CHECK failures on R-devel
+remotes::install_github('pboesu/moult', ref='patch_as_vector_error')
+```
+
 ```{r setup, warning=FALSE, message=FALSE}
 library(moult)
 library(moultmcmc)
