@@ -82,7 +82,7 @@ jobs:
         run: |
           remotes::install_deps(dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
-          remotes::install_github("cran/moult")
+          remotes::install_github("pboesu/moult", ref = 'patch_as_vector_error', force = TRUE)
         shell: Rscript {0}
 
       - name: Check
