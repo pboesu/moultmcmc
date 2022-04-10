@@ -137,19 +137,24 @@ generated quantities{
 for (i in 1:N_old) {
 	if (is_replicated[individual[i]] == 1) {//longitudinal tobit-like likelihood (this only makes sense if within year recaptures contain at least one active moult score?!)
 	  P[i] = 1 - Phi((old_dates[i] - (mu[i] + mu_ind[individual[i]]))/sigma_mu_ind);
+	  log_lik[i] = log(P[i]);
 	} else {//standard likelihood for Type 5 model
     P[i] = 1 - Phi((old_dates[i] - mu[i])/sigma[i]);
     Rt[i] = Phi((old_dates[i] - tau[i] - mu[i])/sigma[i]);
+    log_lik[i] = log(P[i])- log1m(Rt[i]);
 	}
+
 }
 for (i in 1:N_moult){
   if (is_replicated[individual[i + N_old]] == 1) {
    q[i] = normal_lpdf((moult_dates[i] - moult_indices[i]*tau[i + N_old]) | mu[i + N_old] + mu_ind[individual[i + N_old]], sigma_mu_ind);//replicated individuals. NB - indexing looks messy because i runs from 1:N_moult, but the function uses both vectors of the total dataset (1:(N_old+N_moult) and the moult dataset (1:N_moult))
+   log_lik[N_old+i]=q[i];
   } else {
    Ru[i] = Phi((moult_dates[i] - tau[i + N_old] - mu[i + N_old])/sigma[i + N_old]);
-   q[i] = log(tau[i + N_old]) + normal_lpdf((moult_dates[i] - moult_indices[i]*tau[i + N_old]) | mu[i + N_old], sigma[i + N_old]);//N.B. unlike P and R this returns a log density
+   q[i] = log(tau[i + N_old]) + normal_lpdf((moult_dates[i] - moult_indices[i]*tau[i + N_old]) | mu[i + N_old], sigma[i + N_old]);
+   log_lik[N_old+i]=q[i] - log1m(Ru[i]);//N.B. unlike P and R this returns a log density
   }
 }
 //target += sum(log(P)) - sum(log1m(Rt[not_replicated_old])) + sum(q) - sum(log1m(Ru[not_replicated_moult]));
-log_lik = append_row((log(P) - log1m(Rt)), (q - log1m(Ru)));
+//log_lik = append_row((log(P) - log1m(Rt)), (q - log1m(Ru)));//NAs arise because Rt and P / q and Ru are not the same length!? - slower but less error prone to assemble log_lik via loop ? - possibly a more elegant solution via multiplication with a 0-1 indicator - but currently replication is tracked by individual not by obs?!
 }
