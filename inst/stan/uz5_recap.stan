@@ -119,31 +119,37 @@ sigma_mu_ind ~ normal(0,1);
 generated quantities{
 
 //NB: code duplication for the likelihood calculation is less than ideal - refactor to a use stan function?
-//real end_date;
-// end_date = mu + tau;
-//
-//vector[N_old + N_moult] log_lik;
-//vector[N_old] Rt;
-//vector[N_old] P;
-//vector[N_moult] Ru;
-//vector[N_moult] q;
-//vector[N_old+N_moult] mu;//start date lin pred
-//vector[N_old+N_moult] tau;//duration lin pred
-//vector[N_old+N_moult] sigma;//duration lin pred
-//
-//  mu = X_mu * beta_mu;
+  vector[N_old] Rt;
+  vector[N_old] P;
+  vector[N_moult] Ru;
+  vector[N_moult] q;
+  vector[N_old+N_moult] mu;//start date lin pred
+  vector[N_old+N_moult] tau;//duration lin pred
+  vector[N_old+N_moult] sigma;//duration lin pred
+  vector[N_old+N_moult] log_lik;
+
+  mu = X_mu * beta_mu;
 //  print(mu);
-//  tau = X_tau * beta_tau;
+  tau = X_tau * beta_tau;
 //  print(tau);
-//  sigma = exp(X_sigma * beta_sigma);
-//
-//for (i in 1:N_old) {
-  //P[i] = 1 - Phi((old_dates[i] - mu[i])/sigma[i]);
-  //Rt[i] = Phi((old_dates[i] - tau[i] - mu[i])/sigma[i]);
-//}
-//for (i in 1:N_moult){
-  // Ru[i] = Phi((moult_dates[i] - tau[i + N_old] - mu[i + N_old])/sigma[i + N_old]);
-  // q[i] = log(tau[i + N_old]) + normal_lpdf((moult_dates[i] - moult_indices[i]*tau[i + N_old]) | mu[i + N_old], sigma[i + N_old]);//N.B. unlike P and R this returns a log density
-//}
-//log_lik = append_row((log(P) - log1m(Rt)), (q - log1m(Ru)));
+  sigma = exp(X_sigma * beta_sigma);//use log link for variance lin pred
+
+for (i in 1:N_old) {
+	if (is_replicated[individual[i]] == 1) {//longitudinal tobit-like likelihood (this only makes sense if within year recaptures contain at least one active moult score?!)
+	  P[i] = 1 - Phi((old_dates[i] - (mu[i] + mu_ind[individual[i]]))/sigma_mu_ind);
+	} else {//standard likelihood for Type 5 model
+    P[i] = 1 - Phi((old_dates[i] - mu[i])/sigma[i]);
+    Rt[i] = Phi((old_dates[i] - tau[i] - mu[i])/sigma[i]);
+	}
+}
+for (i in 1:N_moult){
+  if (is_replicated[individual[i + N_old]] == 1) {
+   q[i] = normal_lpdf((moult_dates[i] - moult_indices[i]*tau[i + N_old]) | mu[i + N_old] + mu_ind[individual[i + N_old]], sigma_mu_ind);//replicated individuals. NB - indexing looks messy because i runs from 1:N_moult, but the function uses both vectors of the total dataset (1:(N_old+N_moult) and the moult dataset (1:N_moult))
+  } else {
+   Ru[i] = Phi((moult_dates[i] - tau[i + N_old] - mu[i + N_old])/sigma[i + N_old]);
+   q[i] = log(tau[i + N_old]) + normal_lpdf((moult_dates[i] - moult_indices[i]*tau[i + N_old]) | mu[i + N_old], sigma[i + N_old]);//N.B. unlike P and R this returns a log density
+  }
+}
+//target += sum(log(P)) - sum(log1m(Rt[not_replicated_old])) + sum(q) - sum(log1m(Ru[not_replicated_moult]));
+log_lik = append_row((log(P) - log1m(Rt)), (q - log1m(Ru)));
 }
