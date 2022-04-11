@@ -63,7 +63,7 @@ jobs:
           do
             eval sudo $cmd
           done < <(Rscript -e 'writeLines(remotes::system_requirements("ubuntu", "20.04"))')
-          
+
       - name: Check libcurl dependencies
         if: runner.os == 'Linux'
         run: |
@@ -73,7 +73,7 @@ jobs:
           Sys.getenv("PATH")
           Sys.getenv("PKG_CONFIG_PATH")
         shell: Rscript {0}
-      
+
       - name: install libcurl-devel on linux
         if: runner.os == 'Linux'
         run: sudo apt-get install -y libcurl4-openssl-dev
@@ -82,7 +82,6 @@ jobs:
         run: |
           remotes::install_deps(dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
-          remotes::install_github("pboesu/moult", ref = 'patch_as_vector_error', force = TRUE)
         shell: Rscript {0}
 
       - name: Check
