@@ -91,9 +91,9 @@ uz5_linpred_recap_annual_raneff <- function(moult_index_column, date_column, id_
            beta_sigma = as.array(c(log(sigma_start), rep(0, standata$N_pred_sigma - 1))),#NB this is on log link scale
            mu_ind = as.array(rep(0, standata$N_ind)))
     }
-    out <- rstan::stan('stan_models/uz5_recap_annual_raneff.stan', data = standata, init = initfunc, pars = outpars, ...)
+    out <- rstan::sampling(stanmodels$uz5_recap_annual_raneff, data = standata, init = initfunc, pars = outpars, ...)
   } else {
-    out <- rstan::stan('stan_models/uz5_recap_annual_raneff.stan', data = standata, init = init, pars = outpars, ...)
+    out <- rstan::sampling(stanmodels$uz5_recap_annual_raneff, data = standata, init = init, pars = outpars, ...)
   }
   #rename regression coefficients for output
   names(out)[grep('beta_mu', names(out))] <- paste('mean',colnames(X_mu), sep = '_')
