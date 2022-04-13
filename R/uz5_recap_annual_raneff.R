@@ -110,8 +110,23 @@ uz5_linpred_recap_annual_raneff <- function(moult_index_column, date_column, id_
   return(out_struc)
 }
 
+#' Compare plot that handles random effect models
+#'
+#' @param ... two or a moult or moultmcmc model
+#' @param names optional character vector of model names
+#'
+#'
+#' @return a plot comparing parameter estimates and their uncertainties
+#'
+#' @importFrom dplyr bind_rows mutate filter
+#' @importFrom ggplot2 ggplot geom_pointrange aes position_dodge facet_wrap scale_colour_discrete
+#' @importFrom tidyr expand_grid
+#' @importFrom stringr str_replace str_replace_all
+#' @importFrom cowplot plot_grid
+#' @importFrom rlang .data
+#'
 compare_plot_annual_raneff <- function(...,names = NULL){
-  require(ggplot2)
+  #require(ggplot2)
   parlist <- list(...)
   stopifnot(all(sapply(parlist, class) %in% c('moult','moultmcmc')))
   #TODO:type checking etc
