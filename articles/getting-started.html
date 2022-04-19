@@ -81,15 +81,9 @@
 
     
     
-<!--**Note that as of January 2022 the moult package [@erni2013moult] is archived on CRAN because of an incompatibility with the upcoming R version 4.2.x. This vignette therefore relies on a patched version of the moult package for the time being. The patched version can be installed from github using the following command**
+<!--**Note that as of January 2022 the moult package [@erni2013moult] is archived on CRAN because of an incompatibility with the upcoming R version 4.2.x. This vignette therefore relies on a patched version of the moult package for the time being. The patched version can be installed from github using the following command**-->
+<!--
 
-
-```r
-#install patched moult package from github to avoid R CMD CHECK failures on R-devel
-remotes::install_github('pboesu/moult', ref='patch_as_vector_error')
-#> Error in utils::download.file(url, path, method = method, quiet = quiet,  : 
-#>   cannot open URL 'https://api.github.com/repos/pboesu/moult/tarball/patch_as_vector_error'
-```
 -->
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">moult</span><span class="op">)</span>
@@ -119,8 +113,8 @@ remotes::install_github('pboesu/moult', ref='patch_as_vector_error')
 <span class="co">#&gt; </span>
 <span class="co">#&gt; SAMPLING FOR MODEL 'uz1_linpred' NOW (CHAIN 1).</span>
 <span class="co">#&gt; Chain 1: </span>
-<span class="co">#&gt; Chain 1: Gradient evaluation took 0.000152 seconds</span>
-<span class="co">#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 1.52 seconds.</span>
+<span class="co">#&gt; Chain 1: Gradient evaluation took 0.000143 seconds</span>
+<span class="co">#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 1.43 seconds.</span>
 <span class="co">#&gt; Chain 1: Adjust your expectations accordingly!</span>
 <span class="co">#&gt; Chain 1: </span>
 <span class="co">#&gt; Chain 1: </span>
@@ -137,9 +131,9 @@ remotes::install_github('pboesu/moult', ref='patch_as_vector_error')
 <span class="co">#&gt; Chain 1: Iteration: 1800 / 2000 [ 90%]  (Sampling)</span>
 <span class="co">#&gt; Chain 1: Iteration: 2000 / 2000 [100%]  (Sampling)</span>
 <span class="co">#&gt; Chain 1: </span>
-<span class="co">#&gt; Chain 1:  Elapsed Time: 0.633485 seconds (Warm-up)</span>
-<span class="co">#&gt; Chain 1:                0.358891 seconds (Sampling)</span>
-<span class="co">#&gt; Chain 1:                0.992376 seconds (Total)</span>
+<span class="co">#&gt; Chain 1:  Elapsed Time: 0.677005 seconds (Warm-up)</span>
+<span class="co">#&gt; Chain 1:                0.355928 seconds (Sampling)</span>
+<span class="co">#&gt; Chain 1:                1.03293 seconds (Total)</span>
 <span class="co">#&gt; Chain 1: </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; SAMPLING FOR MODEL 'uz1_linpred' NOW (CHAIN 2).</span>
@@ -162,9 +156,9 @@ remotes::install_github('pboesu/moult', ref='patch_as_vector_error')
 <span class="co">#&gt; Chain 2: Iteration: 1800 / 2000 [ 90%]  (Sampling)</span>
 <span class="co">#&gt; Chain 2: Iteration: 2000 / 2000 [100%]  (Sampling)</span>
 <span class="co">#&gt; Chain 2: </span>
-<span class="co">#&gt; Chain 2:  Elapsed Time: 0.616169 seconds (Warm-up)</span>
-<span class="co">#&gt; Chain 2:                0.366534 seconds (Sampling)</span>
-<span class="co">#&gt; Chain 2:                0.982703 seconds (Total)</span>
+<span class="co">#&gt; Chain 2:  Elapsed Time: 0.666993 seconds (Warm-up)</span>
+<span class="co">#&gt; Chain 2:                0.356152 seconds (Sampling)</span>
+<span class="co">#&gt; Chain 2:                1.02314 seconds (Total)</span>
 <span class="co">#&gt; Chain 2: </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; SAMPLING FOR MODEL 'uz1_linpred' NOW (CHAIN 3).</span>
@@ -187,15 +181,15 @@ remotes::install_github('pboesu/moult', ref='patch_as_vector_error')
 <span class="co">#&gt; Chain 3: Iteration: 1800 / 2000 [ 90%]  (Sampling)</span>
 <span class="co">#&gt; Chain 3: Iteration: 2000 / 2000 [100%]  (Sampling)</span>
 <span class="co">#&gt; Chain 3: </span>
-<span class="co">#&gt; Chain 3:  Elapsed Time: 0.665428 seconds (Warm-up)</span>
-<span class="co">#&gt; Chain 3:                0.36829 seconds (Sampling)</span>
-<span class="co">#&gt; Chain 3:                1.03372 seconds (Total)</span>
+<span class="co">#&gt; Chain 3:  Elapsed Time: 0.572346 seconds (Warm-up)</span>
+<span class="co">#&gt; Chain 3:                0.376433 seconds (Sampling)</span>
+<span class="co">#&gt; Chain 3:                0.948779 seconds (Total)</span>
 <span class="co">#&gt; Chain 3: </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; SAMPLING FOR MODEL 'uz1_linpred' NOW (CHAIN 4).</span>
 <span class="co">#&gt; Chain 4: </span>
-<span class="co">#&gt; Chain 4: Gradient evaluation took 5.2e-05 seconds</span>
-<span class="co">#&gt; Chain 4: 1000 transitions using 10 leapfrog steps per transition would take 0.52 seconds.</span>
+<span class="co">#&gt; Chain 4: Gradient evaluation took 5.4e-05 seconds</span>
+<span class="co">#&gt; Chain 4: 1000 transitions using 10 leapfrog steps per transition would take 0.54 seconds.</span>
 <span class="co">#&gt; Chain 4: Adjust your expectations accordingly!</span>
 <span class="co">#&gt; Chain 4: </span>
 <span class="co">#&gt; Chain 4: </span>
@@ -212,9 +206,9 @@ remotes::install_github('pboesu/moult', ref='patch_as_vector_error')
 <span class="co">#&gt; Chain 4: Iteration: 1800 / 2000 [ 90%]  (Sampling)</span>
 <span class="co">#&gt; Chain 4: Iteration: 2000 / 2000 [100%]  (Sampling)</span>
 <span class="co">#&gt; Chain 4: </span>
-<span class="co">#&gt; Chain 4:  Elapsed Time: 0.621636 seconds (Warm-up)</span>
-<span class="co">#&gt; Chain 4:                0.362442 seconds (Sampling)</span>
-<span class="co">#&gt; Chain 4:                0.984078 seconds (Total)</span>
+<span class="co">#&gt; Chain 4:  Elapsed Time: 0.623928 seconds (Warm-up)</span>
+<span class="co">#&gt; Chain 4:                0.392015 seconds (Sampling)</span>
+<span class="co">#&gt; Chain 4:                1.01594 seconds (Total)</span>
 <span class="co">#&gt; Chain 4:</span></code></pre></div>
 <p>A summary table of parameter estimates can be displayed with</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
@@ -222,11 +216,11 @@ remotes::install_github('pboesu/moult', ref='patch_as_vector_error')
 <span class="co">#&gt; <span style="color: #949494;"># A tibble: 5 × 10</span></span>
 <span class="co">#&gt;   parameter     estimate se_mean     sd     lci     uci n_eff  Rhat  prob method</span>
 <span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">1</span> mean_(Interc…   134.   0.071<span style="text-decoration: underline;">9</span>   3.38   128.    141.   <span style="text-decoration: underline;">2</span>204.  1.00  0.95 MCMC  </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">2</span> duration_(In…    98.0  0.220   10.7     78.3   120.   <span style="text-decoration: underline;">2</span>384.  1.00  0.95 MCMC  </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">3</span> log_sd_(Inte…     3.32 0.004<span style="text-decoration: underline;">98</span>  0.235    2.83    3.75 <span style="text-decoration: underline;">2</span>223.  1.00  0.95 MCMC  </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">4</span> sd_(Intercep…    28.5  0.139    6.65    17.0    42.7  <span style="text-decoration: underline;">2</span>272.  1.00  0.95 MCMC  </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">5</span> lp__           -<span style="color: #BB0000;">104.</span>   0.029<span style="text-decoration: underline;">6</span>   1.23  -<span style="color: #BB0000;">107.</span>   -<span style="color: #BB0000;">103.</span>   <span style="text-decoration: underline;">1</span>714.  1.00  0.95 MCMC</span></code></pre></div>
+<span class="co">#&gt; <span style="color: #BCBCBC;">1</span> mean_(Interc…   134.   0.070<span style="text-decoration: underline;">1</span>   3.34   128.    141.   <span style="text-decoration: underline;">2</span>268.  1.00  0.95 MCMC  </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">2</span> duration_(In…    97.7  0.202   10.6     77.6   119.   <span style="text-decoration: underline;">2</span>733.  1.00  0.95 MCMC  </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">3</span> log_sd_(Inte…     3.33 0.004<span style="text-decoration: underline;">81</span>  0.229    2.85    3.76 <span style="text-decoration: underline;">2</span>275.  1.00  0.95 MCMC  </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">4</span> sd_(Intercep…    28.6  0.134    6.51    17.4    42.8  <span style="text-decoration: underline;">2</span>346.  1.00  0.95 MCMC  </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">5</span> lp__           -<span style="color: #BB0000;">104.</span>   0.031<span style="text-decoration: underline;">1</span>   1.21  -<span style="color: #BB0000;">107.</span>   -<span style="color: #BB0000;">103.</span>   <span style="text-decoration: underline;">1</span>505.  1.00  0.95 MCMC</span></code></pre></div>
 <p>and standard model assessment can be done as for any posterior sample from Stan, by directly accessing the <code>stanfit</code> slot of the returned S3 object. For example we can look at the traceplots for the model using <code><a href="https://mc-stan.org/rstan/reference/stan_plot.html" class="external-link">rstan::stan_trace</a></code></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://mc-stan.org/rstan/reference/stan_plot.html" class="external-link">stan_trace</a></span><span class="op">(</span><span class="va">uz1</span><span class="op">$</span><span class="va">stanfit</span><span class="op">)</span></code></pre></div>
@@ -254,8 +248,8 @@ remotes::install_github('pboesu/moult', ref='patch_as_vector_error')
 <span class="co">#&gt; </span>
 <span class="co">#&gt; SAMPLING FOR MODEL 'uz2_linpred' NOW (CHAIN 1).</span>
 <span class="co">#&gt; Chain 1: </span>
-<span class="co">#&gt; Chain 1: Gradient evaluation took 5.9e-05 seconds</span>
-<span class="co">#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.59 seconds.</span>
+<span class="co">#&gt; Chain 1: Gradient evaluation took 0.000104 seconds</span>
+<span class="co">#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 1.04 seconds.</span>
 <span class="co">#&gt; Chain 1: Adjust your expectations accordingly!</span>
 <span class="co">#&gt; Chain 1: </span>
 <span class="co">#&gt; Chain 1: </span>
@@ -272,15 +266,15 @@ remotes::install_github('pboesu/moult', ref='patch_as_vector_error')
 <span class="co">#&gt; Chain 1: Iteration: 1800 / 2000 [ 90%]  (Sampling)</span>
 <span class="co">#&gt; Chain 1: Iteration: 2000 / 2000 [100%]  (Sampling)</span>
 <span class="co">#&gt; Chain 1: </span>
-<span class="co">#&gt; Chain 1:  Elapsed Time: 0.663204 seconds (Warm-up)</span>
-<span class="co">#&gt; Chain 1:                0.302778 seconds (Sampling)</span>
-<span class="co">#&gt; Chain 1:                0.965982 seconds (Total)</span>
+<span class="co">#&gt; Chain 1:  Elapsed Time: 0.672546 seconds (Warm-up)</span>
+<span class="co">#&gt; Chain 1:                0.305003 seconds (Sampling)</span>
+<span class="co">#&gt; Chain 1:                0.977549 seconds (Total)</span>
 <span class="co">#&gt; Chain 1: </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; SAMPLING FOR MODEL 'uz2_linpred' NOW (CHAIN 2).</span>
 <span class="co">#&gt; Chain 2: </span>
-<span class="co">#&gt; Chain 2: Gradient evaluation took 4.6e-05 seconds</span>
-<span class="co">#&gt; Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.46 seconds.</span>
+<span class="co">#&gt; Chain 2: Gradient evaluation took 4.7e-05 seconds</span>
+<span class="co">#&gt; Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.47 seconds.</span>
 <span class="co">#&gt; Chain 2: Adjust your expectations accordingly!</span>
 <span class="co">#&gt; Chain 2: </span>
 <span class="co">#&gt; Chain 2: </span>
@@ -297,15 +291,15 @@ remotes::install_github('pboesu/moult', ref='patch_as_vector_error')
 <span class="co">#&gt; Chain 2: Iteration: 1800 / 2000 [ 90%]  (Sampling)</span>
 <span class="co">#&gt; Chain 2: Iteration: 2000 / 2000 [100%]  (Sampling)</span>
 <span class="co">#&gt; Chain 2: </span>
-<span class="co">#&gt; Chain 2:  Elapsed Time: 0.590371 seconds (Warm-up)</span>
-<span class="co">#&gt; Chain 2:                0.313907 seconds (Sampling)</span>
-<span class="co">#&gt; Chain 2:                0.904278 seconds (Total)</span>
+<span class="co">#&gt; Chain 2:  Elapsed Time: 0.734248 seconds (Warm-up)</span>
+<span class="co">#&gt; Chain 2:                0.342422 seconds (Sampling)</span>
+<span class="co">#&gt; Chain 2:                1.07667 seconds (Total)</span>
 <span class="co">#&gt; Chain 2: </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; SAMPLING FOR MODEL 'uz2_linpred' NOW (CHAIN 3).</span>
 <span class="co">#&gt; Chain 3: </span>
-<span class="co">#&gt; Chain 3: Gradient evaluation took 4.8e-05 seconds</span>
-<span class="co">#&gt; Chain 3: 1000 transitions using 10 leapfrog steps per transition would take 0.48 seconds.</span>
+<span class="co">#&gt; Chain 3: Gradient evaluation took 5.7e-05 seconds</span>
+<span class="co">#&gt; Chain 3: 1000 transitions using 10 leapfrog steps per transition would take 0.57 seconds.</span>
 <span class="co">#&gt; Chain 3: Adjust your expectations accordingly!</span>
 <span class="co">#&gt; Chain 3: </span>
 <span class="co">#&gt; Chain 3: </span>
@@ -322,15 +316,15 @@ remotes::install_github('pboesu/moult', ref='patch_as_vector_error')
 <span class="co">#&gt; Chain 3: Iteration: 1800 / 2000 [ 90%]  (Sampling)</span>
 <span class="co">#&gt; Chain 3: Iteration: 2000 / 2000 [100%]  (Sampling)</span>
 <span class="co">#&gt; Chain 3: </span>
-<span class="co">#&gt; Chain 3:  Elapsed Time: 0.643213 seconds (Warm-up)</span>
-<span class="co">#&gt; Chain 3:                0.34668 seconds (Sampling)</span>
-<span class="co">#&gt; Chain 3:                0.989893 seconds (Total)</span>
+<span class="co">#&gt; Chain 3:  Elapsed Time: 0.618446 seconds (Warm-up)</span>
+<span class="co">#&gt; Chain 3:                0.317284 seconds (Sampling)</span>
+<span class="co">#&gt; Chain 3:                0.93573 seconds (Total)</span>
 <span class="co">#&gt; Chain 3: </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; SAMPLING FOR MODEL 'uz2_linpred' NOW (CHAIN 4).</span>
 <span class="co">#&gt; Chain 4: </span>
-<span class="co">#&gt; Chain 4: Gradient evaluation took 5e-05 seconds</span>
-<span class="co">#&gt; Chain 4: 1000 transitions using 10 leapfrog steps per transition would take 0.5 seconds.</span>
+<span class="co">#&gt; Chain 4: Gradient evaluation took 4.7e-05 seconds</span>
+<span class="co">#&gt; Chain 4: 1000 transitions using 10 leapfrog steps per transition would take 0.47 seconds.</span>
 <span class="co">#&gt; Chain 4: Adjust your expectations accordingly!</span>
 <span class="co">#&gt; Chain 4: </span>
 <span class="co">#&gt; Chain 4: </span>
@@ -347,9 +341,9 @@ remotes::install_github('pboesu/moult', ref='patch_as_vector_error')
 <span class="co">#&gt; Chain 4: Iteration: 1800 / 2000 [ 90%]  (Sampling)</span>
 <span class="co">#&gt; Chain 4: Iteration: 2000 / 2000 [100%]  (Sampling)</span>
 <span class="co">#&gt; Chain 4: </span>
-<span class="co">#&gt; Chain 4:  Elapsed Time: 0.801721 seconds (Warm-up)</span>
-<span class="co">#&gt; Chain 4:                0.30516 seconds (Sampling)</span>
-<span class="co">#&gt; Chain 4:                1.10688 seconds (Total)</span>
+<span class="co">#&gt; Chain 4:  Elapsed Time: 0.707143 seconds (Warm-up)</span>
+<span class="co">#&gt; Chain 4:                0.370762 seconds (Sampling)</span>
+<span class="co">#&gt; Chain 4:                1.0779 seconds (Total)</span>
 <span class="co">#&gt; Chain 4:</span>
 <span class="co">#fit using ML</span>
 <span class="va">m2</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/moult/man/moult.html" class="external-link">moult</a></span><span class="op">(</span><span class="va">MIndex</span> <span class="op">~</span> <span class="va">Day</span>,data <span class="op">=</span> <span class="va">sanderlings</span>, type <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
