@@ -64,7 +64,8 @@ uz5_linpred_recap <- function(moult_index_column, date_column, id_column, start_
                    X_tau = X_tau,
                    N_pred_tau = ncol(X_tau),
                    X_sigma = X_sigma,
-                   N_pred_sigma = ncol(X_sigma))
+                   N_pred_sigma = ncol(X_sigma),
+                   flat_prior = as.array(as.numeric(flat_prior)))
   #include pointwise log_lik matrix  in output?
   if(log_lik){
     outpars <- c('beta_mu','beta_tau','beta_sigma', 'sigma_intercept', 'sigma_mu_ind','beta_star','finite_sd', 'mu_ind_star', 'mu_ind', 'log_lik')

@@ -4,6 +4,7 @@
 
 // The input data is a vector 'y' of length 'N'.
 data {
+  int<lower=0,upper=1> flat_prior;//translated logical use flat prior on start and duration?
   //responses
   int<lower=0> N_old;//I in original derivation
   vector[N_old] old_dates;//t_i
@@ -67,8 +68,13 @@ for (i in 1:N_moult){
 //print(sum(log(1-Ru)));
 target += sum(log(P) - log1m(Rt)) + sum(q - log1m(Ru)) ;
 //priors
-beta_mu[1] ~ uniform(0,366);
-beta_tau[1] ~ uniform(0,366);
+if (flat_prior == 1) {
+ beta_mu[1] ~ uniform(0,366);
+ beta_tau[1] ~ uniform(0,366);
+} else {
+ beta_mu[1] ~ normal(150,50)T[0,366];
+ beta_tau[1] ~ normal(100,30)T[0,366];
+}
 beta_sigma[1] ~ normal(0,5);
 }
 
