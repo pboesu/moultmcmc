@@ -17,15 +17,17 @@
 #TODO: implement an input data class which ensures column names and correct encoding for categorical variables
 uz2_linpred_recap <- function(moult_index_column, date_column, id_column, start_formula = ~1, duration_formula = ~1, sigma_formula = ~1, data, init = "auto", flat_prior = TRUE, log_lik = TRUE,...) {
   stopifnot(all(data[[moult_index_column]] >= 0 & data[[moult_index_column]] <= 1))
+  stopifnot(any(data[[moult_index_column]] == 0))
+  stopifnot(any(data[[moult_index_column]] == 1))
   #TODO: Assess the relative amount of old vs moult data, and especially fail/warn when there is no data of either category
   stopifnot(is.numeric(data[[date_column]]))
   stopifnot(is.factor(data[[id_column]]))
   stopifnot(is.data.frame(data))
   #remove new data by moult category
-  data <- droplevels(subset(data, get(moult_index_column) != 1))#TODO:record / notice of how many obs removed missing
+  #data <- subset(data, get(moult_index_column) != 1)#TODO:record / notice of how many obs removed missing
   #TODO: remove consecutive old captures within a season ?
-  #order data by moult category
-  data <- data[order(data[[moult_index_column]]),]
+  #order data by moult category and remove unused levels
+  data <- droplevels(data[order(data[[moult_index_column]]),])
   #setup model matrices
   #TODO: check for consistency of covariates among recaptures?!
   #TODO: do these need to be reduced to N_ind?? or does there need to be checking that they are identical for recaptures?
