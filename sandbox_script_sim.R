@@ -52,3 +52,35 @@ uz4 = uz4_linpred("moult_score",
                   control = list(adapt_delta = 0.9))
 compare_plot(m4,uz4, names = c('ML','MCMC')) + geom_hline(yintercept = c(unique(sim_data$pop_duration),unique(sim_data$pop_start_date),unique(sim_data$pop_start_date_sd)))
 pairs(uz4$stanfit)
+
+
+#sandbox t2 recap model
+sim_data_recap <- readr::read_csv('../../2021_siskin_moult/sim_data_t2/siskin39/siskin_sim_001.csv') %>%
+  ungroup() %>%
+  # filter(individual %in%  as.character(1:20)) %>%
+  mutate(id_factor = factor(id))
+
+n_distinct(sim_data_recap$id)
+set.seed(456)
+ggplot(sim_data_recap, aes(x = date_sampled, y = pfmg_sampled)) + geom_point() #+ facet_wrap(~id)
+
+t2 <- uz2_linpred("pfmg_sampled",
+                  date_column = "date_sampled",
+                  data = sim_data_recap,
+                  log_lik = FALSE,
+                  chains =1,
+                  control = list(adapt_delta = 0.9))
+t2_recap <- uz2_linpred_recap("pfmg_sampled",
+                  date_column = "date_sampled",
+                  id_column = 'id_factor',
+                  data = sim_data_recap,
+                  log_lik = FALSE,
+                  chains =2,
+                  cores = 2,
+                  control = list(adapt_delta = 0.9))
+rstan::traceplot(t2_recap$stanfit)
+moult_plot(t2, data = sim_data_recap)
+moult_plot(t2_recap, data = sim_data_recap)
+compare_plot(t2_recap, t2, names = c('recap','simple'))#works but recap produces biased duration estimate??
+
+sim_data_recap %>% filter(pfmg_sampled != 0 & pfmg_sampled != 1) %>% group_by(id) %>% summarise(duration = unique(duration), active_moult_sample = n()) %>% filter(active_moult_sample > 2) %>% summary()
