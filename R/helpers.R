@@ -198,16 +198,17 @@ moult_plot <- function(...){UseMethod("moult_plot")}
 #' @param x moult model object created with moult::moult
 #' @param prob coverage probability of active moult in the sampled population
 #' @param data optional data.frame of observations, column names need to match model date and moult index variables
+#' @param plot logical, if TRUE (default) return a plot, else return a dataframe with start and end dates of moult based on model intercepts
 #' @param ... not currently used
 #'
-#' @return a plot
+#' @return a plot or data.frame
 #'
 #' @importFrom stats coef qnorm
 #' @importFrom ggplot2 geom_segment aes scale_linetype_manual ggplot theme_classic xlab ylab geom_point
 #' @export
 #'
 #'
-moult_plot.moult <-function(x, prob = 0.95, data = NULL, ...){
+moult_plot.moult <-function(x, prob = 0.95, data = NULL, plot = TRUE, ...){
   probs = c((1-prob)/2, 1 -(1-prob)/2)
   quantile_name <- paste(prob*100, '% quantile')
   data_x <- strsplit(as.character(x$terms$full)[3], split = ' ')[[1]][1]
@@ -219,15 +220,17 @@ moult_plot.moult <-function(x, prob = 0.95, data = NULL, ...){
                                             qnorm(probs[1])*coef(x)['sd_(Intercept)']+coef(x)['mean_intercept']+coef(x)['duration_intercept.1'],
                                             qnorm(probs[2])*coef(x)['sd_(Intercept)']+coef(x)['mean_intercept']+coef(x)['duration_intercept.1']),
                              line_type = c('Population mean', quantile_name, quantile_name))
-
-    mplot <- ggplot(plotdata, aes(x = start_date, xend = end_date, y = 0, yend = 1, lty = line_type)) + scale_linetype_manual(values = c(3,1), name = '') + geom_segment() + theme_classic() + xlab('Date') + ylab('Moult Index')
-    if(!is.null(data)){
-    #check data matches model
-    if(data_x %in% names(data) & data_y %in% names(data)){
-      mplot <- ggplot(data = data, aes(x = get(data_x), y = get(data_y))) + scale_linetype_manual(values = c(3,1), name = '') + geom_point(col = 'darkgrey') + geom_segment(data = plotdata, aes(x = start_date, xend = end_date, y = 0, yend = 1, lty = line_type)) + theme_classic() + xlab('Date') + ylab('Moult Index')}
-    else {warning(paste('data does not contain model date and moult variables:',data_x, data_y, ' - plotting model only'))}
-  }
-  return(mplot)
+  if (plot) {
+      mplot <- ggplot(plotdata, aes(x = start_date, xend = end_date, y = 0, yend = 1, lty = line_type)) + scale_linetype_manual(values = c(3,1), name = '') + geom_segment() + theme_classic() + xlab('Date') + ylab('Moult Index')
+      if(!is.null(data)){
+      #check data matches model
+      if(data_x %in% names(data) & data_y %in% names(data)){
+        mplot <- ggplot(data = data, aes(x = get(data_x), y = get(data_y))) + scale_linetype_manual(values = c(3,1), name = '') + geom_point(col = 'darkgrey') + geom_segment(data = plotdata, aes(x = start_date, xend = end_date, y = 0, yend = 1, lty = line_type)) + theme_classic() + xlab('Date') + ylab('Moult Index')}
+      else {warning(paste('data does not contain model date and moult variables:',data_x, data_y, ' - plotting model only'))}
+    }
+    return(mplot) } else {
+      return(plotdata)
+    }
 }
 
 #' Moult plot for moultmcmc model
@@ -235,10 +238,10 @@ moult_plot.moult <-function(x, prob = 0.95, data = NULL, ...){
 #' @param x moultmcmc model object
 #' @param prob coverage probability of active moult in the sampled population
 #' @param prob_ci coverage probability of credible interval
-#' @param data optional data.frame of observations, column names need to match model date and moult index variables
+#' @param plot logical, if TRUE (default) return a plot, else return a dataframe with start and end dates of moult based on model intercepts
 #' @param ... not currently used
 #'
-#' @return a plot - currently only the intercept terms are taken into account
+#' @return a plot or data.frame
 #'
 #' @importFrom stats coef qnorm
 #' @importFrom rlang .data
@@ -246,7 +249,7 @@ moult_plot.moult <-function(x, prob = 0.95, data = NULL, ...){
 #' @export
 #'
 #'
-moult_plot.moultmcmc <-function(x, prob = 0.95, prob_ci = NULL, data = NULL, ...){
+moult_plot.moultmcmc <-function(x, prob = 0.95, prob_ci = NULL, data = NULL, plot= TRUE, ...){
   probs = c((1-prob)/2, 1 -(1-prob)/2)
   if(!is.null(prob_ci)) probs_ci = c((1-prob_ci)/2, 1 -(1-prob_ci)/2)
   quantile_name <- paste(prob*100, '% quantile')
@@ -261,13 +264,15 @@ moult_plot.moultmcmc <-function(x, prob = 0.95, prob_ci = NULL, data = NULL, ...
                              line_type = c('Population mean', quantile_name, quantile_name))
   if(!is.null(prob_ci)){
   }
-
-  mplot <- ggplot(plotdata, aes(x = start_date, xend = end_date, y = 0, yend = 1, lty = line_type)) + scale_linetype_manual(values = c(3,1), name = '') + geom_segment() + theme_classic() + xlab('Date') + ylab('Moult Index')
-  if(!is.null(data)){
-    #check data matches model
-    if(data_x %in% names(data) & data_y %in% names(data)){
-      mplot <- ggplot(data = data, aes(x = get(data_x), y = get(data_y))) + scale_linetype_manual(values = c(3,1), name = '') + geom_point(col = 'darkgrey') + geom_segment(data = plotdata, aes(x = start_date, xend = end_date, y = 0, yend = 1, lty = line_type)) + theme_classic() + xlab('Date') + ylab('Moult Index')}
-    else {warning(paste('data does not contain model date and moult variables:',data_x, data_y, ' - plotting model only'))}
-  }
-  return(mplot)
+if (plot) {
+    mplot <- ggplot(plotdata, aes(x = start_date, xend = end_date, y = 0, yend = 1, lty = line_type)) + scale_linetype_manual(values = c(3,1), name = '') + geom_segment() + theme_classic() + xlab('Date') + ylab('Moult Index')
+    if(!is.null(data)){
+      #check data matches model
+      if(data_x %in% names(data) & data_y %in% names(data)){
+        mplot <- ggplot(data = data, aes(x = get(data_x), y = get(data_y))) + scale_linetype_manual(values = c(3,1), name = '') + geom_point(col = 'darkgrey') + geom_segment(data = plotdata, aes(x = start_date, xend = end_date, y = 0, yend = 1, lty = line_type)) + theme_classic() + xlab('Date') + ylab('Moult Index')}
+      else {warning(paste('data does not contain model date and moult variables:',data_x, data_y, ' - plotting model only'))}
+    }
+    return(mplot) } else {
+      return(plotdata)
+    }
 }

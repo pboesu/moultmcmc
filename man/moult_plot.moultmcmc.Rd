@@ -4,7 +4,7 @@
 \alias{moult_plot.moultmcmc}
 \title{Moult plot for moultmcmc model}
 \usage{
-\method{moult_plot}{moultmcmc}(x, prob = 0.95, prob_ci = NULL, data = NULL, ...)
+\method{moult_plot}{moultmcmc}(x, prob = 0.95, prob_ci = NULL, data = NULL, plot = TRUE, ...)
 }
 \arguments{
 \item{x}{moultmcmc model object}
@@ -13,12 +13,12 @@
 
 \item{prob_ci}{coverage probability of credible interval}
 
-\item{data}{optional data.frame of observations, column names need to match model date and moult index variables}
+\item{plot}{logical, if TRUE (default) return a plot, else return a dataframe with start and end dates of moult based on model intercepts}
 
 \item{...}{not currently used}
 }
 \value{
-a plot - currently only the intercept terms are taken into account
+a plot or data.frame
 }
 \description{
 Moult plot for moultmcmc model
