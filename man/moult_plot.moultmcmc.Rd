@@ -13,6 +13,8 @@
 
 \item{prob_ci}{coverage probability of credible interval}
 
+\item{data}{optional data.frame of observations, column names need to match model date and moult index variables}
+
 \item{plot}{logical, if TRUE (default) return a plot, else return a dataframe with start and end dates of moult based on model intercepts}
 
 \item{...}{not currently used}
