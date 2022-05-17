@@ -35,7 +35,7 @@ parameters {
   vector[N_pred_tau] beta_tau;//regression coefficients for duration
   vector[N_pred_sigma] beta_sigma;//regression coefficients for sigma start date
   vector[N_ind] mu_ind;//individual effect on sigma start date
-  real<lower=0> sigma_mu_ind;//?residual variance in regression of score on date within individuals
+  //real<lower=0> sigma_mu_ind;//?residual variance in regression of score on date within individuals
 }
 
 transformed parameters{
@@ -65,7 +65,7 @@ model {
 //print(P);
 for (i in 1:N_moult) {
   if (is_replicated[individual[i]] == 1) {
-    q[i] = normal_lpdf((moult_dates[i] - moult_indices[i]*tau[i]) | mu[i] + mu_ind[individual[i]], sigma_mu_ind);//replicated individuals
+    q[i] = log(tau[i]) + normal_lpdf((moult_dates[i] - moult_indices[i]*tau[i] - (mu[i] + mu_ind[individual[i]])) | 0 , sigma[i]);//replicated individuals
   } else {
     q[i] = log(tau[i]) + normal_lpdf((moult_dates[i] - moult_indices[i]*tau[i]) | mu[i], sigma[i]);//unreplicated - don't estimate an individual intercept??
   }
@@ -92,7 +92,7 @@ if (flat_prior == 1) {
  beta_tau[1] ~ normal(100,30)T[0,366];
 }
 beta_sigma[1] ~ normal(0,5);
-sigma_mu_ind ~ normal(0,1);
+//sigma_mu_ind ~ normal(0,1);
 }
 
 generated quantities{
@@ -104,16 +104,28 @@ generated quantities{
 // vector[N_moult] log_lik;
 // vector[N_moult] q;
 // vector[N_moult] Q;
-// vector[N_moult] mu;//start date lin pred
-// vector[N_moult] tau;//duration lin pred
-// vector[N_moult] sigma;//duration lin pred
-//
-//   mu = X_mu * beta_mu;
-// //  print(mu);
-//   tau = X_tau * beta_tau;
-// //  print(tau);
-//   sigma = exp(X_sigma * beta_sigma);
-//
+vector[N_moult] mu;//start date lin pred
+vector[N_moult] tau;//duration lin pred
+vector[N_moult] sigma;//duration lin pred
+
+  mu = X_mu * beta_mu;
+//  print(mu);
+  tau = X_tau * beta_tau;
+//  print(tau);
+  sigma = exp(X_sigma * beta_sigma);
+
+
+  vector[N_ind] mu_ind_out;//individual intercepts for output
+
+  for (i in 1:N_moult) {
+  if (is_replicated[individual[i]] == 1) {
+     mu_ind_out[individual[i]] = mu_ind[individual[i]] + mu[i];//replicated individuals
+  } else {
+    mu_ind_out[individual[i]] = moult_dates[i] - moult_indices[i]*tau[i];//unreplicated
+  }
+}
+
+
 // for (i in 1:N_moult) q[i] = log(tau[i]) + normal_lpdf((moult_dates[i] - moult_indices[i]*tau[i]) | mu[i], sigma[i]);//N.B. unlike Q this returns a log density
 // for (i in 1:N_moult) Q[i] = Phi((moult_dates[i] - mu[i])/sigma[i]) - Phi((moult_dates[i] - tau[i] - mu[i])/sigma[i]);
 //
