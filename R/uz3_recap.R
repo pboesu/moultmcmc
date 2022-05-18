@@ -39,6 +39,7 @@ uz3_linpred_recap <- function(moult_index_column, date_column, id_column, start_
                    N_ind = length(unique(data[[id_column]])),
                    individual = as.numeric(data[[id_column]]),
                    individual_first_index = as.array(id_first),
+                   replicated_individuals = unique(as.numeric(data[[id_column]])[replicated]),
                    replicated = as.array(replicated),
                    not_replicated = as.array(not_replicated),
                    is_replicated = as.array(is_replicated),
