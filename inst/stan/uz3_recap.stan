@@ -5,6 +5,7 @@
 data {
   int<lower=0,upper=1> flat_prior;//translated logical use flat prior on start and duration?
   int<lower=0> N_ind;//number of recaptured individuals
+  int<lower=0> N_ind_rep;//number of recaptured individuals
   int<lower=0> N_moult;//J
   int<lower=0> Nobs_replicated;//number of observations from individuals with repeat measures
   vector[N_moult] moult_dates;//u_j
