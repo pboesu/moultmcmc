@@ -35,7 +35,7 @@ parameters {
   vector[N_pred_tau] beta_tau;//regression coefficients for duration
   vector[N_pred_sigma] beta_sigma;//regression coefficients for sigma start date
   vector[N_ind] mu_ind;//individual effect on sigma start date
-  //real<lower=0> sigma_mu_ind;//?residual variance in regression of score on date within individuals
+  real<lower=0> sigma_mu_ind;//?residual variance in regression of score on date within individuals
 }
 
 transformed parameters{
@@ -65,7 +65,7 @@ model {
 //print(P);
 for (i in 1:N_moult) {
   if (is_replicated[individual[i]] == 1) {
-    q[i] = log(tau[i]) + normal_lpdf((moult_dates[i] - moult_indices[i]*tau[i] - (mu[i] + mu_ind[individual[i]])) | 0 , sigma[i]);//replicated individuals
+    q[i] = normal_lpdf((moult_dates[i] - moult_indices[i]*tau[i] - (mu[i] + mu_ind[individual[i]])) | 0 , sigma_mu_ind);//replicated individuals
   } else {
     q[i] = log(tau[i]) + normal_lpdf((moult_dates[i] - moult_indices[i]*tau[i]) | mu[i], sigma[i]);//unreplicated - don't estimate an individual intercept??
   }
@@ -92,7 +92,7 @@ if (flat_prior == 1) {
  beta_tau[1] ~ normal(100,30)T[0,366];
 }
 beta_sigma[1] ~ normal(0,5);
-//sigma_mu_ind ~ normal(0,1);
+sigma_mu_ind ~ normal(0,1);
 }
 
 generated quantities{

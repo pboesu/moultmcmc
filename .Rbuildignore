@@ -12,3 +12,4 @@ sandbox_script_sim.R
 ^pkgdown$
 ^doc$
 ^Meta$
+^data-raw$
