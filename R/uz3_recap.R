@@ -52,9 +52,9 @@ uz3_linpred_recap <- function(moult_index_column, date_column, id_column, start_
                    flat_prior = as.numeric(flat_prior))
   #include pointwise log_lik matrix  in output?
   if(log_lik){
-    outpars <- c('beta_mu','beta_tau','beta_sigma', 'sigma_intercept', 'beta_star','finite_sd', 'mu_ind_star', 'mu_ind', 'mu_ind_out', 'log_lik')
+    outpars <- c('beta_mu','beta_tau','beta_sigma', 'sigma_intercept', 'sigma_tau','beta_star','finite_sd', 'mu_ind_star', 'mu_ind', 'mu_ind_out', 'tau_ind_out', 'log_lik')
   } else {
-    outpars <- c('beta_mu','beta_tau','beta_sigma', 'sigma_intercept', 'beta_star','finite_sd', 'mu_ind_star', 'mu_ind', 'mu_ind_out')
+    outpars <- c('beta_mu','beta_tau','beta_sigma', 'sigma_intercept', 'sigma_tau','beta_star','finite_sd', 'mu_ind_star', 'mu_ind', 'mu_ind_out', 'tau_ind_out')
   }
   #guess initial values
   if(init == "auto"){

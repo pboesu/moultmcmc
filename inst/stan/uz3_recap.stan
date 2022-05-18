@@ -34,8 +34,10 @@ parameters {
   vector[N_pred_mu] beta_mu;//regression coefficients for start date
   vector[N_pred_tau] beta_tau;//regression coefficients for duration
   vector[N_pred_sigma] beta_sigma;//regression coefficients for sigma start date
-  vector[N_ind] mu_ind;//individual effect on sigma start date
+  vector[N_ind] mu_ind;//individual effect on start date
+  vector[N_ind] tau_ind;//individual effect on duration
   real<lower=0> sigma_mu_ind;//?residual variance in regression of score on date within individuals
+  real<lower=0> sigma_tau;//pop std dev of duration
 }
 
 transformed parameters{
@@ -65,7 +67,7 @@ model {
 //print(P);
 for (i in 1:N_moult) {
   if (is_replicated[individual[i]] == 1) {
-    q[i] = normal_lpdf((moult_dates[i] - moult_indices[i]*tau[i] - (mu[i] + mu_ind[individual[i]])) | 0 , sigma_mu_ind);//replicated individuals
+    q[i] = normal_lpdf((moult_dates[i] - moult_indices[i]*(tau[i]+tau_ind[individual[i]]) - (mu[i] + mu_ind[individual[i]])) | 0 , sigma_mu_ind);//replicated individuals
   } else {
     q[i] = log(tau[i]) + normal_lpdf((moult_dates[i] - moult_indices[i]*tau[i]) | mu[i], sigma[i]);//unreplicated - don't estimate an individual intercept??
   }
@@ -78,6 +80,7 @@ for (i in 1:N_moult) {
   }
 //individual start dates are drawn from the population distribution of start dates - TODO: this is slow, so don't calculate it for replicated obs
 mu_ind ~ normal(0, sigma[individual_first_index]);//only estimate this for replicated individuals? shouldn't this be mu[i] for replicated individuals??
+tau_ind ~ normal(0, sigma_tau);//only estimate this for replicated individuals? shouldn't this be mu[i] for replicated individuals??
 //print(R);
 //print(sum(log(P)));
 //print(sum(log(Q)));
@@ -93,6 +96,7 @@ if (flat_prior == 1) {
 }
 beta_sigma[1] ~ normal(0,5);
 sigma_mu_ind ~ normal(0,1);
+sigma_tau ~ normal(0,1);
 }
 
 generated quantities{
@@ -108,7 +112,7 @@ vector[N_moult] mu;//start date lin pred
 vector[N_moult] tau;//duration lin pred
 vector[N_moult] sigma;//duration lin pred
 vector[N_ind] mu_ind_out;//individual intercepts for output
-
+vector[N_ind] tau_ind_out;//individual intercepts for output
 
   mu = X_mu * beta_mu;
 //  print(mu);
@@ -122,8 +126,10 @@ vector[N_ind] mu_ind_out;//individual intercepts for output
   for (i in 1:N_moult) {
   if (is_replicated[individual[i]] == 1) {
      mu_ind_out[individual[i]] = mu_ind[individual[i]] + mu[i];//replicated individuals
+     tau_ind_out[individual[i]] = tau_ind[individual[i]] + tau[i];//replicated individuals
   } else {
     mu_ind_out[individual[i]] = moult_dates[i] - moult_indices[i]*tau[i];//unreplicated
+    tau_ind_out[individual[i]] = tau[i];
   }
 }
 
