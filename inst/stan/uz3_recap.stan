@@ -5,6 +5,7 @@
 data {
   int<lower=0,upper=1> flat_prior;//translated logical use flat prior on start and duration?
   int<lower=0> N_ind;//number of recaptured individuals
+  int<lower=0> N_ind_rep;//number of recaptured individuals
   int<lower=0> N_moult;//J
   int<lower=0> Nobs_replicated;//number of observations from individuals with repeat measures
   vector[N_moult] moult_dates;//u_j
@@ -14,6 +15,7 @@ data {
   int<lower=0>replicated[Nobs_replicated];//indices of obs from individuals with repeat measures
   int<lower=0>not_replicated[N_moult - Nobs_replicated];//indices of obs from individuals without repeat measures
   int<lower=0>is_replicated[N_ind];
+  int<lower=0>replicated_individuals[N_ind_rep];//individual id's that are replicated - i.e. indices of the random_effect intercept
   //int<lower=0> N_new;//K
   //vector[N_new] new_dates;//v_k
   //predictors
@@ -43,9 +45,9 @@ parameters {
 transformed parameters{
   real sigma_intercept = exp(beta_sigma[1]);
   //post-sweep random effects
-  real beta_star = beta_mu[1] + mean(mu_ind);
-  vector[N_ind] mu_ind_star = mu_ind - mean(mu_ind);
-  real finite_sd = sd(mu_ind_star);
+  real beta_star = beta_mu[1] + mean(mu_ind[replicated_individuals]);
+  vector[N_ind] mu_ind_star = mu_ind - mean(mu_ind[replicated_individuals]);
+  real finite_sd = sd(mu_ind_star[replicated_individuals]);
 }
 
 // The model to be estimated.
@@ -79,8 +81,8 @@ for (i in 1:N_moult) {
   //}
   }
 //individual start dates are drawn from the population distribution of start dates - TODO: this is slow, so don't calculate it for replicated obs
-mu_ind ~ normal(0, sigma[individual_first_index]);//only estimate this for replicated individuals? shouldn't this be mu[i] for replicated individuals??
-tau_ind ~ normal(0, sigma_tau);//only estimate this for replicated individuals? shouldn't this be mu[i] for replicated individuals??
+mu_ind[replicated_individuals] ~ normal(0, sigma[individual_first_index][replicated_individuals]);//only estimate this for replicated individuals? shouldn't this be mu[i] for replicated individuals??
+tau_ind[replicated_individuals] ~ normal(0, sigma_tau);//only estimate this for replicated individuals? shouldn't this be mu[i] for replicated individuals??
 //print(R);
 //print(sum(log(P)));
 //print(sum(log(Q)));

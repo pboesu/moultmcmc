@@ -37,8 +37,10 @@ uz3_linpred_recap <- function(moult_index_column, date_column, id_column, start_
                    moult_indices = data[[moult_index_column]],#TODO this is not robust to Os and Ns being deleted from the data - if the factor passed in has more levels than are represented in the data, so needs more care to reassign numerical indicies for stan indexing from R's factor level numerical codes
                    N_moult = length(data[[date_column]]),#TODO: this is not robust to NA's being thrown out by model.matrix/model.frame
                    N_ind = length(unique(data[[id_column]])),
+                   N_ind_rep = length(unique(as.numeric(data[[id_column]])[replicated])),
                    individual = as.numeric(data[[id_column]]),
                    individual_first_index = as.array(id_first),
+                   replicated_individuals = unique(as.numeric(data[[id_column]])[replicated]),
                    replicated = as.array(replicated),
                    not_replicated = as.array(not_replicated),
                    is_replicated = as.array(is_replicated),
