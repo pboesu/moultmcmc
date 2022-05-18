@@ -107,6 +107,8 @@ generated quantities{
 vector[N_moult] mu;//start date lin pred
 vector[N_moult] tau;//duration lin pred
 vector[N_moult] sigma;//duration lin pred
+vector[N_ind] mu_ind_out;//individual intercepts for output
+
 
   mu = X_mu * beta_mu;
 //  print(mu);
@@ -115,7 +117,7 @@ vector[N_moult] sigma;//duration lin pred
   sigma = exp(X_sigma * beta_sigma);
 
 
-  vector[N_ind] mu_ind_out;//individual intercepts for output
+
 
   for (i in 1:N_moult) {
   if (is_replicated[individual[i]] == 1) {
