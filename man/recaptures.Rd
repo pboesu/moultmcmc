@@ -15,6 +15,7 @@ A data frame with 299 rows and 13 variables:
 \item{date_sampled}{observation date (days since January 01)}
 \item{pfmg_sampled}{true PFMG at sampling occasion}
 \item{pfmg_with_error}{PFMG incorporating measurement error, if any}
+\item{sampling_bias}{descriptor of sampling bias type, if any}
 \item{prop_recaptured_individuals}{proportion of individuals with more than 1 capture}
 \item{rel_tau_sd}{relative population standard deviation of the moult duration}
 \item{obs_error}{measurement error}
