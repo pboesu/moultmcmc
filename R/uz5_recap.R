@@ -39,7 +39,7 @@ uz5_linpred_recap <- function(moult_index_column, date_column, id_column, start_
   N_old = length(data[[date_column]][data[[moult_index_column]]==0])#TODO: this is not robust to NA's being thrown out by model.matrix/model.frame
   replicated <- which(data[[id_column]] %in% names(table(data[[id_column]])[table(data[[id_column]])>1]))
   not_replicated <- which(data[[id_column]] %in% names(table(data[[id_column]])[table(data[[id_column]])==1]))
-  is_replicated <- ifelse(table(data[[id_column]])>1, 1,0)
+  is_replicated <- ifelse(table(data[[id_column]])>1, 1,0)#a numerical representation of a logical vector of length N_ind
   #prepare data structure for stan
   #TODO: all of these need to be as.array if they are not generally a scalar, otherwise stan indexing falls over for length-one vectors
   standata <- list(moult_dates  = as.array(data[[date_column]][(data[[moult_index_column]] > 0 & data[[moult_index_column]] < 1)]),
@@ -48,6 +48,7 @@ uz5_linpred_recap <- function(moult_index_column, date_column, id_column, start_
                    old_dates = as.array(data[[date_column]][data[[moult_index_column]]==0]),
                    N_old = N_old,#TODO: this is not robust to NA's being thrown out by model.matrix/model.frame
                    N_ind = length(unique(data[[id_column]])),
+                   N_ind_rep = length(unique(as.numeric(data[[id_column]])[replicated])),
 
                    individual = as.numeric(data[[id_column]]),#TODO: the resultant individual intercepts are hard to map onto original factor levels - this should be handled in the postprocessing of the model output
                    individual_first_index = as.array(id_first),
@@ -56,6 +57,7 @@ uz5_linpred_recap <- function(moult_index_column, date_column, id_column, start_
                    not_replicated_old = as.array(not_replicated[not_replicated <= N_old]),
                    not_replicated_moult = as.array(not_replicated[not_replicated > N_old] - N_old),
                    is_replicated = as.array(is_replicated),
+                   replicated_individuals = unique(as.numeric(data[[id_column]])[replicated]),
                    Nobs_replicated = length(replicated),
                    Nobs_not_replicated_old = length(not_replicated[not_replicated <= N_old]),
                    Nobs_not_replicated_moult = length(not_replicated[not_replicated > N_old]),

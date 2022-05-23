@@ -6,6 +6,7 @@ data {
   //responses
   int<lower=0,upper=1> flat_prior;//translated logical use flat prior on start and duration?
   int<lower=0> N_ind;//number of individuals
+  int<lower=0> N_ind_rep;//number of recaptured individuals
   int<lower=0> N_old;//I in original derivation
   vector[N_old] old_dates;//t_i
   int<lower=0> N_moult;//J
@@ -21,6 +22,7 @@ data {
   int<lower=0>not_replicated_old[Nobs_not_replicated_old];//indices of old obs from individuals without repeat measures
   int<lower=0>not_replicated_moult[Nobs_not_replicated_moult];//indices of moult obs from individuals without repeat measures. NB these are relative to N_moult observations, NOT the full dataset
   int<lower=0>is_replicated[N_ind];
+  int<lower=0>replicated_individuals[N_ind_rep];//individual id's that are replicated - i.e. indices of the random_effect intercept
   //int<lower=0> N_new;//K
   //vector[N_new] new_dates;//v_k
   //predictors
@@ -48,8 +50,8 @@ parameters {
 transformed parameters{
   real sigma_intercept = exp(beta_sigma[1]);
   //post-sweep random effects
-  real beta_star = beta_mu[1] + mean(mu_ind);
-  vector[N_ind] mu_ind_star = mu_ind - mean(mu_ind);
+  real beta_star = beta_mu[1] + mean(mu_ind[replicated_individuals]);
+  vector[N_ind_rep] mu_ind_star = mu_ind - mean(mu_ind[replicated_individuals]);
   real finite_sd = sd(mu_ind_star);
 }
 
@@ -85,7 +87,7 @@ for (i in 1:N_moult){
    q[i] = log(tau[i + N_old]) + normal_lpdf((moult_dates[i] - moult_indices[i]*tau[i + N_old]) | mu[i + N_old], sigma[i + N_old]);//N.B. unlike P and R this returns a log density
   }
 }
-mu_ind ~ normal(0, sigma[individual_first_index]);//
+mu_ind[replicated_individuals] ~ normal(0, sigma[individual_first_index][replicated_individuals]);//
 
 //print(sum(q));
 //print(sum(log(P)));
