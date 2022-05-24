@@ -58,7 +58,7 @@ transformed parameters{
   real sigma_intercept = exp(beta_sigma[1]);
   //post-sweep random effects
   real beta_star = beta_mu[1] + mean(mu_ind[replicated_individuals]);
-  vector[N_ind_rep] mu_ind_star = mu_ind - mean(mu_ind[replicated_individuals]);
+  vector[N_ind_rep] mu_ind_star = mu_ind[replicated_individuals] - mean(mu_ind[replicated_individuals]);
   real finite_sd = sd(mu_ind_star);
 }
 
