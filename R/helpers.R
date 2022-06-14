@@ -71,6 +71,9 @@ summary_table.moult <-function(x, prob = 0.95, tidy_names = TRUE, ...){
   plotdata <- tibble::tibble(parameter = names(coef(x)), estimate = coef(x), stderr = x$standard.errors, lci = coef(x) + qnorm(probs[1])*x$standard.errors, uci = coef(x) + qnorm(probs[2])*x$standard.errors, prob = prob, method = 'ML', Rhat = NA)
   if (tidy_names)
   plotdata <- mutate(plotdata, parameter = stringr::str_replace_all(.data$parameter, "intercept.1", "(Intercept)"))
+  plotdata <- mutate(plotdata, parameter = stringr::str_replace_all(.data$parameter, "duration_duration", "duration_(Intercept)"))
+  plotdata <- mutate(plotdata, parameter = stringr::str_replace_all(.data$parameter, "mean-start-day", "(Intercept)"))
+  plotdata <- mutate(plotdata, parameter = stringr::str_replace_all(.data$parameter, "SD-start-day", "(Intercept)"))
   plotdata <- mutate(plotdata, parameter = stringr::str_replace_all(.data$parameter, "intercept", "(Intercept)"))
   return(plotdata)
 }
