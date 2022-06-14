@@ -289,16 +289,18 @@ residual_plot <- function(...){UseMethod("residual_plot")}
 
 #' Residual plot for moult model
 #'
+#' This function displays a plot that shows where observed dates and moult scores fall relative to the predictions of the fitted model. Active moult observations should generally fall within +/- 3 start-date standard deviations of the regression line.
+#'
 #' @param x moult model object created with moult::moult
 #' @param prob coverage probability of active moult in the sampled population
 #' @param data data.frame of observations, column names need to match model date and moult index variables
-#' @param plot logical, if TRUE (default) return a plot, else return a dataframe with start and end dates of moult based on model intercepts
+#' @param plot logical, if TRUE (default) return a plot, else return a data.frame with calculated quantities
 #' @param ... not currently used
 #'
 #' @return a plot
 #'
 #' @importFrom stats coef qnorm
-#' @importFrom ggplot2 geom_segment aes scale_linetype_manual ggplot theme_classic xlab ylab geom_point
+#' @importFrom ggplot2 geom_hline aes scale_shape_manual ggplot theme_classic xlab ylab ggtitle geom_point
 #' @export
 #'
 #'
