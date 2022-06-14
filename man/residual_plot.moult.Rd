@@ -12,10 +12,6 @@
 \item{plot}{logical, if TRUE (default) return a plot, else return a data.frame with calculated quantities}
 
 \item{...}{not currently used}
-
-\item{prob}{coverage probability of active moult in the sampled population}
-
-\item{data}{data.frame of observations, column names need to match model date and moult index variables}
 }
 \value{
 a plot
