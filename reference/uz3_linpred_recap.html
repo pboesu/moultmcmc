@@ -76,30 +76,55 @@
     <h2>Arguments</h2>
     <dl><dt>moult_index_column</dt>
 <dd><p>the name the column in <code>data</code> containing moult indices, i.e. a numeric vector of (linearized) moult scores (0 = old plumage,1 = new plumage).</p></dd>
+
+
 <dt>date_column</dt>
 <dd><p>the name the column in <code>data</code> containing sampling dates, encoded as days since an arbitrary reference date, i.e. a numeric vector</p></dd>
+
+
 <dt>id_column</dt>
 <dd><p>factor identifier. Usually a season-individual combination to encode within-season recaptures</p></dd>
+
+
 <dt>start_formula</dt>
 <dd><p>model formula for start date</p></dd>
+
+
 <dt>duration_formula</dt>
 <dd><p>model formula for duration</p></dd>
+
+
 <dt>sigma_formula</dt>
 <dd><p>model formula for start date sigma</p></dd>
+
+
 <dt>data</dt>
 <dd><p>Input data frame</p></dd>
+
+
 <dt>init</dt>
 <dd><p>Specification of initial values for all or some parameters. Can be the string "auto" for an automatic guess based on the data, or any of the permitted rstan options: the digit 0, the strings "0" or "random", or a function. See the detailed documentation for the init argument in ?rstan::stan.</p></dd>
+
+
 <dt>flat_prior</dt>
 <dd><p>use uniform prior on start date and duration (TRUE) or vaguely informative truncated normal prior (FALSE). Defaults to TRUE.</p></dd>
+
+
 <dt>log_lik</dt>
 <dd><p>boolean retain pointwise log-likelihood in output? This enables model assessment and selection via the loo package. Defaults to true, can lead to very large output arrays if sample size is large.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Arguments passed to <code><a href="https://mc-stan.org/rstan/reference/stanmodel-method-sampling.html" class="external-link">rstan::sampling</a></code> (e.g. iter, chains).</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An object of class <code>stanfit</code> returned by <code><a href="https://mc-stan.org/rstan/reference/stanmodel-method-sampling.html" class="external-link">rstan::sampling</a></code></p>
+    
+
+<p>An object of class <code>stanfit</code> returned by <code><a href="https://mc-stan.org/rstan/reference/stanmodel-method-sampling.html" class="external-link">rstan::sampling</a></code></p>
+
+
     </div>
 
   </div>
@@ -114,7 +139,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>
