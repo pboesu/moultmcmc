@@ -213,12 +213,12 @@ moult_plot.moult <-function(x, prob = 0.95, data = NULL, plot = TRUE, ...){
   quantile_name <- paste(prob*100, '% quantile')
   data_x <- strsplit(as.character(x$terms$full)[3], split = ' ')[[1]][1]
   data_y <- as.character(x$terms$full)[2]
-  plotdata <- tibble::tibble(start_date = c(coef(x)['mean_intercept'],
-                                            qnorm(probs[1])*coef(x)['sd_(Intercept)']+coef(x)['mean_intercept'],
-                                            qnorm(probs[2])*coef(x)['sd_(Intercept)']+coef(x)['mean_intercept']),
-                             end_date = c(coef(x)['mean_intercept']+coef(x)['duration_intercept.1'],
-                                            qnorm(probs[1])*coef(x)['sd_(Intercept)']+coef(x)['mean_intercept']+coef(x)['duration_intercept.1'],
-                                            qnorm(probs[2])*coef(x)['sd_(Intercept)']+coef(x)['mean_intercept']+coef(x)['duration_intercept.1']),
+  plotdata <- tibble::tibble(start_date = c(x$coefficients$mean[1],
+                                            qnorm(probs[1])*x$coefficients$sd[1]+x$coefficients$mean[1],
+                                            qnorm(probs[2])*x$coefficients$sd[1]+x$coefficients$mean[1]),
+                             end_date = c(x$coefficients$mean[1]+x$coefficients$duration[1],
+                                            qnorm(probs[1])*x$coefficients$sd[1]+x$coefficients$mean[1]+x$coefficients$duration[1],
+                                            qnorm(probs[2])*x$coefficients$sd[1]+x$coefficients$mean[1]+x$coefficients$duration[1]),
                              line_type = c('Population mean', quantile_name, quantile_name))
   if (plot) {
       mplot <- ggplot(plotdata, aes(x = .data$start_date, xend = .data$end_date, y = 0, yend = 1, lty = .data$line_type)) + scale_linetype_manual(values = c(3,1), name = '') + geom_segment() + theme_classic() + xlab('Date') + ylab('Moult Index')
