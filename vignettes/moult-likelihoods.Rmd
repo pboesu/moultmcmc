@@ -68,14 +68,47 @@ $$
 \mathcal{L}(\theta,t,u,y,u',v) = \prod_{i=1}^IP(t_i)\prod_{j = 1}^Jq(u_j,y_j)\prod_{l = 1}^{L}Q(u'_{l})\prod_{k=1}^KR(v_k),
 $$
 
+## Recapture models
+`moultmcmc` currently implements a recaptures model which allows for heterogeneity in start dates $\mu$ but assumes a common moult duration $\tau$.
+When repeat observations are available an individual's start date $\mu_n$ then becomes  
+
+\begin{equation}
+\mu_n = \mu_0 + \mu'_n + \mathbf{x}_\mu\boldsymbol{\beta}_\mu 
+\end{equation}
+
+where $\boldsymbol{x}_\mu$ is a row vector containing the values of individual-specific  predictors (in the same format as $\boldsymbol{X}_\mu$), and $\mu'_n$ is an  individual-level random effect intercept 
+
+\begin{equation}
+\mu'_n \sim \mathrm{Normal}(0,\sigma_n) 
+\end{equation}
+where $\sigma_n$ is the individual-specific standard deviation.
+We can then exploit the linearity assumption and treat observed moult scores as
+\begin{equation}
+ y_{ni} \sim \mathrm{Normal}(\mu_0 + \mu'_n + \tau * u_{ni}, \sigma_\tau) 
+\end{equation}
+where $\sigma_\tau$ captures any unmodelled variance in $\tau$ as well as any measurement error in $y$.
+
+The likelihood for the Type 3-like model for a sample of $J$ birds in active moult without repeated observations, and $N$ birds in active moult with a total of $M$ repeated observations $u'=u'_m,\ldots,u'_M$ and $y'=y'_m,\ldots,y'_M$ then is
+
+$$
+\mathcal{L}(\boldsymbol\theta,u,y,u',y') = \prod_{j = 1}^J\frac{q(u_j,y_j)}{Q(u_j)}\prod_{m = 1}^{M}f(u'_m,y'_m)\prod_{n=1}^N\phi(\mu'_n|0,\sigma_n),
+$$
+where $f(u'_m,y'_m)$ follows from above.
+
 # Priors
-The following priors are currently hard-coded for the intercept terms of the linear predictors on $\mu$, $\tau$, and $\sigma$, respectively, in all `moultmcmc` models:
+Users have a choice between two set of priors for the intercept terms of the linear predictors on the start date $\mu$, the duration $\tau$, and the population standard deviation of the start date $\sigma$, respectively. By default flat priors are used for $\mu_0$ and $\tau_0$ and a vaguely informative normal prior on $\ln(\sigma_0)$
 
 $\mu_0 \sim \mathrm{Uniform(0,366)}$   
 $\tau_0 \sim \mathrm{Uniform(0,366)}$    
 $\ln(\sigma_0) \sim \mathrm{Normal(0,5)}$
 
-Any additional regression coefficients will use the Stan default of an improper flat prior.
+In some cases the models sample poorly with these priors, and better convergence can be achieved by setting the argument `flat_prior = FALSE`. In this case vaguely informative truncated normal priors are used for $\mu_0$ and $\tau_0$:
 
+$\mu_0 \sim \mathrm{TruncNormal(150,50,0,366)}$   
+$\tau_0 \sim \mathrm{TruncNormal(100,30,0,366)}$
+
+These priors work well for data from passerines in seasonal environments, i.e. when the sampling occasion data is encoded as days from mid-winter.
+
+For any additional regression coefficients an improper flat prior is used as a default.
 
 # References
