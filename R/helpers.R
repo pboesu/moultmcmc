@@ -277,3 +277,48 @@ if (plot) {
       return(plotdata)
     }
 }
+
+#' residual_plot generic
+#'
+#' @param ... ...
+#'
+#' @return ...
+#' @export
+#'
+residual_plot <- function(...){UseMethod("residual_plot")}
+
+#' Residual plot for moult model
+#'
+#' @param x moult model object created with moult::moult
+#' @param prob coverage probability of active moult in the sampled population
+#' @param data data.frame of observations, column names need to match model date and moult index variables
+#' @param plot logical, if TRUE (default) return a plot, else return a dataframe with start and end dates of moult based on model intercepts
+#' @param ... not currently used
+#'
+#' @return a plot
+#'
+#' @importFrom stats coef qnorm
+#' @importFrom ggplot2 geom_segment aes scale_linetype_manual ggplot theme_classic xlab ylab geom_point
+#' @export
+#'
+#'
+residual_plot.moult <-function(x, plot = TRUE, ...){
+  model_data <- x$X
+  model_data$duration_pred <- predict(x, newdata = x$X, predict.type = 'duration')$duration
+  model_data$start_pred <- predict(x, newdata = x$X, predict.type = 'start')$mean.start
+  #calculate sd predictions by hand
+  p.sd <- unlist(x$coefficients$sd)
+  mm <- model.matrix(x$terms$sd, x$X)
+  model_data$sd_pred <- mm %*% p.sd
+
+  model_data$delta_day <-  x$Day - (x$y[[1]]*model_data$duration_pred+model_data$start_pred)
+  model_data$delta_day_zscore <- model_data$delta_day / model_data$sd_pred
+  model_data$active_moult <- x$y[[1]] > 0 & x$y[[1]] < 1
+
+  if(plot == TRUE){
+    ggplot(model_data, aes(x = get(names(model_data)[1]), y = delta_day_zscore, pch = active_moult)) + geom_point() + geom_hline(yintercept = -3:3, lty = 2, col = 'grey') + geom_hline(yintercept = 0) + scale_shape_manual(values = c(1,16)) + xlab('PFMG_observed') + ylab('Population SD of start date') + theme_classic() + theme(legend.position = 'bottom') + ggtitle('Experimental "residual" plot')
+  } else {
+    return(model_data)
+  }
+
+}
