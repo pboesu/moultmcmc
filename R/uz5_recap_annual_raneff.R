@@ -49,7 +49,7 @@ uz5_linpred_recap_annual_raneff <- function(moult_index_column, date_column, id_
                    old_dates = as.array(data[[date_column]][data[[moult_index_column]]==0]),
                    N_old = N_old,#TODO: this is not robust to NA's being thrown out by model.matrix/model.frame
                    N_ind = length(unique(data[[id_column]])),
-
+                   N_ind_rep = length(unique(as.numeric(data[[id_column]])[replicated])),
                    individual = as.numeric(data[[id_column]]),#TODO: the resultant individual intercepts are hard to map onto original factor levels - this should be handled in the postprocessing of the model output
                    individual_first_index = as.array(id_first),
                    replicated = as.array(replicated),
@@ -57,6 +57,7 @@ uz5_linpred_recap_annual_raneff <- function(moult_index_column, date_column, id_
                    not_replicated_old = as.array(not_replicated[not_replicated <= N_old]),
                    not_replicated_moult = as.array(not_replicated[not_replicated > N_old] - N_old),
                    is_replicated = as.array(is_replicated),
+                   replicated_individuals = unique(as.numeric(data[[id_column]])[replicated]),
                    Nobs_replicated = length(replicated),
                    Nobs_not_replicated_old = length(not_replicated[not_replicated <= N_old]),
                    Nobs_not_replicated_moult = length(not_replicated[not_replicated > N_old]),
@@ -73,11 +74,11 @@ uz5_linpred_recap_annual_raneff <- function(moult_index_column, date_column, id_
   if(log_lik){
     outpars <- c('beta_mu','beta_tau','beta_sigma', 'sigma_intercept',
 'u_year_mean', 'u_year_duration', 'sd_year_mean', 'sd_year_duration',
-'sigma_mu_ind','beta_star','finite_sd', 'mu_ind_star', 'mu_ind', 'log_lik')
+'sigma_mu_ind','beta_star','finite_sd', 'mu_ind_star', 'log_lik')
   } else {
     outpars <- c('beta_mu','beta_tau','beta_sigma', 'sigma_intercept',
 'u_year_mean', 'u_year_duration', 'sd_year_mean', 'sd_year_duration',
-'sigma_mu_ind','beta_star','finite_sd', 'mu_ind_star', 'mu_ind')
+'sigma_mu_ind','beta_star','finite_sd', 'mu_ind_star')
   }
   #guess initial values
   if(init == "auto"){
