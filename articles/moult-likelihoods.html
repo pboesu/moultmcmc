@@ -137,13 +137,34 @@ f_Y(t)(y)=\tau f_T(t-y\tau),\quad0 &lt; y &lt; 1,
 \mathcal{L}(\theta,t,u,y,u',v) = \prod_{i=1}^IP(t_i)\prod_{j = 1}^Jq(u_j,y_j)\prod_{l = 1}^{L}Q(u'_{l})\prod_{k=1}^KR(v_k),
 \]</span></p>
 </div>
+<div class="section level3">
+<h3 id="recapture-models">Recapture models<a class="anchor" aria-label="anchor" href="#recapture-models"></a>
+</h3>
+<p><code>moultmcmc</code> currently implements a recaptures model which allows for heterogeneity in start dates <span class="math inline">\(\mu\)</span> but assumes a common moult duration <span class="math inline">\(\tau\)</span>. When repeat observations are available an individual’s start date <span class="math inline">\(\mu_n\)</span> then becomes</p>
+<p><span class="math display">\[\begin{equation}
+\mu_n = \mu_0 + \mu'_n + \mathbf{x}_\mu\boldsymbol{\beta}_\mu 
+\end{equation}\]</span></p>
+<p>where <span class="math inline">\(\boldsymbol{x}_\mu\)</span> is a row vector containing the values of individual-specific predictors (in the same format as <span class="math inline">\(\boldsymbol{X}_\mu\)</span>), and <span class="math inline">\(\mu'_n\)</span> is an individual-level random effect intercept</p>
+<p><span class="math display">\[\begin{equation}
+\mu'_n \sim \mathrm{Normal}(0,\sigma_n) 
+\end{equation}\]</span> where <span class="math inline">\(\sigma_n\)</span> is the individual-specific standard deviation. We can then exploit the linearity assumption and treat observed moult scores as <span class="math display">\[\begin{equation}
+ y_{ni} \sim \mathrm{Normal}(\mu_0 + \mu'_n + \tau * u_{ni}, \sigma_\tau) 
+\end{equation}\]</span> where <span class="math inline">\(\sigma_\tau\)</span> captures any unmodelled variance in <span class="math inline">\(\tau\)</span> as well as any measurement error in <span class="math inline">\(y\)</span>.</p>
+<p>The likelihood for the Type 3-like model for a sample of <span class="math inline">\(J\)</span> birds in active moult without repeated observations, and <span class="math inline">\(N\)</span> birds in active moult with a total of <span class="math inline">\(M\)</span> repeated observations <span class="math inline">\(u'=u'_m,\ldots,u'_M\)</span> and <span class="math inline">\(y'=y'_m,\ldots,y'_M\)</span> then is</p>
+<p><span class="math display">\[
+\mathcal{L}(\boldsymbol\theta,u,y,u',y') = \prod_{j = 1}^J\frac{q(u_j,y_j)}{Q(u_j)}\prod_{m = 1}^{M}f(u'_m,y'_m)\prod_{n=1}^N\phi(\mu'_n|0,\sigma_n),
+\]</span> where <span class="math inline">\(f(u'_m,y'_m)\)</span> follows from above.</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="priors">Priors<a class="anchor" aria-label="anchor" href="#priors"></a>
 </h2>
-<p>The following priors are currently hard-coded for the intercept terms of the linear predictors on <span class="math inline">\(\mu\)</span>, <span class="math inline">\(\tau\)</span>, and <span class="math inline">\(\sigma\)</span>, respectively, in all <code>moultmcmc</code> models:</p>
+<p>Users have a choice between two set of priors for the intercept terms of the linear predictors on the start date <span class="math inline">\(\mu\)</span>, the duration <span class="math inline">\(\tau\)</span>, and the population standard deviation of the start date <span class="math inline">\(\sigma\)</span>, respectively. By default flat priors are used for <span class="math inline">\(\mu_0\)</span> and <span class="math inline">\(\tau_0\)</span> and a vaguely informative normal prior on <span class="math inline">\(\ln(\sigma_0)\)</span></p>
 <p><span class="math inline">\(\mu_0 \sim \mathrm{Uniform(0,366)}\)</span><br><span class="math inline">\(\tau_0 \sim \mathrm{Uniform(0,366)}\)</span><br><span class="math inline">\(\ln(\sigma_0) \sim \mathrm{Normal(0,5)}\)</span></p>
-<p>Any additional regression coefficients will use the Stan default of an improper flat prior.</p>
+<p>In some cases the models sample poorly with these priors, and better convergence can be achieved by setting the argument <code>flat_prior = FALSE</code>. In this case vaguely informative truncated normal priors are used for <span class="math inline">\(\mu_0\)</span> and <span class="math inline">\(\tau_0\)</span>:</p>
+<p><span class="math inline">\(\mu_0 \sim \mathrm{TruncNormal(150,50,0,366)}\)</span><br><span class="math inline">\(\tau_0 \sim \mathrm{TruncNormal(100,30,0,366)}\)</span></p>
+<p>These priors work well for data from passerines in seasonal environments, i.e. when the sampling occasion data is encoded as days from mid-winter.</p>
+<p>For any additional regression coefficients an improper flat prior is used as a default.</p>
 </div>
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
