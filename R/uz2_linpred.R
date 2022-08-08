@@ -47,7 +47,7 @@ uz2_linpred <- function(moult_index_column, date_column, start_formula = ~1, dur
   if(init == "auto"){
     mu_start = mean(c(max(standata$old_dates),min(standata$moult_dates)))
     tau_start = max(10, mean(c(max(standata$moult_dates),min(standata$new_dates))) - mu_start)
-    sigma_start = min(10,sd(standata$moult_dates))
+    sigma_start = min(40,sd(standata$moult_dates))
     initfunc <- function(chain_id = 1) {
       # cat("chain_id =", chain_id, "\n")
       list(beta_mu = as.array(c(mu_start,rep(0, standata$N_pred_mu - 1))), #initialize intercept term from data, set inits for all other effects to 0
