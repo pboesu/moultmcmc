@@ -32,7 +32,9 @@ Imports:
     rlang,
     nlme,
     cowplot,
-    tidyr
+    tidyr,
+    MASS,
+    RColorBrewer
 LinkingTo: 
     BH (>= 1.66.0),
     Rcpp (>= 0.12.0),

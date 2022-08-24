@@ -7,6 +7,7 @@
 #' @param start_formula model formula for start date
 #' @param duration_formula model formula for duration
 #' @param sigma_formula model formula for start date sigma
+#' @param lump_non_moult logical; should pre- and post-moult observations be treated as indistinguishable? if TRUE, the type 2L model will be fitted.
 #' @param data Input data frame
 #' @param init Specification of initial values for all or some parameters. Can be the string "auto" for an automatic guess based on the data, or any of the permitted rstan options: the digit 0, the strings "0" or "random", or a function. See the detailed documentation for the init argument in ?rstan::stan.
 #' @param flat_prior use uniform prior on start date and duration (TRUE) or vaguely informative truncated normal prior (FALSE). Defaults to TRUE.
@@ -15,7 +16,18 @@
 #' @return An object of class `stanfit` returned by `rstan::sampling`
 #'
 #TODO: implement an input data class which ensures column names and correct encoding for categorical variables
-uz2_linpred_recap <- function(moult_index_column, date_column, id_column, start_formula = ~1, duration_formula = ~1, sigma_formula = ~1, data, init = "auto", flat_prior = TRUE, log_lik = TRUE,...) {
+uz2_linpred_recap <- function(moult_index_column,
+                              date_column,
+                              id_column,
+                              start_formula = ~1,
+                              duration_formula = ~1,
+                              sigma_formula = ~1,
+                              lump_non_moult = FALSE,
+                              data,
+                              init = "auto",
+                              flat_prior = TRUE,
+                              log_lik = TRUE,
+                              ...) {
   stopifnot(all(data[[moult_index_column]] >= 0 & data[[moult_index_column]] <= 1))
   stopifnot(any(data[[moult_index_column]] == 0))
   stopifnot(any(data[[moult_index_column]] == 1))
@@ -70,7 +82,9 @@ uz2_linpred_recap <- function(moult_index_column, date_column, id_column, start_
                    X_tau = X_tau,
                    N_pred_tau = ncol(X_tau),
                    X_sigma = X_sigma,
-                   N_pred_sigma = ncol(X_sigma))
+                   N_pred_sigma = ncol(X_sigma),
+                   lumped = as.numeric(lump_non_moult),
+                   llik = as.numeric(log_lik))
   #include pointwise log_lik matrix  in output?
   if(log_lik){
     outpars <- c('beta_mu','beta_tau','beta_sigma', 'sigma_intercept', 'sigma_mu_ind','beta_star','finite_sd', 'mu_ind_star', 'mu_ind', 'log_lik')
