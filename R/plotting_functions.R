@@ -15,6 +15,7 @@
 #' @import RColorBrewer
 #' @importFrom graphics abline contour hist layout lines par plot plot.default points text title strwidth legend
 #' @importFrom stats density
+#' @importFrom rstan extract
 #' @export
 compairs_plot <- function(x, y = NULL, pars = NULL, scatter = TRUE, overlay = TRUE, names = NULL, ...){
   if(is.null(pars)){pars = names(x$stanfit)[1:4]
@@ -22,8 +23,24 @@ compairs_plot <- function(x, y = NULL, pars = NULL, scatter = TRUE, overlay = TR
 
   np = length(pars)
 
-  draws = extract(x$stanfit, pars = pars)
-  if(!is.null(y)) draws.y = extract(y$stanfit, pars = pars)
+  pars.x = intersect(pars, names(x$stanfit))
+  if (length(pars.x) < 1) stop('no parameter found in model x')
+  draws <- vector("list", np)
+  names(draws) <- pars
+  draws.raw = extract(x$stanfit, pars = pars.x)
+  for (p in names(draws.raw)){
+    draws[p] <- draws.raw[p]
+  }
+  if(!is.null(y)) {
+    pars.y = intersect(pars, names(y$stanfit))
+    if (length(pars.y) < 1) stop('no parameter found in model y')
+    draws.y <- vector("list", np)
+    names(draws.y)<- pars
+    draws.raw.y = extract(y$stanfit, pars = pars.y)
+    for (p in names(draws.raw.y)){
+      draws.y[p] <- draws.raw.y[p]
+    }
+    }
   if(is.null(names))names = c('model 1','model 2')
   #cors<-round(cor(x$samples),2) #correlations
 
@@ -42,30 +59,39 @@ compairs_plot <- function(x, y = NULL, pars = NULL, scatter = TRUE, overlay = TR
   # Draw histograms, tweak arguments of hist to make nicer figures
   for(i in seq_len(np)){
     if(is.null(y)){
-      plot(density(draws[[i]]),main="", col = 'blue')
+      if (!is.null(draws[[i]])) { plot(density(draws[[i]]),main="", col = 'blue')
+      } else {
+        plot.default(type = 'n', ...)
+        }
     } else {
-      dens = density(draws[[i]])
-      dens.y = density(draws.y[[i]])
+      dens = switch(is.null(draws[[i]])+1,density(draws[[i]]),NULL)
+      dens.y = switch(is.null(draws.y[[i]])+1,density(draws.y[[i]]),NULL)
 
       plot(dens ,main="", col = 'blue',
            xlim = range(dens$x,dens.y$x),
            ylim = range(dens$y,dens.y$y))
-      lines(density(draws.y[[i]]),main="", col = 'red')
+      lines(dens.y,main="", col = 'red')
       if(i == 1) legend('topleft', legend = names, text.col = c('blue','red'), bty = 'n')
       }
     title(main=pars[i], line = -0.1, xpd=TRUE)
   }
 
-  # Write correlations to upper diagonal part of the graph
-  # Again, tweak accordingly
+  #
+  # Draw scatter
   for(i in seq_len(np-1))
     for(j in (i+1):np){
       if (scatter == TRUE){
-        plot.default(draws[[i]],draws[[j]], pch=16, cex=0.3, col='blue',
-                     xlim = range(draws[[i]],draws.y[[i]]),
-                     ylim = range(draws[[j]],draws.y[[j]]),
-                     ...)
-        points(draws.y[[i]],draws.y[[j]], pch=16, cex=0.3, col='red', ...)
+        if(!is.null(draws[[i]]) & !is.null(draws[[j]])){
+
+          plot.default(draws[[i]],draws[[j]], pch=16, cex=0.3, col='blue',
+                       xlim = range(draws[[i]],draws.y[[i]]),
+                       ylim = range(draws[[j]],draws.y[[j]]),
+                       ...)
+        } else {
+          plot.default(range(draws[[i]]), range(draws[[j]]), type = 'n', ...)
+          }
+        if(!is.null(draws.y[[i]]) & !is.null(draws.y[[j]])){
+          points(draws.y[[i]],draws.y[[j]], pch=16, cex=0.3, col='red', ...)}
       } else {
         plot.default(range(draws[[i]]), range(draws[[j]]), type = 'n', ...)
       }
@@ -85,13 +111,15 @@ compairs_plot <- function(x, y = NULL, pars = NULL, scatter = TRUE, overlay = TR
 
   for(i in 2:np)
     for(j in seq_len(i-1)){
-      plot.default(range(draws[[i]]), range(draws[[j]]), type = 'n', ...)
+      plot.default(range(draws[[i]],draws.y[[i]]), range(draws[[j]],draws.y[[j]]), type = 'n', ...)
+      if(!is.null(draws[[i]]) & !is.null(draws[[j]])){
       z <- MASS::kde2d(draws[[i]],draws[[j]], n=25)
-      contour(z, drawlabels=FALSE, nlevels=k, col=my.cols, add=TRUE)
+      contour(z, drawlabels=FALSE, nlevels=k, col=my.cols, add=TRUE)}
       if(!is.null(y)){
+        if(!is.null(draws.y[[i]]) & !is.null(draws.y[[j]])){
         z.y <- MASS::kde2d(draws.y[[i]],draws.y[[j]], n=20)
         contour(z.y, drawlabels=FALSE, nlevels=k, col=my.cols.y, add=TRUE)
-      }
+      }}
       #if (medians) abline(h=median(x$samples[,j]), v=median(x$samples[,i]), lwd=2, lty = 2)
       #if (trend == TRUE) {
        # rows <- sample(nrow(x$samples), ceiling(0.05*nrow(x$samples)))
