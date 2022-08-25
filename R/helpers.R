@@ -319,7 +319,7 @@ residual_plot.moult <-function(x, plot = TRUE, ...){
   model_data$active_moult <- x$y[[1]] > 0 & x$y[[1]] < 1
 
   if(plot == TRUE){
-    ggplot(model_data, aes(x = get(names(model_data)[1]), y = delta_day_zscore, pch = active_moult)) + geom_point() + geom_hline(yintercept = -3:3, lty = 2, col = 'grey') + geom_hline(yintercept = 0) + scale_shape_manual(values = c(1,16)) + xlab('PFMG_observed') + ylab('Population SD of start date') + theme_classic() + theme(legend.position = 'bottom') + ggtitle('Experimental "residual" plot')
+    ggplot(model_data, aes(x = get(names(model_data)[1]), y = .data$delta_day_zscore, pch = .data$active_moult)) + geom_point() + geom_hline(yintercept = -3:3, lty = 2, col = 'grey') + geom_hline(yintercept = 0) + scale_shape_manual(values = c(1,16)) + xlab('PFMG_observed') + ylab('Population SD of start date') + theme_classic() + theme(legend.position = 'bottom') + ggtitle('Experimental "residual" plot')
   } else {
     return(model_data)
   }

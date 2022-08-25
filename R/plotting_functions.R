@@ -8,6 +8,7 @@
 #' @param x a moultmcmc object
 #' @param y an optional second moultmcmc object
 #' @param pars 	An optional character vector of parameter names. If pars is not specified then the default is to use the first 4 parameters of x.
+#' @param names optional character vector of model names
 #' @param scatter logical, draw scatterplot of posterior samples if overlay = FALSE, else draw contours
 #' @param overlay logical, plot scatterplots and density contours of both models in each triangle, else draw one model per triangle
 #' @param ... further arguments to plot.default (the call that draws the scatter/contour plot)
