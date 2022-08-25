@@ -7,6 +7,7 @@
 #' @param ... further arguments
 #'
 #' @return a data.frame?!
+#' @importFrom stats predict
 #' @export
 #'
 predict.moultmcmc <- function(object, newdata = NULL, predict.type = "start", intervals = 0.1, ...){
@@ -18,5 +19,5 @@ predict.moultmcmc <- function(object, newdata = NULL, predict.type = "start", in
 
          },
 
-         error('predict.type not valid'))
+         stop('predict.type not valid'))
 }

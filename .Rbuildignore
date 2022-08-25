@@ -13,3 +13,4 @@ sandbox_script_sim.R
 ^doc$
 ^Meta$
 ^data-raw$
+^inst/stan-old$

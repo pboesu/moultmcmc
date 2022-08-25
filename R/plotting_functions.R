@@ -131,3 +131,14 @@ compairs_plot <- function(x, y = NULL, pars = NULL, scatter = TRUE, overlay = TR
   # restore old par
   par(old.par)
 }
+
+### Markov chain traceplots - too confused by S3/S4 method dispatch
+
+# #' Draw the traceplot corresponding to one or more Markov chains, providing a visual way to inspect sampling behavior and assess
+# #' mixing across chains and convergence.
+# #' A simple wrapper for `rstan::traceplot`
+# #' @importMethodsFrom rstan traceplot
+# #' @export
+# traceplot.moultmcmc <- function(object, ...){
+#   rstan::traceplot(object$stanfit, ...)
+# }

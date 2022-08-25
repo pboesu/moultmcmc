@@ -143,7 +143,7 @@ if (flat_prior == 1) {
  beta_mu[1] ~ normal(150,50)T[0,366];
  beta_tau[1] ~ normal(100,30)T[0,366];
 }
-beta_sigma[1] ~ normal(0,5);
+beta_sigma[1] ~ normal(0,2);// on log link scale!
 sigma_mu_ind ~ normal(0,1);
 }
 
