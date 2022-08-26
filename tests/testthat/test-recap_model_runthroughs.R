@@ -21,7 +21,7 @@ test_that("uz2l_recap works", {
                           iter = 200)
   expect_s3_class(uz2rl, "moultmcmc")
 })
-test_that("uz3 works", {
+test_that("uz3r works", {
   uz3 = uz3_linpred_recap(moult_index_column = "pfmg_sampled",
                           date_column = "date_sampled",
                     id_column = "id",
@@ -31,7 +31,7 @@ test_that("uz3 works", {
                     iter = 200)
   expect_s3_class(uz3, "moultmcmc")
 })
-test_that("uz5 works", {
+test_that("uz5r works", {
   uz5 = uz5_linpred_recap(moult_index_column = "pfmg_sampled",
                           date_column = "date_sampled",
                           id_column = "id",

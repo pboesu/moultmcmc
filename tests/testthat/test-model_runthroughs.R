@@ -19,14 +19,6 @@ test_that("uz2 works", {
                     chains = 1)
   expect_s3_class(uz2, "moultmcmc")
 })
-test_that("uz2l standalone works", {
-  uz2ls = uz2_lumped(moult_index_column = "MIndex",
-                    date_column = "Day",
-                    data = sanderlings,
-                    log_lik = FALSE,
-                    chains = 1)
-  expect_s3_class(uz2ls, "moultmcmc")
-})
 test_that("uz2l works", {
   uz2l = uz2_linpred(moult_index_column = "MIndex",
                    date_column = "Day",
