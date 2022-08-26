@@ -6,8 +6,12 @@
 \alias{moultmcmc}
 \title{The 'moultmcmc' package.}
 \description{
-A DESCRIPTION OF THE PACKAGE
+Precompiled Stan models to conduct full Bayesian inference in regression models for the phenology of avian primary moult based on the approach of Underhill & Zucchini (1988) \url{DOI:10.1111/j.1474-919X.1988.tb00993.x} and related hierarchical models to accommodate repeated-measures data (within-season recaptures of individuals).
 }
 \references{
-Stan Development Team (2020). RStan: the R interface to Stan. R package version 2.19.3. https://mc-stan.org
+Boersch-SUpan et al. (2022) Bayesian inference for models of moult duration and timing in birds arXiv \url{DOI:10.48550/arXiv.2205.12120}
+
+Underhill & Zucchini (1988) A model for avian primary moult. Ibis 130:358 \url{DOI:10.1111/j.1474-919X.1988.tb00993.x}
+
+Stan Development Team (2022). RStan: the R interface to Stan. R package version 2.21.5. https://mc-stan.org
 }
