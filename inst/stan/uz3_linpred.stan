@@ -8,6 +8,7 @@ data {
   //int<lower=0> N_old;//I in original derivation
   //vector[N_old] old_dates;//t_i
   int<lower=0> N_moult;//J
+  real beta_sd;//sd for non-flat prior on regression coeficients
   vector[N_moult] moult_dates;//u_j
   vector<lower=0,upper=1>[N_moult] moult_indices;//index of moult
   //int<lower=0> N_new;//K
@@ -64,6 +65,23 @@ target += sum(q - log(Q));
 beta_mu[1] ~ uniform(0,366);
 beta_tau[1] ~ uniform(0,366);
 beta_sigma[1] ~ normal(0,5);
+ if (beta_sd > 0){
+  if (N_pred_mu > 1){
+   for (i in 2:N_pred_mu){
+     beta_mu[i] ~ normal(0,beta_sd);
+   }
+  }
+  if (N_pred_tau > 1){
+   for (i in 2:N_pred_tau){
+     beta_tau[i] ~ normal(0,beta_sd);
+   }
+  }
+  if (N_pred_sigma > 1){
+   for (i in 2:N_pred_sigma){
+     beta_sigma[i] ~ normal(0,beta_sd);
+   }
+  }
+}
 }
 
 generated quantities{

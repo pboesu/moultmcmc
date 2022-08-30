@@ -5,6 +5,7 @@
 data {
   //responses
   int<lower=0,upper=1> flat_prior;//translated logical use flat prior on start and duration?
+  real beta_sd;//sd for non-flat prior on regression coeficients
   int<lower=0> N_ind;//number of individuals
   int<lower=0> N_old;//I in original derivation
   vector[N_old] old_dates;//t_i
@@ -142,6 +143,23 @@ if (flat_prior == 1) {
 } else {
  beta_mu[1] ~ normal(150,50)T[0,366];
  beta_tau[1] ~ normal(100,30)T[0,366];
+}
+ if (beta_sd > 0){//messy implementation, better to do flat priors by default, non-flat priors by explicit values only?
+  if (N_pred_mu > 1){
+   for (i in 2:N_pred_mu){
+     beta_mu[i] ~ normal(0,beta_sd);
+   }
+  }
+  if (N_pred_tau > 1){
+   for (i in 2:N_pred_tau){
+     beta_tau[i] ~ normal(0,beta_sd);
+   }
+  }
+  if (N_pred_sigma > 1){
+   for (i in 2:N_pred_sigma){
+     beta_sigma[i] ~ normal(0,beta_sd);
+   }
+  }
 }
 beta_sigma[1] ~ normal(0,2);// on log link scale!
 sigma_mu_ind ~ normal(0,1);

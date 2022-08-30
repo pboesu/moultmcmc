@@ -11,6 +11,7 @@
 #' @param data Input data frame
 #' @param init Specification of initial values for all or some parameters. Can be the string "auto" for an automatic guess based on the data, or any of the permitted rstan options: the digit 0, the strings "0" or "random", or a function. See the detailed documentation for the init argument in ?rstan::stan.
 #' @param flat_prior use uniform prior on start date and duration (TRUE) or vaguely informative truncated normal prior (FALSE). Defaults to TRUE.
+#' @param beta_sd use zero-centred normal priors for regression coefficients other than intercepts? If <= 0 the stan default of improper flat priors is used.
 #' @param log_lik boolean retain pointwise log-likelihood in output? This enables model assessment and selection via the loo package. Defaults to true, can lead to very large output arrays if sample size is large.
 #' @param ... Arguments passed to `rstan::sampling` (e.g. iter, chains).
 #' @return An object of class `stanfit` returned by `rstan::sampling`
@@ -26,6 +27,7 @@ uz2_linpred_recap <- function(moult_index_column,
                               data,
                               init = "auto",
                               flat_prior = TRUE,
+                              beta_sd = 0,
                               log_lik = TRUE,
                               ...) {
   stopifnot(all(data[[moult_index_column]] >= 0 & data[[moult_index_column]] <= 1))
@@ -84,6 +86,7 @@ uz2_linpred_recap <- function(moult_index_column,
                    X_sigma = X_sigma,
                    N_pred_sigma = ncol(X_sigma),
                    lumped = as.numeric(lump_non_moult),
+                   beta_sd = beta_sd,
                    llik = as.numeric(log_lik))
   #include pointwise log_lik matrix  in output?
   if(log_lik){

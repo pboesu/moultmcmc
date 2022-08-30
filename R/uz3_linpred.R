@@ -6,6 +6,7 @@
 #' @param start_formula model formula for start date
 #' @param duration_formula model formula for duration
 #' @param sigma_formula model formula for start date sigma
+#' @param beta_sd use zero-centred normal priors for regression coefficients other than intercepts? If <= 0 the stan default of improper flat priors is used.
 #' @param data Input data frame
 #' @param init Specification of initial values for all or some parameters. Can be the string "auto" for an automatic guess based on the data, or any of the permitted rstan options: the digit 0, the strings "0" or "random", or a function. See the detailed documentation for the init argument in ?rstan::stan.
 #' @param log_lik boolean retain pointwise log-likelihood in output? This enables model assessment and selection via the loo package. Defaults to true, can lead to very large output arrays if sample size is large.
@@ -13,7 +14,7 @@
 #' @return An object of class `stanfit` returned by `rstan::sampling`
 #'
 #TODO: implement an input data class which ensures column names and correct encoding for categorical variables
-uz3_linpred <- function(moult_index_column, date_column, start_formula = ~1, duration_formula = ~1, sigma_formula = ~1, data, init = "auto", log_lik = TRUE,...) {
+uz3_linpred <- function(moult_index_column, date_column, start_formula = ~1, duration_formula = ~1, sigma_formula = ~1, beta_sd = 0, data, init = "auto", log_lik = TRUE,...) {
   stopifnot(all(data[[moult_index_column]] >= 0 & data[[moult_index_column]] <= 1))
   stopifnot(is.numeric(data[[date_column]]))
   stopifnot(is.data.frame(data))
@@ -32,7 +33,8 @@ uz3_linpred <- function(moult_index_column, date_column, start_formula = ~1, dur
                    X_tau = X_tau,
                    N_pred_tau = ncol(X_tau),
                    X_sigma = X_sigma,
-                   N_pred_sigma = ncol(X_sigma))
+                   N_pred_sigma = ncol(X_sigma),
+                   beta_sd = beta_sd)
   #include pointwise log_lik matrix  in output?
   if(log_lik){
     outpars <- c('beta_mu','beta_tau','beta_sigma', 'sigma_intercept', 'log_lik')
