@@ -68,6 +68,7 @@
 <span>  <span class="va">data</span>,</span>
 <span>  init <span class="op">=</span> <span class="st">"auto"</span>,</span>
 <span>  flat_prior <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  beta_sd <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  log_lik <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -113,6 +114,10 @@
 
 <dt>flat_prior</dt>
 <dd><p>use uniform prior on start date and duration (TRUE) or vaguely informative truncated normal prior (FALSE). Defaults to TRUE.</p></dd>
+
+
+<dt>beta_sd</dt>
+<dd><p>use zero-centred normal priors for regression coefficients other than intercepts? If &lt;= 0 the stan default of improper flat priors is used.</p></dd>
 
 
 <dt>log_lik</dt>

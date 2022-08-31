@@ -63,6 +63,7 @@
 <span>  start_formula <span class="op">=</span> <span class="op">~</span><span class="fl">1</span>,</span>
 <span>  duration_formula <span class="op">=</span> <span class="op">~</span><span class="fl">1</span>,</span>
 <span>  sigma_formula <span class="op">=</span> <span class="op">~</span><span class="fl">1</span>,</span>
+<span>  beta_sd <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  <span class="va">data</span>,</span>
 <span>  init <span class="op">=</span> <span class="st">"auto"</span>,</span>
 <span>  log_lik <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -90,6 +91,10 @@
 
 <dt>sigma_formula</dt>
 <dd><p>model formula for start date sigma</p></dd>
+
+
+<dt>beta_sd</dt>
+<dd><p>use zero-centred normal priors for regression coefficients other than intercepts? If &lt;= 0 the stan default of improper flat priors is used.</p></dd>
 
 
 <dt>data</dt>
