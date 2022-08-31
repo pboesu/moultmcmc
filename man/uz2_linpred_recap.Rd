@@ -15,6 +15,7 @@ uz2_linpred_recap(
   data,
   init = "auto",
   flat_prior = TRUE,
+  beta_sd = 0,
   log_lik = TRUE,
   ...
 )
@@ -39,6 +40,8 @@ uz2_linpred_recap(
 \item{init}{Specification of initial values for all or some parameters. Can be the string "auto" for an automatic guess based on the data, or any of the permitted rstan options: the digit 0, the strings "0" or "random", or a function. See the detailed documentation for the init argument in ?rstan::stan.}
 
 \item{flat_prior}{use uniform prior on start date and duration (TRUE) or vaguely informative truncated normal prior (FALSE). Defaults to TRUE.}
+
+\item{beta_sd}{use zero-centred normal priors for regression coefficients other than intercepts? If <= 0 the stan default of improper flat priors is used.}
 
 \item{log_lik}{boolean retain pointwise log-likelihood in output? This enables model assessment and selection via the loo package. Defaults to true, can lead to very large output arrays if sample size is large.}
 

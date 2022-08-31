@@ -10,6 +10,7 @@ uz3_linpred(
   start_formula = ~1,
   duration_formula = ~1,
   sigma_formula = ~1,
+  beta_sd = 0,
   data,
   init = "auto",
   log_lik = TRUE,
@@ -26,6 +27,8 @@ uz3_linpred(
 \item{duration_formula}{model formula for duration}
 
 \item{sigma_formula}{model formula for start date sigma}
+
+\item{beta_sd}{use zero-centred normal priors for regression coefficients other than intercepts? If <= 0 the stan default of improper flat priors is used.}
 
 \item{data}{Input data frame}
 
