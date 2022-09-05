@@ -84,6 +84,10 @@ uz12_linpred <- function(moult_index_column, moult_cat_column, date_column, star
   names(out)[grep('sigma_intercept', names(out))] <- 'sd_(Intercept)'
   out_struc <- list()
   out_struc$stanfit <- out
+  out_struc$terms$start_formula <- start_formula
+  out_struc$terms$duration_formula <- duration_formula
+  out_struc$terms$sigma_formula <- sigma_formula
+  out_struc$data <- data
   class(out_struc) <- 'moultmcmc'
   return(out_struc)
 }

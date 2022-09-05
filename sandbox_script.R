@@ -9,6 +9,8 @@ sanderlings$MCat <- case_when(sanderlings$MIndex == 0 ~ 1,
                               sanderlings$MIndex == 1 ~3,
                               TRUE ~ 2)
 
+sanderlings$random <- rnorm(nrow(sanderlings), 0,1)
+
 m1 = moult(MIndex ~ Day,data = sanderlings, type = 1)
 uz1 = uz1_linpred(moult_cat_column = "MCat",
             date_column = "Day",
@@ -26,6 +28,16 @@ uz2 = uz2_linpred("MIndex",
                   data = sanderlings,
                   log_lik = FALSE,
                   cores = 4)
+
+uz2cov = uz2_linpred("MIndex",#model with a covariate
+                  date_column = "Day",
+                  start_formula = ~random,
+                  duration_formula = ~random,
+                  data = sanderlings,
+                  log_lik = FALSE,
+                  cores = 4)
+
+
 compare_plot(m2, uz2, names = c('ml','mcmc'))
 logLik(m2)
 summary_table(uz2)

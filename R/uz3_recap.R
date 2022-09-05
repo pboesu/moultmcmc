@@ -86,6 +86,10 @@ uz3_linpred_recap <- function(moult_index_column, date_column, id_column, start_
   out_struc$terms$id_column <- id_column
   out_struc$terms$id_stan <- as.numeric(data[[id_column]])#return lookup to match individual intercepts to individual designators in the original data
   out_struc$terms$id_original <- as.character(data[[id_column]])
+  out_struc$terms$start_formula <- start_formula
+  out_struc$terms$duration_formula <- duration_formula
+  out_struc$terms$sigma_formula <- sigma_formula
+  out_struc$data <- data
   class(out_struc) <- 'moultmcmc'
   return(out_struc)
 }

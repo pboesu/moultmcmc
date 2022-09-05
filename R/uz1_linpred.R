@@ -68,6 +68,10 @@ uz1_linpred <- function(moult_cat_column, date_column, start_formula = ~1, durat
   out_struc$terms$date_column <- date_column
   out_struc$terms$moult_index_column <- NA
   out_struc$terms$moult_cat_column <- moult_cat_column
+  out_struc$terms$start_formula <- start_formula
+  out_struc$terms$duration_formula <- duration_formula
+  out_struc$terms$sigma_formula <- sigma_formula
+  out_struc$data <- data
   class(out_struc) <- 'moultmcmc'
   return(out_struc)
 }
