@@ -58,7 +58,14 @@
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for moultmcmc</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">object</span>, newdata <span class="op">=</span> <span class="cn">NULL</span>, predict.type <span class="op">=</span> <span class="st">"start"</span>, intervals <span class="op">=</span> <span class="fl">0.1</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span></span>
+<span>  <span class="va">object</span>,</span>
+<span>  newdata <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  predict.type <span class="op">=</span> <span class="st">"parameters"</span>,</span>
+<span>  summary <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  intervals <span class="op">=</span> <span class="fl">0.1</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -68,11 +75,15 @@
 
 
 <dt>newdata</dt>
-<dd><p>dataframe with explanatory variables for which to make predictions</p></dd>
+<dd><p>data.frame with explanatory variables for which to make predictions</p></dd>
 
 
 <dt>predict.type</dt>
 <dd><p>specifies form of predictions, see details.</p></dd>
+
+
+<dt>summary</dt>
+<dd><p>logical, if TRUE (default) return a data.frame of posterior means, otherwise return a list of arrays of the full posterior sample of the predicted quantity (with one list element per predicted quantity and array dimensions nrow(newdata) *number or posterior draws)</p></dd>
 
 
 <dt>intervals</dt>
@@ -87,7 +98,7 @@
     <h2>Value</h2>
     
 
-<p>a data.frame?!</p>
+<p>a data.frame or list, depending on input arguments</p>
     </div>
 
   </div>
