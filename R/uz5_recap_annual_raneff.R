@@ -107,6 +107,10 @@ uz5_linpred_recap_annual_raneff <- function(moult_index_column, date_column, id_
   out_struc$terms$moult_index_column <- moult_index_column
   out_struc$terms$moult_cat_column <- NA
   out_struc$terms$id_column <- id_column
+  out_struc$terms$start_formula <- start_formula
+  out_struc$terms$duration_formula <- duration_formula
+  out_struc$terms$sigma_formula <- sigma_formula
+  out_struc$data <- data
   class(out_struc) <- 'moultmcmc'
   return(out_struc)
 }

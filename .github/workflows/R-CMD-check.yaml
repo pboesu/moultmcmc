@@ -5,10 +5,12 @@ on:
     branches:
       - main
       - master
+      - predict-mk2
   pull_request:
     branches:
       - main
       - master
+      - predict-mk2
 
 name: R-CMD-check
 
