@@ -58,7 +58,16 @@
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for moultmcmc</span></span>
-<span><span class="fu"><a href="moult_plot.html">moult_plot</a></span><span class="op">(</span><span class="va">x</span>, prob <span class="op">=</span> <span class="fl">0.95</span>, prob_ci <span class="op">=</span> <span class="cn">NULL</span>, data <span class="op">=</span> <span class="cn">NULL</span>, plot <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="moult_plot.html">moult_plot</a></span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  prob <span class="op">=</span> <span class="fl">0.95</span>,</span>
+<span>  prob_ci <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  plot_data <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  plot <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  newdata <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  col.data <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -75,12 +84,20 @@
 <dd><p>coverage probability of credible interval</p></dd>
 
 
-<dt>data</dt>
-<dd><p>optional data.frame of observations, column names need to match model date and moult index variables</p></dd>
+<dt>plot_data</dt>
+<dd><p>logical, if TRUE plot observations</p></dd>
 
 
 <dt>plot</dt>
 <dd><p>logical, if TRUE (default) return a plot, else return a dataframe with start and end dates of moult based on model intercepts</p></dd>
+
+
+<dt>newdata</dt>
+<dd><p>optional data.frame of conditions to plot (passed to predict.moultmcmc)</p></dd>
+
+
+<dt>col.data</dt>
+<dd><p>optional, name of column in model data to colour data points</p></dd>
 
 
 <dt>...</dt>
