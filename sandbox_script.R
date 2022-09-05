@@ -36,8 +36,8 @@ uz2cov = uz2_linpred("MIndex",#model with a covariate
                   data = sanderlings,
                   log_lik = FALSE,
                   cores = 4)
-
-
+moult_plot(uz2cov)
+predict(uz2cov)
 compare_plot(m2, uz2, names = c('ml','mcmc'))
 logLik(m2)
 summary_table(uz2)
@@ -96,6 +96,7 @@ feather.mass <- c(10.4, 10.8, 11.5, 12.8, 14.4, 15.6, 16.3, 15.7, 15.7)
 weavers$pfmg <- ms2pfmg(mscores, feather.mass)
 weavers$day <- date2days(weavers$RDate, dateformat = "yyyy-mm-dd",
                             startmonth = 8)
+weavers$sex_factor <- factor(ifelse(weavers$Sex == 1 | weavers$Sex == 3, "male", ifelse(weavers$Sex == 2 | weavers$Sex == 4, "female", NA)))
 weavers <- na.omit(weavers)
 plot(pfmg ~ day, weavers)
 weavers_trunc <- filter(weavers, day > 50 & day <320)
@@ -108,6 +109,17 @@ points(pfmg ~ day, weavers_trunc, col = 'green')
 summary(m88.3)
 stan_trace(uz88.3$stanfit)
 compare_plot(m88.3,uz88.3)
+
+uz88.3sex <- uz3_linpred('pfmg',
+                      'day',
+                      start_formula = ~ sex_factor,
+                      duration_formula = ~ sex_factor,
+                      log_lik = FALSE,
+                      chains = 2,
+                      data = weavers)
+
+
+
 weavers$MCat <- case_when(weavers$pfmg == 0 ~ 1,
                           weavers$pfmg == 1 ~3,
                               TRUE ~ 2)
