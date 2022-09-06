@@ -10,6 +10,7 @@
 #'
 #' @return a data.frame or list, depending on input arguments
 #' @importFrom stats predict
+#' @importFrom matrixStats rowQuantiles
 #' @export
 #'
 predict.moultmcmc <- function(object, newdata = NULL, predict.type = "parameters", summary = TRUE, intervals = 0.1, prob = 0.95, ...){

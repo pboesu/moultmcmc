@@ -35,7 +35,8 @@ Imports:
     tidyr,
     MASS,
     RColorBrewer,
-    moult (>= 2.3.0)
+    moult (>= 2.3.0),
+    matrixStats
 LinkingTo: 
     BH (>= 1.66.0),
     Rcpp (>= 0.12.0),

@@ -233,13 +233,13 @@ moult_plot.moultmcmc <-function(x, prob = 0.95, prob_ci = NULL, plot_data = TRUE
                           predict(x, predict.type = 'parameters', newdata = newdata) %>%
                             mutate(line_type = quantile_name,
                                    scenario = rownames(newdata),
-                                   start_date = start_date + qnorm(probs[1])*start_sd,
-                                   end_date = end_date + qnorm(probs[1])*start_sd),
+                                   start_date = .data$start_date + qnorm(probs[1])*.data$start_sd,
+                                   end_date = .data$end_date + qnorm(probs[1])*.data$start_sd),
                           predict(x, predict.type = 'parameters', newdata = newdata) %>%
                             mutate(line_type = quantile_name,
                                    scenario = rownames(newdata),
-                                   start_date = start_date - qnorm(probs[1])*start_sd,
-                                   end_date = end_date - qnorm(probs[1])*start_sd))
+                                   start_date = .data$start_date - qnorm(probs[1])*.data$start_sd,
+                                   end_date = .data$end_date - qnorm(probs[1])*.data$start_sd))
 
   }
   if(!is.null(prob_ci)){
