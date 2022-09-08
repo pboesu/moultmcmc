@@ -184,8 +184,8 @@ moult_plot.moult <-function(x, prob = 0.95, plot_data = TRUE, plot = TRUE, ...){
     mplot <- ggplot(plotdata, aes(x = .data$start_date, xend = .data$end_date, y = 0, yend = 1, lty = .data$line_type)) + scale_linetype_manual(values = c(3,1), name = '') + geom_segment() + theme_classic() + xlab('Date') + ylab('Moult Index')
     if(plot_data){
       #check data matches model
-      if(data_x %in% names(x$data) & data_y %in% names(x$data)){
-        mplot <- ggplot(data = x$data, aes(x = get(data_x), y = get(data_y))) + scale_linetype_manual(values = c(3,1), name = '') + geom_point(col = 'darkgrey') + geom_segment(data = plotdata, aes(x = .data$start_date, xend = .data$end_date, y = 0, yend = 1, lty = .data$line_type)) + theme_classic() + xlab('Date') + ylab('Moult Index')}
+      if(data_x %in% names(x$X) & data_y %in% names(x$X)){
+        mplot <- ggplot(data = x$X, aes(x = get(data_x), y = get(data_y))) + scale_linetype_manual(values = c(3,1), name = '') + geom_point(col = 'darkgrey') + geom_segment(data = plotdata, aes(x = .data$start_date, xend = .data$end_date, y = 0, yend = 1, lty = .data$line_type)) + theme_classic() + xlab('Date') + ylab('Moult Index')}
       else {warning(paste('data does not contain model date and moult variables:',data_x, data_y, ' - plotting model only'))}
     }
     return(mplot) } else {
@@ -233,13 +233,13 @@ moult_plot.moultmcmc <-function(x, prob = 0.95, prob_ci = NULL, plot_data = TRUE
                           predict(x, predict.type = 'parameters', newdata = newdata) %>%
                             mutate(line_type = quantile_name,
                                    scenario = rownames(newdata),
-                                   start_date = start_date + qnorm(probs[1])*start_sd,
-                                   end_date = end_date + qnorm(probs[1])*start_sd),
+                                   start_date = .data$start_date + qnorm(probs[1])*.data$start_sd,
+                                   end_date = .data$end_date + qnorm(probs[1])*.data$start_sd),
                           predict(x, predict.type = 'parameters', newdata = newdata) %>%
                             mutate(line_type = quantile_name,
                                    scenario = rownames(newdata),
-                                   start_date = start_date - qnorm(probs[1])*start_sd,
-                                   end_date = end_date - qnorm(probs[1])*start_sd))
+                                   start_date = .data$start_date - qnorm(probs[1])*.data$start_sd,
+                                   end_date = .data$end_date - qnorm(probs[1])*.data$start_sd))
 
   }
   if(!is.null(prob_ci)){

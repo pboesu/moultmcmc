@@ -5,15 +5,17 @@
 #' @param predict.type specifies form of predictions, see details.
 #' @param summary logical, if TRUE (default) return a data.frame of posterior means, otherwise return a list of arrays of the full posterior sample of the predicted quantity (with one list element per predicted quantity and array dimensions nrow(newdata) *number or posterior draws)
 #' @param intervals not currently used
+#' @param prob nominal coverage probability of credible interval
 #' @param ... further arguments
 #'
 #' @return a data.frame or list, depending on input arguments
 #' @importFrom stats predict
+#' @importFrom matrixStats rowQuantiles
 #' @export
 #'
-predict.moultmcmc <- function(object, newdata = NULL, predict.type = "parameters", summary = TRUE, intervals = 0.1, ...){
+predict.moultmcmc <- function(object, newdata = NULL, predict.type = "parameters", summary = TRUE, intervals = 0.1, prob = 0.95, ...){
   #if (!is.element(predict.type, c("start","duration","end"))) stop("Type of prediction not available")
-
+  probs = c((1-prob)/2, 1 -(1-prob)/2)
   #set up data
   if(is.null(newdata)){
     df_pred <- object$data
@@ -41,9 +43,21 @@ predict.moultmcmc <- function(object, newdata = NULL, predict.type = "parameters
            start_sd <- exp(X_sigma %*% t(beta_sigma))
 
            if (summary){
-             return(data.frame(start_date = rowMeans(start_date), duration = rowMeans(duration), start_sd = rowMeans(start_sd), end_date= rowMeans(start_date + duration)%%365))
+             return(data.frame(start_date = rowMeans(start_date),
+                               start_date_lci = matrixStats::rowQuantiles(start_date, probs = probs[1]),
+                               start_date_uci = matrixStats::rowQuantiles(start_date, probs = probs[2]),
+                               duration = rowMeans(duration),
+                               duration_lci = matrixStats::rowQuantiles(duration, probs = probs[1]),
+                               duration_uci = matrixStats::rowQuantiles(duration, probs = probs[2]),
+                               start_sd = rowMeans(start_sd),
+                               start_sd_lci = matrixStats::rowQuantiles(start_sd, probs = probs[1]),
+                               start_sd_uci = matrixStats::rowQuantiles(start_sd, probs = probs[2]),
+                               end_date= rowMeans(start_date + duration),
+                               end_date_lci = matrixStats::rowQuantiles(end_date, probs = probs[1]),
+                               end_date_uci = matrixStats::rowQuantiles(start_sd, probs = probs[2])
+                               ))
            } else {
-             return(list(start_date = start_date, duration = duration, start_sd = start_sd, end_date= (start_date + duration)%%365))
+             return(list(start_date = start_date, duration = duration, start_sd = start_sd, end_date= (start_date + duration)))
            }
 
 
