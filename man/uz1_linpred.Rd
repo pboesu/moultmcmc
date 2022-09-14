@@ -10,6 +10,7 @@ uz1_linpred(
   start_formula = ~1,
   duration_formula = ~1,
   sigma_formula = ~1,
+  lump_non_moult = FALSE,
   data,
   init = "auto",
   log_lik = TRUE,
@@ -26,6 +27,8 @@ uz1_linpred(
 \item{duration_formula}{model formula for duration}
 
 \item{sigma_formula}{model formula for start date sigma}
+
+\item{lump_non_moult}{logical; should pre- and post-moult observations be treated as indistinguishable? if TRUE, the type 2L model will be fitted.}
 
 \item{data}{Input data frame}
 

@@ -1,19 +1,20 @@
 #' Bayesian inference for the Type 1 moult model
 #'
-#' @export
+#' @param moult_cat_column the name the column in `data` containing moult categories, i.e. a numeric vector of categorical moult codes (1 = old plumage,2 = moulting,3 = new plumage)
+#' @param date_column the name the column in `data` containing sampling dates, encoded as days since an arbitrary reference date, i.e. a numeric vector
 #' @param start_formula model formula for start date
 #' @param duration_formula model formula for duration
 #' @param sigma_formula model formula for start date sigma
+#' @param lump_non_moult logical; should pre- and post-moult observations be treated as indistinguishable? if TRUE, the type 2L model will be fitted.
 #' @param data Input data frame
-#' @param date_column the name the column in `data` containing sampling dates, encoded as days since an arbitrary reference date, i.e. a numeric vector
-#' @param moult_cat_column the name the column in `data` containing moult categories, i.e. a numeric vector of categorical moult codes (1 = old plumage,2 = moulting,3 = new plumage)
 #' @param init Specification of initial values for all or some parameters. Can be the string "auto" for an automatic guess based on the data, or any of the permitted rstan options: the digit 0, the strings "0" or "random", or a function. See the detailed documentation for the init argument in ?rstan::stan.
 #' @param log_lik boolean retain pointwise log-likelihood in output? This enables model assessment and selection via the loo package. Defaults to true, can lead to very large output arrays if sample size is large.
 #' @param ... Arguments passed to `rstan::sampling` (e.g. iter, chains).
 #' @return An object of class `stanfit` returned by `rstan::sampling`
+#' @export
 #'
 #TODO: implement an input data class which ensures column names and correct encoding for categorical variables
-uz1_linpred <- function(moult_cat_column, date_column, start_formula = ~1, duration_formula = ~1, sigma_formula = ~1, data, init = "auto", log_lik = TRUE, ...) {
+uz1_linpred <- function(moult_cat_column, date_column, start_formula = ~1, duration_formula = ~1, sigma_formula = ~1, lump_non_moult = FALSE, data, init = "auto", log_lik = TRUE, ...) {
   stopifnot(all(data[[moult_cat_column]] %in% c(1,2,3)))
   stopifnot(is.numeric(data[[date_column]]))
   stopifnot(is.data.frame(data))
@@ -35,7 +36,9 @@ uz1_linpred <- function(moult_cat_column, date_column, start_formula = ~1, durat
                    X_tau = X_tau,
                    N_pred_tau = ncol(X_tau),
                    X_sigma = X_sigma,
-                   N_pred_sigma = ncol(X_sigma))
+                   N_pred_sigma = ncol(X_sigma),
+                   lumped = as.numeric(lump_non_moult),
+                   llik = as.numeric(log_lik))
   #include pointwise log_lik matrix  in output?
   if(log_lik){
     outpars <- c('beta_mu','beta_tau','beta_sigma', 'sigma_intercept', 'log_lik')
