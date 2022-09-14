@@ -53,8 +53,8 @@ predict.moultmcmc <- function(object, newdata = NULL, predict.type = "parameters
                                start_sd_lci = matrixStats::rowQuantiles(start_sd, probs = probs[1]),
                                start_sd_uci = matrixStats::rowQuantiles(start_sd, probs = probs[2]),
                                end_date= rowMeans(start_date + duration),
-                               end_date_lci = matrixStats::rowQuantiles(end_date, probs = probs[1]),
-                               end_date_uci = matrixStats::rowQuantiles(start_sd, probs = probs[2])
+                               end_date_lci = matrixStats::rowQuantiles(end_date + duration, probs = probs[1]),
+                               end_date_uci = matrixStats::rowQuantiles(start_sd + duration, probs = probs[2])
                                ))
            } else {
              return(list(start_date = start_date, duration = duration, start_sd = start_sd, end_date= (start_date + duration)))
