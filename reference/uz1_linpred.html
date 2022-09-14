@@ -63,6 +63,7 @@
 <span>  start_formula <span class="op">=</span> <span class="op">~</span><span class="fl">1</span>,</span>
 <span>  duration_formula <span class="op">=</span> <span class="op">~</span><span class="fl">1</span>,</span>
 <span>  sigma_formula <span class="op">=</span> <span class="op">~</span><span class="fl">1</span>,</span>
+<span>  lump_non_moult <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  <span class="va">data</span>,</span>
 <span>  init <span class="op">=</span> <span class="st">"auto"</span>,</span>
 <span>  log_lik <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -90,6 +91,10 @@
 
 <dt>sigma_formula</dt>
 <dd><p>model formula for start date sigma</p></dd>
+
+
+<dt>lump_non_moult</dt>
+<dd><p>logical; should pre- and post-moult observations be treated as indistinguishable? if TRUE, the type 2L model will be fitted.</p></dd>
 
 
 <dt>data</dt>
