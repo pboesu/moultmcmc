@@ -68,6 +68,7 @@ uz2_linpred_recap <- function(moult_index_column,
                    new_dates = new_dates,
                    N_new = N_new,
                    N_ind = length(unique(data[[id_column]])),
+                   N_ind_rep = length(unique(as.numeric(data[[id_column]])[replicated])),
 
                    individual = as.numeric(data[[id_column]]),#TODO: the resultant individual intercepts are hard to map onto original factor levels - this should be handled in the postprocessing of the model output
                    individual_first_index = as.array(id_first),
@@ -76,6 +77,7 @@ uz2_linpred_recap <- function(moult_index_column,
                    not_replicated_old = as.array(not_replicated[not_replicated <= N_old]),
                    not_replicated_moult = as.array(not_replicated[not_replicated > N_old] - N_old),
                    is_replicated = as.array(is_replicated),
+                   replicated_individuals = unique(as.numeric(data[[id_column]])[replicated]),
                    Nobs_replicated = length(replicated),
                    Nobs_not_replicated_old = length(not_replicated[not_replicated <= N_old]),
                    Nobs_not_replicated_moult = length(not_replicated[not_replicated > N_old]),
@@ -125,6 +127,7 @@ uz2_linpred_recap <- function(moult_index_column,
   out_struc$terms$duration_formula <- duration_formula
   out_struc$terms$sigma_formula <- sigma_formula
   out_struc$data <- data
+  out_struc$individual_ids <- data.frame(index = as.numeric(data[[id_column]]), id = data[[id_column]])
   class(out_struc) <- 'moultmcmc'
   return(out_struc)
 }

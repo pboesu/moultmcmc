@@ -113,6 +113,23 @@ summary_table.moultmcmc <- function (x, pars = x$stanfit@sim$pars_oi, prob = 0.9
   return(s)
 }
 
+#' internal helper function to create a named list
+#'
+#' original version by Ben Bolker: https://stackoverflow.com/a/16951524
+#'
+#' @param ...
+#'
+#' @return a named list
+#'
+#' @examples
+namedList <- function(...) {
+  L <- list(...)
+  snm <- sapply(substitute(list(...)),deparse)[-1]
+  if (is.null(nm <- names(L))) nm <- snm
+  if (any(nonames <- nm=="")) nm[nonames] <- snm[nonames]
+  setNames(L,nm)
+}
+
 #' Visual comparison of moult models
 #'
 #' @param ... two or a moult or moultmcmc model
@@ -127,16 +144,16 @@ summary_table.moultmcmc <- function (x, pars = x$stanfit@sim$pars_oi, prob = 0.9
 #' @export
 #'
 compare_plot <- function(...,names = NULL){
-  parlist <- list(...)
+  parlist <- moultmcmc:::namedList(...)
   stopifnot(all(sapply(parlist, class) %in% c('moult','moultmcmc')))
   #TODO:type checking etc
   #TODO:import necessary dplyr and ggplot components
-  if(is.null(names)) names = as.character(seq(1, length(parlist), by = 1))
+  if(is.null(names)) names = names(parlist)
   names(parlist) <- names
 
   plotdata <- dplyr::bind_rows(lapply(parlist, function(x){summary_table(x)}), .id = 'model')
   plotdata$not_converged <- ifelse(plotdata$Rhat > 1.05 & !is.na(plotdata$Rhat), TRUE, FALSE)
-  dplyr::filter(plotdata, !grepl("lp__|log_sd_\\(Intercept\\)|\\blp\\b|log_lik[[0-9]+]|mu_ind[[0-9]+]|mu_ind_star|mu_ind_out|tau_ind_out|beta_star|finite_sd", .data$parameter)) %>%
+  dplyr::filter(plotdata, !grepl("lp__|log_sd_\\(Intercept\\)|\\blp\\b|log_lik[[0-9]+]|mu_ind[[0-9]+]|mu_ind_star|mu_ind_out|tau_ind_out", .data$parameter)) %>%
     ggplot(aes(x = .data$model, y = .data$estimate, col = .data$model, ymin = .data$lci, ymax = .data$uci, shape = .data$not_converged)) + geom_pointrange(position = position_dodge(0.1)) + facet_wrap(~ .data$parameter, scales = 'free')
 }
 
