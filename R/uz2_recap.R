@@ -14,6 +14,7 @@
 #' @param beta_sd use zero-centred normal priors for regression coefficients other than intercepts? If <= 0 the stan default of improper flat priors is used.
 #' @param log_lik boolean retain pointwise log-likelihood in output? This enables model assessment and selection via the loo package. Defaults to true, can lead to very large output arrays if sample size is large.
 #' @param use_phi_approx logical flag whether to use stan's Phi_approx function to calculate the "old" likelihoods
+#' @param active_moult_recaps_only logical flag whether to ignore repeated observations outside the active moult phase
 #' @param ... Arguments passed to `rstan::sampling` (e.g. iter, chains).
 #' @return An object of class `stanfit` returned by `rstan::sampling`
 #'
@@ -25,6 +26,7 @@ uz2_linpred_recap <- function(moult_index_column,
                               duration_formula = ~1,
                               sigma_formula = ~1,
                               lump_non_moult = FALSE,
+                              active_moult_recaps_only = FALSE,
                               data,
                               init = "auto",
                               flat_prior = TRUE,
@@ -92,7 +94,8 @@ uz2_linpred_recap <- function(moult_index_column,
                    lumped = as.numeric(lump_non_moult),
                    beta_sd = beta_sd,
                    llik = as.numeric(log_lik),
-                   use_phi_approx = as.numeric(use_phi_approx))
+                   use_phi_approx = as.numeric(use_phi_approx),
+                   active_moult_recaps_only = as.numeric(active_moult_recaps_only))
   #include pointwise log_lik matrix  in output?
   if(log_lik){
     outpars <- c('beta_mu','beta_tau','beta_sigma', 'sigma_intercept', 'sigma_mu_ind','beta_star','finite_sd', 'mu_ind_star', 'mu_ind', 'log_lik')

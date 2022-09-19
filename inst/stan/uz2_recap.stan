@@ -29,6 +29,7 @@ data {
   int<lower=0,upper=1> lumped; //indicator variable for t2l likelihood
   int<lower=0,upper=1> llik; //indicator variable for calculating and returning pointwise log-likelihood
   int<lower=0,upper=1> use_phi_approx; //indicator variable for likelihood
+  int<lower=0,upper=1> active_moult_recaps_only; //indicator variable for likelihood
   //predictors
   int N_pred_mu;//number of predictors for start date
   matrix[N_old+N_moult+N_new,N_pred_mu] X_mu;//design matrix for start date NB: when forming design matrix must paste together responses in blocks old, moult, new
@@ -77,7 +78,7 @@ model {
   sigma = exp(X_sigma * beta_sigma);//use log link for variance lin pred
 if (lumped == 0){
   for (i in 1:N_old) {
-	  if (is_replicated[individual[i]] == 1) {//longitudinal tobit-like likelihood (this only makes sense if within year recaptures contain at least one active moult score?!)
+	  if (is_replicated[individual[i]] == 1 && active_moult_recaps_only == 0) {//longitudinal tobit-like likelihood (this only makes sense if within year recaptures contain at least one active moult score?!)
 	  if(use_phi_approx == 0){
 	    P[i] = 1 - Phi((old_dates[i] - (mu[i] + mu_ind[individual[i]]))/sigma_mu_ind);
 	  } else {
@@ -90,7 +91,7 @@ if (lumped == 0){
   }
 } else {//lumped likelihood
   for (i in 1:N_old) {
-	  if (is_replicated[individual[i]] == 1) {//longitudinal tobit-like likelihood (this only makes sense if within year recaptures contain at least one active moult score?!)
+	  if (is_replicated[individual[i]] == 1 && active_moult_recaps_only == 0) {//longitudinal tobit-like likelihood (this only makes sense if within year recaptures contain at least one active moult score?!)
 	    P[i] = (1 - Phi((old_dates[i] - (mu[i] + mu_ind[individual[i]]))/sigma_mu_ind)) + Phi((old_dates[i] - tau[i] - (mu[i] + mu_ind[individual[i]]))/sigma_mu_ind);
 	  } else {//standard likelihood for Type 2 model
       P[i] = (1 - Phi((old_dates[i] - mu[i])/sigma[i])) + Phi((old_dates[i] - tau[i] - mu[i])/sigma[i]);
@@ -108,7 +109,7 @@ for (i in 1:N_moult){
 
 if (lumped == 0){
   for (i in 1:N_new) {
-	  if (is_replicated[individual[i]] == 1) {//longitudinal tobit-like likelihood (this only makes sense if within year recaptures contain at least one active moult score?!)
+	  if (is_replicated[individual[i]] == 1 && active_moult_recaps_only == 0) {//longitudinal tobit-like likelihood (this only makes sense if within year recaptures contain at least one active moult score?!)
 	    R[i] = Phi((new_dates[i] - tau[i + N_old + N_moult] - (mu[i + N_old + N_moult] + mu_ind[individual[i + N_old + N_moult]]))/sigma_mu_ind);
 	  } else {//standard likelihood for Type 2 model
       R[i] = Phi((new_dates[i] - tau[i + N_old + N_moult] - mu[i + N_old + N_moult])/sigma[i + N_old + N_moult]);
@@ -116,7 +117,7 @@ if (lumped == 0){
   }
 } else {//lumped likelihood
   for (i in 1:N_new) {
-	  if (is_replicated[individual[i]] == 1) {//longitudinal tobit-like likelihood (this only makes sense if within year recaptures contain at least one active moult score?!)
+	  if (is_replicated[individual[i]] == 1 && active_moult_recaps_only == 0) {//longitudinal tobit-like likelihood (this only makes sense if within year recaptures contain at least one active moult score?!)
 	    R[i] = Phi((new_dates[i] - tau[i + N_old + N_moult] - (mu[i + N_old + N_moult] + mu_ind[individual[i + N_old + N_moult]]))/sigma_mu_ind) + (1 - Phi((new_dates[i] - (mu[i + N_moult + N_old] + mu_ind[individual[i + N_moult + N_old]]))/sigma_mu_ind));
 	  } else {//standard likelihood for Type 2 model
       R[i] = Phi((new_dates[i] - tau[i + N_old + N_moult] - mu[i + N_old + N_moult])/sigma[i + N_old + N_moult]) + (1 - Phi((new_dates[i] - (mu[i + N_moult + N_old]))/sigma[i + N_moult + N_old]));
