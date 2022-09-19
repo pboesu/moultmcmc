@@ -29,6 +29,7 @@ uz2_linpred_recap <- function(moult_index_column,
                               flat_prior = TRUE,
                               beta_sd = 0,
                               log_lik = TRUE,
+                              use_phi_approx = FALSE,
                               ...) {
   stopifnot(all(data[[moult_index_column]] >= 0 & data[[moult_index_column]] <= 1))
   stopifnot(any(data[[moult_index_column]] == 0))
@@ -89,7 +90,8 @@ uz2_linpred_recap <- function(moult_index_column,
                    N_pred_sigma = ncol(X_sigma),
                    lumped = as.numeric(lump_non_moult),
                    beta_sd = beta_sd,
-                   llik = as.numeric(log_lik))
+                   llik = as.numeric(log_lik),
+                   use_phi_approx = as.numeric(use_phi_approx))
   #include pointwise log_lik matrix  in output?
   if(log_lik){
     outpars <- c('beta_mu','beta_tau','beta_sigma', 'sigma_intercept', 'sigma_mu_ind','beta_star','finite_sd', 'mu_ind_star', 'mu_ind', 'log_lik')

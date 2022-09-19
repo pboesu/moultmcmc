@@ -28,7 +28,7 @@ data {
   int<lower=0>replicated_individuals[N_ind_rep];//individual id's that are replicated - i.e. indices of the random_effect intercept
   int<lower=0,upper=1> lumped; //indicator variable for t2l likelihood
   int<lower=0,upper=1> llik; //indicator variable for calculating and returning pointwise log-likelihood
-
+  int<lower=0,upper=1> use_phi_approx; //indicator variable for likelihood
   //predictors
   int N_pred_mu;//number of predictors for start date
   matrix[N_old+N_moult+N_new,N_pred_mu] X_mu;//design matrix for start date NB: when forming design matrix must paste together responses in blocks old, moult, new
@@ -78,7 +78,12 @@ model {
 if (lumped == 0){
   for (i in 1:N_old) {
 	  if (is_replicated[individual[i]] == 1) {//longitudinal tobit-like likelihood (this only makes sense if within year recaptures contain at least one active moult score?!)
+	  if(use_phi_approx == 0){
 	    P[i] = 1 - Phi((old_dates[i] - mu[i] + mu_ind[individual[i]])/sigma_mu_ind);
+	  } else {
+	    P[i] = 1 - Phi_approx((old_dates[i] - mu[i] + mu_ind[individual[i]])/sigma_mu_ind);
+	  }
+
 	  } else {//standard likelihood for Type 2 model
       P[i] = 1 - Phi((old_dates[i] - mu[i])/sigma[i]);
 	  }
