@@ -12,6 +12,7 @@ uz2_linpred_recap(
   duration_formula = ~1,
   sigma_formula = ~1,
   lump_non_moult = FALSE,
+  active_moult_recaps_only = FALSE,
   data,
   init = "auto",
   flat_prior = TRUE,
@@ -35,6 +36,8 @@ uz2_linpred_recap(
 \item{sigma_formula}{model formula for start date sigma}
 
 \item{lump_non_moult}{logical; should pre- and post-moult observations be treated as indistinguishable? if TRUE, the type 2L model will be fitted.}
+
+\item{active_moult_recaps_only}{logical flag whether to ignore repeated observations outside the active moult phase}
 
 \item{data}{Input data frame}
 
