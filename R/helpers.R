@@ -118,10 +118,9 @@ summary_table.moultmcmc <- function (x, pars = x$stanfit@sim$pars_oi, prob = 0.9
 #' original version by Ben Bolker: https://stackoverflow.com/a/16951524
 #'
 #' @param ...
-#'
+#' @importFrom stats setNames
 #' @return a named list
 #'
-#' @examples
 namedList <- function(...) {
   L <- list(...)
   snm <- sapply(substitute(list(...)),deparse)[-1]
