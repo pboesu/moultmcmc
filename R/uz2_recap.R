@@ -98,9 +98,9 @@ uz2_linpred_recap <- function(moult_index_column,
                    active_moult_recaps_only = as.numeric(active_moult_recaps_only))
   #include pointwise log_lik matrix  in output?
   if(log_lik){
-    outpars <- c('beta_mu','beta_tau','beta_sigma', 'sigma_intercept', 'sigma_mu_ind','beta_star','finite_sd', 'mu_ind_star', 'mu_ind', 'log_lik')
+    outpars <- c('beta_mu_out','beta_tau','beta_sigma', 'sigma_intercept', 'sigma_mu_ind','beta_star','finite_sd', 'mu_ind_star', 'log_lik')
   } else {
-    outpars <- c('beta_mu','beta_tau','beta_sigma', 'sigma_intercept', 'sigma_mu_ind','beta_star','finite_sd', 'mu_ind_star', 'mu_ind')
+    outpars <- c('beta_mu_out','beta_tau','beta_sigma', 'sigma_intercept', 'sigma_mu_ind','beta_star','finite_sd', 'mu_ind_star')
   }
   #guess initial values
   if(init == "auto"){
@@ -119,7 +119,7 @@ uz2_linpred_recap <- function(moult_index_column,
     out <- rstan::sampling(stanmodels$uz2_recap, data = standata, init = init, pars = outpars, ...)
   }
   #rename regression coefficients for output
-  names(out)[grep('beta_mu', names(out))] <- paste('mean',colnames(X_mu), sep = '_')
+  names(out)[grep('beta_mu_out', names(out))] <- paste('mean',colnames(X_mu), sep = '_')
   names(out)[grep('beta_tau', names(out))] <- paste('duration',colnames(X_tau), sep = '_')
   names(out)[grep('beta_sigma', names(out))] <- paste('log_sd',colnames(X_sigma), sep = '_')
   names(out)[grep('sigma_intercept', names(out))] <- 'sd_(Intercept)'

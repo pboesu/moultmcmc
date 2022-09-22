@@ -174,6 +174,8 @@ sigma_mu_ind ~ normal(0,1);
 }
 
 generated quantities{
+  vector[N_pred_mu] beta_mu_out;//regression coefficients for start datebeta_mu_out
+  beta_mu_out = append_row(beta_star,beta_mu[2:N_pred_mu]);// collate post-swept intercept with remaining parameter vector
  if (llik == 1){
     //NB: code duplication for the likelihood calculation is less than ideal - refactor to a use stan function?
     //real end_date;
