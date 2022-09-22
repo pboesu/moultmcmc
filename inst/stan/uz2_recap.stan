@@ -175,12 +175,12 @@ sigma_mu_ind ~ normal(0,1);
 
 generated quantities{
   vector[N_pred_mu] beta_mu_out;//regression coefficients for start datebeta_mu_out
-  if(N_pred_mu > 1){
+  if (N_pred_mu > 1){
     beta_mu_out = append_row(beta_star,beta_mu[2:N_pred_mu]);// collate post-swept intercept with remaining
   } else {
-    beta_mu_out = beta_star);// intercept-only model
+    beta_mu_out[1] = beta_star;// intercept-only model
   }
-   parameter vector
+
  if (llik == 1){
     //NB: code duplication for the likelihood calculation is less than ideal - refactor to a use stan function?
     //real end_date;
