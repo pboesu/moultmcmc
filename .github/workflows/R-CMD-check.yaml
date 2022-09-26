@@ -7,12 +7,14 @@ on:
       - master
       - predict-mk2
       - select_recap_type
+      - unified-frontend
   pull_request:
     branches:
       - main
       - master
       - predict-mk2
       - select_recap_type
+      - unified-frontend
 
 name: R-CMD-check
 
