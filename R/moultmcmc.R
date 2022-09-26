@@ -13,7 +13,7 @@
 #' @param init Specification of initial values for all or some parameters. Can be the string "auto" for an automatic guess based on the data, or any of the permitted rstan options: the digit 0, the strings "0" or "random", or a function. See the detailed documentation for the init argument in ?rstan::stan.
 #' @param flat_prior use uniform prior on start date and duration (TRUE) or vaguely informative truncated normal prior (FALSE). Defaults to TRUE.
 #' @param beta_sd use zero-centred normal priors for regression coefficients other than intercepts? If <= 0 the stan default of improper flat priors is used.
-#' @param log_lik boolean retain pointwise log-likelihood in output? This enables model assessment and selection via the loo package. Defaults to true, can lead to very large output arrays if sample size is large.
+#' @param log_lik boolean retain pointwise log-likelihood in output? This enables model assessment and selection via the loo package. Defaults to FALSE, can lead to very large output arrays when sample size is large.
 #' @param use_phi_approx logical flag whether to use stan's Phi_approx function to calculate the "old" likelihoods
 #' @param active_moult_recaps_only logical flag whether to ignore repeated observations outside the active moult phase
 #' @param ... Arguments passed to `rstan::sampling` (e.g. iter, chains).
