@@ -3,7 +3,6 @@
 \docType{package}
 \name{moultmcmc-package}
 \alias{moultmcmc-package}
-\alias{moultmcmc}
 \title{The 'moultmcmc' package.}
 \description{
 Precompiled Stan models to conduct full Bayesian inference in regression models for the phenology of avian primary moult based on the approach of Underhill & Zucchini (1988) and related hierarchical models to accommodate repeated-measures data (within-season recaptures of individuals).

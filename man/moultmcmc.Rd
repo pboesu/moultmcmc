@@ -5,7 +5,7 @@
 \title{Bayesian inference for Underhill-Zucchini moult models and expansions}
 \usage{
 moultmcmc(
-  moult_index_column,
+  moult_column,
   date_column,
   id_column = NULL,
   start_formula = ~1,
@@ -24,6 +24,8 @@ moultmcmc(
 )
 }
 \arguments{
+\item{moult_column}{the name the column in \code{data} containing moult indices, i.e. a numeric vector of (linearized) moult scores (0 = old plumage,1 = new plumage) or numerical moult codes (1 = old plumage,2 = moulting, 3 = new plumage), depending on the model type.}
+
 \item{date_column}{the name the column in \code{data} containing sampling dates, encoded as days since an arbitrary reference date, i.e. a numeric vector}
 
 \item{id_column}{(optional) factor identifier. Usually a season-individual combination to encode within-season recaptures, defaults to NULL. When provided moultmcmc will attempt to fit the relevant recaptures model.}
@@ -53,8 +55,6 @@ moultmcmc(
 \item{active_moult_recaps_only}{logical flag whether to ignore repeated observations outside the active moult phase}
 
 \item{...}{Arguments passed to \code{rstan::sampling} (e.g. iter, chains).}
-
-\item{moult_column}{the name the column in \code{data} containing moult indices, i.e. a numeric vector of (linearized) moult scores (0 = old plumage,1 = new plumage) or numerical moult codes (1 = old plumage,2 = moulting, 3 = new plumage), depending on the model type.}
 }
 \value{
 An object of class \code{stanfit} returned by \code{rstan::sampling}

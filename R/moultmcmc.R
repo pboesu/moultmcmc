@@ -16,7 +16,6 @@
 #' @param log_lik boolean retain pointwise log-likelihood in output? This enables model assessment and selection via the loo package. Defaults to true, can lead to very large output arrays if sample size is large.
 #' @param use_phi_approx logical flag whether to use stan's Phi_approx function to calculate the "old" likelihoods
 #' @param active_moult_recaps_only logical flag whether to ignore repeated observations outside the active moult phase
-
 #' @param ... Arguments passed to `rstan::sampling` (e.g. iter, chains).
 #'
 #' @details
@@ -37,9 +36,10 @@
 #' sample is representative only of birds that have not started moult or that are in moult. Individuals with moult scores 1 are ignored.
 #'
 #' @return An object of class `stanfit` returned by `rstan::sampling`
-#'
+#' @importFrom nlme asOneFormula
+
 #TODO: implement an input data class which ensures column names and correct encoding for categorical variables
-moultmcmc <- function(moult_index_column,
+moultmcmc <- function(moult_column,
                         date_column,
                         id_column = NULL,
                         start_formula = ~1,
@@ -55,11 +55,26 @@ moultmcmc <- function(moult_index_column,
                         use_phi_approx = FALSE,
                         active_moult_recaps_only = FALSE,
                         ...) {
-  stopifnot(all(data[[moult_index_column]] >= 0 & data[[moult_index_column]] <= 1))
+  #check input data are as expected
+  if(type %in% c(2:5)) {
+    stopifnot(all(data[[moult_column]] >= 0 & data[[moult_column]] <= 1))
+  } else {
+      if (type == 1) {
+        stopifnot(all(data[[moult_column]] %in% c(1,2,3)))
+      } else {
+        if (type == 12) {
+          stopifnot(all(data[[moult_column]] >= 0 & data[[moult_column]] <= 1 | data[[moult_column]]==2))
+        } else {
+          stop('Unsupported model type. Argument type must be one of 1,2,3,4,5,12')
+        }
+      }
+    }
   stopifnot(is.numeric(data[[date_column]]))
   stopifnot(is.data.frame(data))
+  #prepare model.frame and handle missing values
+  data <- model.frame(nlme::asOneFormula(start_formula, duration_formula, sigma_formula, as.formula(paste(moult_column, '~ ', date_column))), data = data)
   #order data by moult category
-  data <- data[order(data[[moult_index_column]]),]
+  data <- data[order(data[[moult_column]]),]
   #setup model matrices
   X_mu <- model.matrix(start_formula, data)
   X_tau <- model.matrix(duration_formula, data)
@@ -115,6 +130,7 @@ moultmcmc <- function(moult_index_column,
   out_struc$terms$duration_formula <- duration_formula
   out_struc$terms$sigma_formula <- sigma_formula
   out_struc$data <- data
+  out_struc$na.action <- attr(data, "na.action")
   class(out_struc) <- 'moultmcmc'
   return(out_struc)
 }
