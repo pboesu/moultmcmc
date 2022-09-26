@@ -51,7 +51,7 @@ moultmcmc <- function(moult_column,
                         init = "auto",
                         flat_prior = TRUE,
                         beta_sd = 0,
-                        log_lik = TRUE,
+                        log_lik = FALSE,
                         use_phi_approx = FALSE,
                         active_moult_recaps_only = FALSE,
                         ...) {
@@ -75,18 +75,22 @@ moultmcmc <- function(moult_column,
   data <- model.frame(nlme::asOneFormula(start_formula, duration_formula, sigma_formula, as.formula(paste(moult_column, '~ ', date_column))), data = data)
   #order data by moult category
   data <- data[order(data[[moult_column]]),]
+  #TODO: ensure moult data is correctly coded for type 1 and type 12 model
+
+
   #setup model matrices
+  #TODO: these must be "cut to size" by model type, otherwise they'll always have dimensions N_old+N_moult+N_new
   X_mu <- model.matrix(start_formula, data)
   X_tau <- model.matrix(duration_formula, data)
   X_sigma <- model.matrix(sigma_formula, data)
   #prepare data structure for stan
-  standata <- list(old_dates = data[[date_column]][data[[moult_index_column]]==0],
-                   N_old = length(data[[date_column]][data[[moult_index_column]]==0]),
-                   moult_dates  = data[[date_column]][(data[[moult_index_column]] > 0 & data[[moult_index_column]] < 1)],
-                   moult_indices = data[[moult_index_column]][(data[[moult_index_column]] > 0 & data[[moult_index_column]] < 1)],
-                   N_moult = length(data[[date_column]][(data[[moult_index_column]] > 0 & data[[moult_index_column]] < 1)]),
-                   new_dates = data[[date_column]][data[[moult_index_column]]==1],
-                   N_new = length(data[[date_column]][data[[moult_index_column]]==1]),
+  standata <- list(old_dates = data[[date_column]][data[[moult_column]]==0],
+                   N_old = length(data[[date_column]][data[[moult_column]]==0]),
+                   moult_dates  = data[[date_column]][(data[[moult_column]] > 0 & data[[moult_column]] < 1)],
+                   moult_indices = data[[moult_column]][(data[[moult_column]] > 0 & data[[moult_column]] < 1)],
+                   N_moult = length(data[[date_column]][(data[[moult_column]] > 0 & data[[moult_column]] < 1)]),
+                   new_dates = data[[date_column]][data[[moult_column]]==1],
+                   N_new = length(data[[date_column]][data[[moult_column]]==1]),
                    X_mu = X_mu,
                    N_pred_mu = ncol(X_mu),
                    X_tau = X_tau,
@@ -101,7 +105,14 @@ moultmcmc <- function(moult_column,
   } else {
     outpars <- c('beta_mu','beta_tau','beta_sigma', 'sigma_intercept')
   }
-  #guess initial values
+  #get name of relevant model object
+  if (is.null(id_column)){
+    stan_model_name <- paste0('uz',type,'_linpred')
+  } else {
+    stan_model_name <- paste0('uz',type,'_recap')
+  }
+
+  #guess initial values and sample
   if(init == "auto"){
     mu_start = mean(c(max(standata$old_dates),min(standata$moult_dates)))
     tau_start = max(10, mean(c(max(standata$moult_dates),min(standata$new_dates))) - mu_start)
@@ -112,9 +123,9 @@ moultmcmc <- function(moult_column,
            beta_tau = as.array(c(tau_start, rep(0, standata$N_pred_tau - 1))),
            beta_sigma = as.array(c(log(sigma_start), rep(0, standata$N_pred_sigma - 1))))#NB this is on log link scale
     }
-    out <- rstan::sampling(stanmodels$uz2_linpred, data = standata, init = initfunc, pars = outpars, ...)
+    out <- rstan::sampling(stanmodels[[stan_model_name]], data = standata, init = initfunc, pars = outpars, ...)
   } else {
-    out <- rstan::sampling(stanmodels$uz2_linpred, data = standata, init = init, pars = outpars, ...)
+    out <- rstan::sampling(stanmodels[[stan_model_name]], data = standata, init = init, pars = outpars, ...)
   }
   #rename regression coefficients for output
   names(out)[grep('beta_mu', names(out))] <- paste('mean',colnames(X_mu), sep = '_')
@@ -124,7 +135,7 @@ moultmcmc <- function(moult_column,
   out_struc <- list()
   out_struc$stanfit <- out
   out_struc$terms$date_column <- date_column
-  out_struc$terms$moult_index_column <- moult_index_column
+  out_struc$terms$moult_index_column <- moult_column
   out_struc$terms$moult_cat_column <- NA
   out_struc$terms$start_formula <- start_formula
   out_struc$terms$duration_formula <- duration_formula
