@@ -12,11 +12,13 @@ uz2_linpred_recap(
   duration_formula = ~1,
   sigma_formula = ~1,
   lump_non_moult = FALSE,
+  active_moult_recaps_only = FALSE,
   data,
   init = "auto",
   flat_prior = TRUE,
   beta_sd = 0,
   log_lik = TRUE,
+  use_phi_approx = FALSE,
   ...
 )
 }
@@ -35,6 +37,8 @@ uz2_linpred_recap(
 
 \item{lump_non_moult}{logical; should pre- and post-moult observations be treated as indistinguishable? if TRUE, the type 2L model will be fitted.}
 
+\item{active_moult_recaps_only}{logical flag whether to ignore repeated observations outside the active moult phase}
+
 \item{data}{Input data frame}
 
 \item{init}{Specification of initial values for all or some parameters. Can be the string "auto" for an automatic guess based on the data, or any of the permitted rstan options: the digit 0, the strings "0" or "random", or a function. See the detailed documentation for the init argument in ?rstan::stan.}
@@ -44,6 +48,8 @@ uz2_linpred_recap(
 \item{beta_sd}{use zero-centred normal priors for regression coefficients other than intercepts? If <= 0 the stan default of improper flat priors is used.}
 
 \item{log_lik}{boolean retain pointwise log-likelihood in output? This enables model assessment and selection via the loo package. Defaults to true, can lead to very large output arrays if sample size is large.}
+
+\item{use_phi_approx}{logical flag whether to use stan's Phi_approx function to calculate the "old" likelihoods}
 
 \item{...}{Arguments passed to \code{rstan::sampling} (e.g. iter, chains).}
 }

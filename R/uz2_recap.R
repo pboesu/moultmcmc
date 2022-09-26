@@ -13,6 +13,8 @@
 #' @param flat_prior use uniform prior on start date and duration (TRUE) or vaguely informative truncated normal prior (FALSE). Defaults to TRUE.
 #' @param beta_sd use zero-centred normal priors for regression coefficients other than intercepts? If <= 0 the stan default of improper flat priors is used.
 #' @param log_lik boolean retain pointwise log-likelihood in output? This enables model assessment and selection via the loo package. Defaults to true, can lead to very large output arrays if sample size is large.
+#' @param use_phi_approx logical flag whether to use stan's Phi_approx function to calculate the "old" likelihoods
+#' @param active_moult_recaps_only logical flag whether to ignore repeated observations outside the active moult phase
 #' @param ... Arguments passed to `rstan::sampling` (e.g. iter, chains).
 #' @return An object of class `stanfit` returned by `rstan::sampling`
 #'
@@ -24,11 +26,13 @@ uz2_linpred_recap <- function(moult_index_column,
                               duration_formula = ~1,
                               sigma_formula = ~1,
                               lump_non_moult = FALSE,
+                              active_moult_recaps_only = FALSE,
                               data,
                               init = "auto",
                               flat_prior = TRUE,
                               beta_sd = 0,
                               log_lik = TRUE,
+                              use_phi_approx = FALSE,
                               ...) {
   stopifnot(all(data[[moult_index_column]] >= 0 & data[[moult_index_column]] <= 1))
   stopifnot(any(data[[moult_index_column]] == 0))
@@ -68,6 +72,7 @@ uz2_linpred_recap <- function(moult_index_column,
                    new_dates = new_dates,
                    N_new = N_new,
                    N_ind = length(unique(data[[id_column]])),
+                   N_ind_rep = length(unique(as.numeric(data[[id_column]])[replicated])),
 
                    individual = as.numeric(data[[id_column]]),#TODO: the resultant individual intercepts are hard to map onto original factor levels - this should be handled in the postprocessing of the model output
                    individual_first_index = as.array(id_first),
@@ -76,6 +81,7 @@ uz2_linpred_recap <- function(moult_index_column,
                    not_replicated_old = as.array(not_replicated[not_replicated <= N_old]),
                    not_replicated_moult = as.array(not_replicated[not_replicated > N_old] - N_old),
                    is_replicated = as.array(is_replicated),
+                   replicated_individuals = unique(as.numeric(data[[id_column]])[replicated]),
                    Nobs_replicated = length(replicated),
                    Nobs_not_replicated_old = length(not_replicated[not_replicated <= N_old]),
                    Nobs_not_replicated_moult = length(not_replicated[not_replicated > N_old]),
@@ -87,12 +93,14 @@ uz2_linpred_recap <- function(moult_index_column,
                    N_pred_sigma = ncol(X_sigma),
                    lumped = as.numeric(lump_non_moult),
                    beta_sd = beta_sd,
-                   llik = as.numeric(log_lik))
+                   llik = as.numeric(log_lik),
+                   use_phi_approx = as.numeric(use_phi_approx),
+                   active_moult_recaps_only = as.numeric(active_moult_recaps_only))
   #include pointwise log_lik matrix  in output?
   if(log_lik){
-    outpars <- c('beta_mu','beta_tau','beta_sigma', 'sigma_intercept', 'sigma_mu_ind','beta_star','finite_sd', 'mu_ind_star', 'mu_ind', 'log_lik')
+    outpars <- c('beta_mu_out','beta_tau','beta_sigma', 'sigma_intercept', 'sigma_mu_ind','beta_star','finite_sd', 'mu_ind_star', 'log_lik')
   } else {
-    outpars <- c('beta_mu','beta_tau','beta_sigma', 'sigma_intercept', 'sigma_mu_ind','beta_star','finite_sd', 'mu_ind_star', 'mu_ind')
+    outpars <- c('beta_mu_out','beta_tau','beta_sigma', 'sigma_intercept', 'sigma_mu_ind','beta_star','finite_sd', 'mu_ind_star')
   }
   #guess initial values
   if(init == "auto"){
@@ -111,7 +119,7 @@ uz2_linpred_recap <- function(moult_index_column,
     out <- rstan::sampling(stanmodels$uz2_recap, data = standata, init = init, pars = outpars, ...)
   }
   #rename regression coefficients for output
-  names(out)[grep('beta_mu', names(out))] <- paste('mean',colnames(X_mu), sep = '_')
+  names(out)[grep('beta_mu_out', names(out))] <- paste('mean',colnames(X_mu), sep = '_')
   names(out)[grep('beta_tau', names(out))] <- paste('duration',colnames(X_tau), sep = '_')
   names(out)[grep('beta_sigma', names(out))] <- paste('log_sd',colnames(X_sigma), sep = '_')
   names(out)[grep('sigma_intercept', names(out))] <- 'sd_(Intercept)'
@@ -125,6 +133,7 @@ uz2_linpred_recap <- function(moult_index_column,
   out_struc$terms$duration_formula <- duration_formula
   out_struc$terms$sigma_formula <- sigma_formula
   out_struc$data <- data
+  out_struc$individual_ids <- data.frame(index = as.numeric(data[[id_column]]), id = data[[id_column]])
   class(out_struc) <- 'moultmcmc'
   return(out_struc)
 }
