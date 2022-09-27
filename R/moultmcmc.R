@@ -56,11 +56,17 @@ moultmcmc <- function(moult_column,
                         active_moult_recaps_only = FALSE,
                         ...) {
   #check input data are as expected
+  stopifnot(is.data.frame(data))
+  #prepare model.frame and handle missing values
+  data <- model.frame(nlme::asOneFormula(start_formula, duration_formula, sigma_formula, as.formula(paste(moult_column, '~ ', date_column))), data = data)
+
+  #check data encoding is as expected
+  stopifnot(is.numeric(data[[date_column]]))
   if(type %in% c(2:5)) {
     stopifnot(all(data[[moult_column]] >= 0 & data[[moult_column]] <= 1))
   } else {
       if (type == 1) {
-        stopifnot(all(data[[moult_column]] %in% c(1,2,3)))
+        stopifnot(all(data[[moult_column]] %in% c(1,2,3))|all(data[[moult_column]] >= 0 & data[[moult_column]] <= 1))
       } else {
         if (type == 12) {
           stopifnot(all(data[[moult_column]] >= 0 & data[[moult_column]] <= 1 | data[[moult_column]]==2))
@@ -68,11 +74,22 @@ moultmcmc <- function(moult_column,
           stop('Unsupported model type. Argument type must be one of 1,2,3,4,5,12')
         }
       }
-    }
-  stopifnot(is.numeric(data[[date_column]]))
-  stopifnot(is.data.frame(data))
-  #prepare model.frame and handle missing values
-  data <- model.frame(nlme::asOneFormula(start_formula, duration_formula, sigma_formula, as.formula(paste(moult_column, '~ ', date_column))), data = data)
+  }
+  #delete irrelevant observations depending on model type
+  data <- switch(as.character(type),
+                 "3"=data[data[[moult_column]] > 0 & data[[moult_column]] < 1,],
+                 "4"=data[data[[moult_column]] > 0,],
+                 "5"=data[data[[moult_column]] < 1,],
+                 data)
+  #recode type 1 data in 1,2,3 format
+  #TODO: this overwrites the input data, so decision to be made whether model slot data returns data as fitted or data as supplied - latter makes more sense in terms of values, but how to deal with deleted values in type 3,4,5 models? could pass them through and change indexing in stan model?!
+  if (type == 1 & all(data[[moult_column]] %in% c(1,2,3))){
+    data[[moult_column]][data[[moult_column]]==1] <- 0
+    data[[moult_column]][data[[moult_column]]==2] <- 0.5
+    data[[moult_column]][data[[moult_column]]==3] <- 1
+  }
+
+
   #order data by moult category
   data <- data[order(data[[moult_column]]),]
   #TODO: ensure moult data is correctly coded for type 1 and type 12 model
@@ -114,9 +131,10 @@ moultmcmc <- function(moult_column,
 
   #guess initial values and sample
   if(init == "auto"){
-    mu_start = mean(c(max(standata$old_dates),min(standata$moult_dates)))
-    tau_start = max(10, mean(c(max(standata$moult_dates),min(standata$new_dates))) - mu_start)
-    sigma_start = min(40,sd(standata$moult_dates))
+    date_on_score_lm <- lm(standata$moult_dates ~ standata$moult_indices)
+    mu_start = coef(date_on_score_lm)[1]
+    tau_start = max(coef(date_on_score_lm)[2],2*sd(standata$moult_dates), na.rm=T)
+    sigma_start = min(10, sd(standata$moult_dates))
     initfunc <- function(chain_id = 1) {
       # cat("chain_id =", chain_id, "\n")
       list(beta_mu = as.array(c(mu_start,rep(0, standata$N_pred_mu - 1))), #initialize intercept term from data, set inits for all other effects to 0
