@@ -7,12 +7,12 @@
 consolidate_moult_records(moult_score, moult_cat)
 }
 \arguments{
-\item{moult_score}{a numeric vector of (linearized) moult scores in \link{0,1} (0 = old plumage,1 = new plumage).}
+\item{moult_score}{a numeric vector of (linearized) moult scores in [0,1] (0 = old plumage,1 = new plumage).}
 
 \item{moult_cat}{a numeric vector of categorical moult codes (1 = old plumage,2 = moulting, 3 = new plumage)}
 }
 \value{
-a numeric vector of scores and categorical records with values \link{0,1} for old, new and continuous active moult scores, and value 2 for categorical active moult records.
+a numeric vector of scores and categorical records with values [0,1] for old, new and continuous active moult scores, and value 2 for categorical active moult records.
 }
 \description{
 This is a helper function to format input data for the Type 1+2 moult model.

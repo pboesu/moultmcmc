@@ -1,7 +1,7 @@
 #' Bayesian inference for Underhill-Zucchini moult models and expansions
 #'
 #' @export
-#' @param moult_column the name the column in `data` containing moult indices, i.e. a numeric vector of (linearized) moult scores (0 = old plumage, 1 = new plumage; for model types 1-5),   numerical moult codes (1 = old plumage, 2 = moulting, 3 = new plumage; for model type 1), or a mixed column created by \code{\link{consolidate_moult_records}} for model type 12.
+#' @param moult_column the name the column in `data` containing moult indices, i.e. a numeric vector of (linearized) moult scores in \[0,1\] (0 = old plumage, 1 = new plumage; for model types 1-5),   numerical moult codes (1 = old plumage, 2 = moulting, 3 = new plumage; for model type 1), or a mixed column created by \code{\link{consolidate_moult_records}} for model type 12.
 #' @param date_column the name the column in `data` containing sampling dates, encoded as days since an arbitrary reference date, i.e. a numeric vector
 #' @param id_column (optional) factor identifier. Usually a season-individual combination to encode within-season recaptures, defaults to NULL. When provided moultmcmc will attempt to fit the relevant recaptures model.
 #' @param start_formula model formula for start date

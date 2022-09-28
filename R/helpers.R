@@ -4,10 +4,10 @@
 #'
 #' This is a helper function to format input data for the Type 1+2 moult model.
 #'
-#' @param moult_score a numeric vector of (linearized) moult scores in [0,1] (0 = old plumage,1 = new plumage).
+#' @param moult_score a numeric vector of (linearized) moult scores in \[0,1\] (0 = old plumage,1 = new plumage).
 #' @param moult_cat a numeric vector of categorical moult codes (1 = old plumage,2 = moulting, 3 = new plumage)
 #'
-#' @return a numeric vector of scores and categorical records with values [0,1] for old, new and continuous active moult scores, and value 2 for categorical active moult records.
+#' @return a numeric vector of scores and categorical records with values \[0,1\] for old, new and continuous active moult scores, and value 2 for categorical active moult records.
 #' @export
 #'
 #'
