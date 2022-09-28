@@ -15,6 +15,7 @@ test_that("uz1 works with 1,2,3 inputs", {
                   log_lik = FALSE,
                   chains = 1)
 expect_s3_class(uz1, "moultmcmc")
+expect_equal(uz1$type, "1")
 expect_error(moultmcmc(moult_column = "MCat",
                 date_column = "Day",
                 data = sanderlings,
@@ -31,6 +32,7 @@ test_that("uz1 works with [0,1] inputs", {
                   log_lik = FALSE,
                   chains = 1)
   expect_s3_class(uz1sc, "moultmcmc")
+  expect_equal(uz1sc$type, "1")
 })
 test_that("uz1l works with 1,2,3 inputs", {
   uz1l = moultmcmc(moult_column = "MCat",
@@ -41,6 +43,7 @@ test_that("uz1l works with 1,2,3 inputs", {
                     log_lik = FALSE,
                     chains = 1)
   expect_s3_class(uz1l, "moultmcmc")
+  expect_equal(uz1l$type, "1L")
 })
 test_that("uz1l works with [0,1] inputs", {
   uz1lsc = moultmcmc(moult_column = "MCat",
@@ -51,6 +54,7 @@ test_that("uz1l works with [0,1] inputs", {
                    log_lik = FALSE,
                    chains = 1)
   expect_s3_class(uz1lsc, "moultmcmc")
+  expect_equal(uz1lsc$type, "1L")
 })
 test_that("uz2 works", {
   uz2 = moultmcmc(moult_column = "MIndex",
@@ -60,6 +64,7 @@ test_that("uz2 works", {
                     log_lik = FALSE,
                     chains = 1)
   expect_s3_class(uz2, "moultmcmc")
+  expect_equal(uz2$type, "2")
 })
 test_that("uz2l works", {
   uz2l = moultmcmc(moult_column = "MIndex",
@@ -70,6 +75,7 @@ test_that("uz2l works", {
                    log_lik = FALSE,
                    chains = 1)
   expect_s3_class(uz2l, "moultmcmc")
+  expect_equal(uz2l$type, "2L")
 })
 test_that("uz3 works", {
   uz3 = moultmcmc(moult_column = "MIndex",
@@ -79,6 +85,7 @@ test_that("uz3 works", {
                   log_lik = FALSE,
                   chains = 1)
   expect_s3_class(uz3, "moultmcmc")
+  expect_equal(uz3$type, "3")
 })
 test_that("uz4 works", {
   uz4 = moultmcmc(moult_column = "MIndex",
@@ -88,6 +95,7 @@ test_that("uz4 works", {
                   log_lik = FALSE,
                   chains = 1)
   expect_s3_class(uz4, "moultmcmc")
+  expect_equal(uz4$type, "4")
 })
 test_that("uz5 works", {
   uz5 = moultmcmc(moult_column = "MIndex",
@@ -97,6 +105,7 @@ test_that("uz5 works", {
                   log_lik = FALSE,
                   chains = 1)
   expect_s3_class(uz5, "moultmcmc")
+  expect_equal(uz5$type, "5")
 })
 test_that("uz12 data prep works", {
   sanderlings$MIndexCat <- consolidate_moult_records(sanderlings$MIndex, sanderlings$MCat)
@@ -113,5 +122,6 @@ test_that("uz12 works", {
                    log_lik = FALSE,
                    chains = 1)
   expect_s3_class(uz12, "moultmcmc")
+  expect_equal(uz12$type, "12")
 })
 

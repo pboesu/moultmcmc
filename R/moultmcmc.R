@@ -165,6 +165,7 @@ moultmcmc <- function(moult_column,
   out_struc$terms$sigma_formula <- sigma_formula
   out_struc$data <- data
   out_struc$na.action <- attr(data, "na.action")
+  out_struc$type = paste0(type,ifelse(lump_non_moult,'L', ''), ifelse(is.null(id_column), '','R'))
   class(out_struc) <- 'moultmcmc'
   return(out_struc)
 }
