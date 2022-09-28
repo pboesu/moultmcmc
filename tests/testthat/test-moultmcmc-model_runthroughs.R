@@ -15,6 +15,13 @@ test_that("uz1 works with 1,2,3 inputs", {
                   log_lik = FALSE,
                   chains = 1)
 expect_s3_class(uz1, "moultmcmc")
+expect_error(moultmcmc(moult_column = "MCat",
+                date_column = "Day",
+                data = sanderlings,
+                type = 14,
+                log_lik = FALSE,
+                chains = 1))
+
 })
 test_that("uz1 works with [0,1] inputs", {
   uz1sc = moultmcmc(moult_column = "MIndex",
@@ -91,8 +98,15 @@ test_that("uz5 works", {
                   chains = 1)
   expect_s3_class(uz5, "moultmcmc")
 })
+test_that("uz12 data prep works", {
+  sanderlings$MIndexCat <- consolidate_moult_records(sanderlings$MIndex, sanderlings$MCat)
+  expect_true(all((sanderlings$MIndexCat %in% c(2,NA)) | (sanderlings$MIndexCat >= 0 & sanderlings$MIndexCat <= 1)))
+})
+
 test_that("uz12 works", {
-  uz12 = moultmcmc(moult_column = "MCat",
+  sanderlings$MIndex[100:110] <- NA
+  sanderlings$MIndexCat <- consolidate_moult_records(sanderlings$MIndex, sanderlings$MCat)
+  uz12 = moultmcmc(moult_column = "MIndexCat",
                    date_column = "Day",
                    data = sanderlings,
                    type = 12,

@@ -1,8 +1,8 @@
 #' Bayesian inference for Underhill-Zucchini moult models and expansions
 #'
 #' @export
+#' @param moult_column the name the column in `data` containing moult indices, i.e. a numeric vector of (linearized) moult scores (0 = old plumage, 1 = new plumage; for model types 1-5),   numerical moult codes (1 = old plumage, 2 = moulting, 3 = new plumage; for model type 1), or a mixed column created by \code{\link{consolidate_moult_records}} for model type 12.
 #' @param date_column the name the column in `data` containing sampling dates, encoded as days since an arbitrary reference date, i.e. a numeric vector
-#' @param moult_column the name the column in `data` containing moult indices, i.e. a numeric vector of (linearized) moult scores (0 = old plumage,1 = new plumage) or numerical moult codes (1 = old plumage,2 = moulting, 3 = new plumage), depending on the model type.
 #' @param id_column (optional) factor identifier. Usually a season-individual combination to encode within-season recaptures, defaults to NULL. When provided moultmcmc will attempt to fit the relevant recaptures model.
 #' @param start_formula model formula for start date
 #' @param duration_formula model formula for duration
@@ -10,7 +10,7 @@
 #' @param type integer (one of 1,2,3,4,5,12) referring to type of moult data and consequently model to be fitted (see details)
 #' @param lump_non_moult logical; should pre- and post-moult observations be treated as indistinguishable? if TRUE and type %in% c(1,2,12), the relevant lumped model will be fitted (see details).
 #' @param data Input data frame must contain a numeric column "date" and a column "moult_cat" which is a numeric vector of categorical moult codes (1 = old plumage,2 = moulting,3 = new plumage).
-#' @param init Specification of initial values for all or some parameters. Can be the string "auto" for an automatic guess based on the data, or any of the permitted rstan options: the digit 0, the strings "0" or "random", or a function. See the detailed documentation for the init argument in ?rstan::stan.
+#' @param init Specification of initial values for all or some parameters. Can be the string "auto" for an automatic guess based on the data, or any of the permitted \code{rstan} options: the digit 0, the strings "0" or "random", or a function. See the detailed documentation for the init argument in \code{\link[rstan:stan]{rstan::stan}}.
 #' @param flat_prior use uniform prior on start date and duration (TRUE) or vaguely informative truncated normal prior (FALSE). Defaults to TRUE.
 #' @param beta_sd use zero-centred normal priors for regression coefficients other than intercepts? If <= 0 the stan default of improper flat priors is used.
 #' @param log_lik boolean retain pointwise log-likelihood in output? This enables model assessment and selection via the loo package. Defaults to FALSE, can lead to very large output arrays when sample size is large.
@@ -71,7 +71,7 @@ moultmcmc <- function(moult_column,
         if (type == 12) {
           stopifnot(all(data[[moult_column]] >= 0 & data[[moult_column]] <= 1 | data[[moult_column]]==2))
         } else {
-          stop('Unsupported model type. Argument type must be one of 1,2,3,4,5,12')
+          stop('Unsupported model type. Argument `type` must be one of 1,2,3,4,5,12')
         }
       }
   }
@@ -116,6 +116,11 @@ moultmcmc <- function(moult_column,
                    N_pred_sigma = ncol(X_sigma),
                    lumped = as.numeric(lump_non_moult),
                    llik = as.numeric(log_lik))
+  #additional input data for type 12 model
+  if (type == 12){
+    standata$N_moult_cat = length(data[[date_column]][data[[moult_column]]==2])
+    standata$moult_cat_dates =data[[date_column]][data[[moult_column]]==2]
+  }
   #include pointwise log_lik matrix  in output?
   if(log_lik){
     outpars <- c('beta_mu','beta_tau','beta_sigma', 'sigma_intercept', 'log_lik')

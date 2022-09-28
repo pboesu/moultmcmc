@@ -24,7 +24,7 @@ moultmcmc(
 )
 }
 \arguments{
-\item{moult_column}{the name the column in \code{data} containing moult indices, i.e. a numeric vector of (linearized) moult scores (0 = old plumage,1 = new plumage) or numerical moult codes (1 = old plumage,2 = moulting, 3 = new plumage), depending on the model type.}
+\item{moult_column}{the name the column in \code{data} containing moult indices, i.e. a numeric vector of (linearized) moult scores (0 = old plumage, 1 = new plumage; for model types 1-5),   numerical moult codes (1 = old plumage, 2 = moulting, 3 = new plumage; for model type 1), or a mixed column created by \code{\link{consolidate_moult_records}} for model type 12.}
 
 \item{date_column}{the name the column in \code{data} containing sampling dates, encoded as days since an arbitrary reference date, i.e. a numeric vector}
 
@@ -42,7 +42,7 @@ moultmcmc(
 
 \item{data}{Input data frame must contain a numeric column "date" and a column "moult_cat" which is a numeric vector of categorical moult codes (1 = old plumage,2 = moulting,3 = new plumage).}
 
-\item{init}{Specification of initial values for all or some parameters. Can be the string "auto" for an automatic guess based on the data, or any of the permitted rstan options: the digit 0, the strings "0" or "random", or a function. See the detailed documentation for the init argument in ?rstan::stan.}
+\item{init}{Specification of initial values for all or some parameters. Can be the string "auto" for an automatic guess based on the data, or any of the permitted \code{rstan} options: the digit 0, the strings "0" or "random", or a function. See the detailed documentation for the init argument in \code{\link[rstan:stan]{rstan::stan}}.}
 
 \item{flat_prior}{use uniform prior on start date and duration (TRUE) or vaguely informative truncated normal prior (FALSE). Defaults to TRUE.}
 

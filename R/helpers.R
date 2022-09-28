@@ -1,5 +1,27 @@
 #helper functions to plot moult and moultmcmc models
 
+#' Consolidate a mixture of continuous and categorical moult records
+#'
+#' This is a helper function to format input data for the Type 1+2 moult model.
+#'
+#' @param moult_score a numeric vector of (linearized) moult scores in [0,1] (0 = old plumage,1 = new plumage).
+#' @param moult_cat a numeric vector of categorical moult codes (1 = old plumage,2 = moulting, 3 = new plumage)
+#'
+#' @return a numeric vector of scores and categorical records with values [0,1] for old, new and continuous active moult scores, and value 2 for categorical active moult records.
+#' @export
+#'
+#'
+consolidate_moult_records <- function(moult_score, moult_cat){
+  stopifnot(all((moult_score >= 0 & moult_score <= 1) | is.na(moult_score)))
+  stopifnot(all(moult_cat %in% c(1,2,3,NA)))
+  stopifnot(length(moult_score)==length(moult_cat))
+  moult_score[is.na(moult_score) & moult_cat == 1] <- 0
+  moult_score[is.na(moult_score) & moult_cat == 2] <- 2
+  moult_score[is.na(moult_score) & moult_cat == 3] <- 1
+  return(moult_score)
+}
+
+
 #' Extract Population-Level Estimates
 #'
 #' Extract the population-level ('fixed') effects
