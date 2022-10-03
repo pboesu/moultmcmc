@@ -124,7 +124,7 @@ vector[N_ind] mu_ind_out;//individual intercepts for output
 
 
 
-//TODO: this does not make sense?! duplicates calculations for replicated individuals
+//TODO: this is not efficient. duplicates calculations for replicated individuals
   for (i in 1:N_moult) {
   if (is_replicated[individual[i]] == 1) {
      mu_ind_out[individual[i]] = mu_ind[individual[i]] + mu[i];//replicated individuals

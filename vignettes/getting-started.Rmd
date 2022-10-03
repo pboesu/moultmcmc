@@ -68,7 +68,7 @@ and standard model assessment can be done as for any posterior sample from Stan,
 ```{r uz1-trace-plot, fig.width=7}
 stan_trace(mcmc1$stanfit)
 ```
-We can also plot the model fit against the data uisng the `moult_plot` function
+We can also plot the model fit against the data using the `moult_plot` function
 ```{r uz1-moult-plot, fig.width=7}
 moult_plot(mcmc1)
 ```

@@ -37,6 +37,7 @@
 #'
 #' @return An object of class `stanfit` returned by `rstan::sampling`
 #' @importFrom nlme asOneFormula
+#' @importFrom stats lm model.frame
 
 #TODO: implement an input data class which ensures column names and correct encoding for categorical variables
 moultmcmc <- function(moult_column,
@@ -96,7 +97,6 @@ moultmcmc <- function(moult_column,
 
 
   #setup model matrices
-  #TODO: these must be "cut to size" by model type, otherwise they'll always have dimensions N_old+N_moult+N_new
   X_mu <- model.matrix(start_formula, data)
   X_tau <- model.matrix(duration_formula, data)
   X_sigma <- model.matrix(sigma_formula, data)

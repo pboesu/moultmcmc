@@ -174,12 +174,34 @@ sigma_mu_ind ~ normal(0,1);
 }
 
 generated quantities{
-  vector[N_pred_mu] beta_mu_out;//regression coefficients for start datebeta_mu_out
+  vector[N_pred_mu] beta_mu_out;//regression coefficients for start date beta_mu_out
+  vector[N_ind] mu_ind_out;//individual intercepts for output
+  vector[N_old+N_moult+N_new] mu;//start date lin pred
+  vector[N_old+N_moult+N_new] tau;//duration lin pred
+  vector[N_old+N_moult+N_new] sigma;//duration lin pred
+
+  mu = X_mu * beta_mu;
+//  print(mu);
+  tau = X_tau * beta_tau;
+//  print(tau);
+  sigma = exp(X_sigma * beta_sigma);//use log link for variance lin pred
+
   if (N_pred_mu > 1){
     beta_mu_out = append_row(beta_star,beta_mu[2:N_pred_mu]);// collate post-swept intercept with remaining
   } else {
     beta_mu_out[1] = beta_star;// intercept-only model
   }
+
+  for (i in 1:N_moult) {
+  if (is_replicated[individual[i+N_old]] == 1) {
+     mu_ind_out[individual[i+N_old]] = mu_ind[individual[i+N_old]] + mu[i+N_old];//replicated individuals
+     //tau_ind_out[individual[i]] = tau_ind[individual[i]] + tau[i];//replicated individuals
+  } else {
+    mu_ind_out[individual[i+N_old]] = moult_dates[i+N_old] - moult_indices[i+N_old]*tau[i+N_old];//unreplicated
+    //tau_ind_out[individual[i]] = tau[i];
+  }
+}
+
 
  if (llik == 1){
     //NB: code duplication for the likelihood calculation is less than ideal - refactor to a use stan function?
