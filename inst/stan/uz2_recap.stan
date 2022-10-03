@@ -198,6 +198,7 @@ generated quantities{
      //tau_ind_out[individual[i]] = tau_ind[individual[i]] + tau[i];//replicated individuals
   } else {
     mu_ind_out[individual[i+N_old]] = moult_dates[i+N_old] - moult_indices[i+N_old]*tau[i+N_old];//unreplicated
+    //TODO: this occasionally produces NaN outputs which is strange when these are transformned data, really
     //tau_ind_out[individual[i]] = tau[i];
   }
 }

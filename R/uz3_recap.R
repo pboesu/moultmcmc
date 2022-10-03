@@ -83,8 +83,7 @@ uz3_linpred_recap <- function(moult_index_column, date_column, id_column, start_
   out_struc$terms$date_column <- date_column
   out_struc$terms$moult_index_column <- moult_index_column
   out_struc$terms$moult_cat_column <- NA
-  out_struc$terms$id_column <- id_column
-  out_struc$terms$id_stan <- as.numeric(data[[id_column]])#return lookup to match individual intercepts to individual designators in the original data
+  out_struc$individual_ids <- data.frame(index = as.numeric(unique(data[[id_column]])), id = unique(data[[id_column]]))
   out_struc$terms$id_original <- as.character(data[[id_column]])
   out_struc$terms$start_formula <- start_formula
   out_struc$terms$duration_formula <- duration_formula

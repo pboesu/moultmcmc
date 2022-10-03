@@ -133,7 +133,7 @@ uz2_linpred_recap <- function(moult_index_column,
   out_struc$terms$duration_formula <- duration_formula
   out_struc$terms$sigma_formula <- sigma_formula
   out_struc$data <- data
-  out_struc$individual_ids <- data.frame(index = as.numeric(data[[id_column]]), id = data[[id_column]])
+  out_struc$individual_ids <- data.frame(index = as.numeric(unique(data[[id_column]])), id = unique(data[[id_column]]))
   class(out_struc) <- 'moultmcmc'
   return(out_struc)
 }
