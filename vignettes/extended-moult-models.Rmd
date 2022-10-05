@@ -1,0 +1,106 @@
+---
+title: "Extended moult models"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Extended moult models}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: moultmcmc.bib
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+To install `moultmcmc` please follow the instructions in the [README file](https://github.com/pboesu/moultmcmc#installation).
+
+```{r setup, warning=FALSE, message=FALSE}
+library(moult)
+library(moultmcmc)
+library(dplyr)
+library(ggplot2)
+library(rstan)
+```
+
+# Lumped models
+
+# Mixed moult data
+
+# Recapture models
+
+For demonstration purposes we use the `sanderlings` dataset from @underhill1988model. It contains observations of sampling dates `Day` and moult indices `MIndex` for 164 adult Sanderlings (*Calidris alba*) trapped on 11 days in the South Africa in the austral summer of 1978/79. The sample contains 85 pre-moult individuals, 66 in active moult and 13 post-moult individuals. The data are augmented with a column describing categorical moult status `MCat`, so we can demonstrate fitting Type 1 models when data are coded categorically.
+
+```{r data-preparation, fig.width=7}
+data("sanderlings")
+sanderlings$MCat <- case_when(sanderlings$MIndex == 0 ~ 1,
+                              sanderlings$MIndex == 1 ~3,
+                              TRUE ~ 2)
+#plot the data
+ggplot(sanderlings, aes(y=MIndex, x=Day, col = factor(MCat))) + geom_point() +theme_classic()
+```
+
+The central function for model fitting is the `moultmcmc()` function. Model variants of the standard Underhill-Zucchini models are specified using the `type` argument to designate the relevant input data type. Additionally the user has to designate the input data columns containing moult records, and dates, respectively, as well well as linear predictor structures for the main moult parameters - the start date, duration and the standard deviation of the start date. To fit an intercept-only type 1 model we therefore use the following specification:
+```{r uz1-model-mcmc}
+mcmc1 = moultmcmc(moult_column = "MCat",
+                  date_column = "Day",
+                  start_formula = ~1,
+                  duration_formula = ~1,
+                  sigma_formula = ~1,
+                  data = sanderlings,
+                  type=1,
+                  init = "auto",
+                  chains = 2,
+                  refresh=1000)
+```
+Most MCMC parameters, such as the number of chains (here 2), iterations, or cores are set in the same way as for `rstan::sampling`, however, for initial values `moultmcmc` defaults to an additional option `"auto"` which will provide initial values for the MCMC chains based on the input data. Custom initial values can be specified instead as detailed in the documentation of `rstan::sampling`.
+
+Once the MCMC has completed, a summary table of parameter estimates can be displayed with
+```{r uz1-model-summary}
+summary_table(mcmc1)
+```
+and standard model assessment can be done as for any posterior sample from Stan, by directly accessing the `stanfit` slot of the returned S3 object. For example we can look at the traceplots for the model using `rstan::stan_trace`
+```{r uz1-trace-plot, fig.width=7}
+stan_trace(mcmc1$stanfit)
+```
+We can also plot the model fit against the data using the `moult_plot` function
+```{r uz1-moult-plot, fig.width=7}
+moult_plot(mcmc1)
+```
+
+
+
+
+For comparison we can fit the same model using maximum likelihood estimation via the `moult` package [@erni2013moult] and compare parameter estimates visually with the `compare_plot` function.
+```{r uz1-model-ml, fig.width=7}
+ml1 = moult(MIndex ~ Day,data = sanderlings, type = 1)
+compare_plot(ml1, mcmc1)
+```
+
+The comparison plot shows very similar estimates for both methods.
+
+Similarly we can fit the corresponding Type 2 model, that makes use of the full information contained in the moult indices, by setting `type=2`. All `moultmcmc` models default to an intercept only model, so we do not need to explicitly specify the individual linear predictors here.
+
+```{r uz2-model, fig.width=7}
+#fit using MCMC
+mcmc2 = moultmcmc(moult_column = "MIndex",
+                date_column = "Day",
+                type=2,
+                data = sanderlings,
+                chains = 2,
+                refresh = 1000)
+#fit using ML
+ml2 = moult(MIndex ~ Day,data = sanderlings, type = 2)
+#compare parameter estimates
+compare_plot(ml2, mcmc2)
+```
+
+As before the comparison plot shows very similar estimates for both methods. Perhaps more interesting is a comparison of the two model types, which illustrates the gain in precision achieved by exploiting the information contained in the moult indices. Note that models can be given custom names for visualisation purposes using the `names` argument to `compare_plot`
+```{r data-type-comparison, fig.width=7}
+compare_plot(mcmc1, mcmc2, names = c('UZ1','UZ2'))
+```
+
+# References
+
