@@ -59,7 +59,7 @@ moultmcmc <- function(moult_column,
   #check input data are as expected
   stopifnot(is.data.frame(data))
   #prepare model.frame and handle missing values
-  data <- model.frame(nlme::asOneFormula(start_formula, duration_formula, sigma_formula, as.formula(paste(moult_column, '~ ', date_column))), data = data)
+  data <- model.frame(nlme::asOneFormula(start_formula, duration_formula, sigma_formula, as.formula(paste(moult_column, '~ ', date_column, '+', id_column))), data = data)
 
   #check data encoding is as expected
   stopifnot(is.numeric(data[[date_column]]))
@@ -100,7 +100,8 @@ moultmcmc <- function(moult_column,
   X_mu <- model.matrix(start_formula, data)
   X_tau <- model.matrix(duration_formula, data)
   X_sigma <- model.matrix(sigma_formula, data)
-  #prepare data structure for stan
+
+    #prepare data structure for stan
   standata <- list(old_dates = data[[date_column]][data[[moult_column]]==0],
                    N_old = length(data[[date_column]][data[[moult_column]]==0]),
                    moult_dates  = data[[date_column]][(data[[moult_column]] > 0 & data[[moult_column]] < 1)],
@@ -115,7 +116,32 @@ moultmcmc <- function(moult_column,
                    X_sigma = X_sigma,
                    N_pred_sigma = ncol(X_sigma),
                    lumped = as.numeric(lump_non_moult),
-                   llik = as.numeric(log_lik))
+                   llik = as.numeric(log_lik),
+                   use_phi_approx = as.numeric(use_phi_approx),
+                   active_moult_recaps_only = as.numeric(active_moult_recaps_only))
+  # setup replication information
+  if (!is.null(id_column)){
+    stopifnot(is.factor(data[[id_column]]))
+    #create vector of first occurrence of each individual in the model matrix to index unique linear predictor values for each individual
+    id_first <- match(unique(data[[id_column]]), data[[id_column]])
+    replicated <- which(data[[id_column]] %in% names(table(data[[id_column]])[table(data[[id_column]])>1]))
+    not_replicated <- which(data[[id_column]] %in% names(table(data[[id_column]])[table(data[[id_column]])==1]))
+    is_replicated <- ifelse(table(data[[id_column]])>1, 1,0)
+    standata$N_ind = length(unique(data[[id_column]]))
+    standata$N_ind_rep = length(unique(as.numeric(data[[id_column]])[replicated]))
+    standata$individual = as.numeric(data[[id_column]])#TODO: the resultant individual intercepts are hard to map onto original factor levels - this should be handled in the postprocessing of the model output
+    standata$individual_first_index = as.array(id_first)
+    standata$replicated = as.array(replicated)
+    standata$not_replicated = as.array(not_replicated)
+    standata$not_replicated_old = as.array(not_replicated[not_replicated <= standata$N_old])
+    standata$not_replicated_moult = as.array(not_replicated[not_replicated > standata$N_old] - standata$N_old)
+    standata$is_replicated = as.array(is_replicated)
+    standata$replicated_individuals = unique(as.numeric(data[[id_column]])[replicated])
+    standata$Nobs_replicated = length(replicated)
+    standata$Nobs_not_replicated_old = length(not_replicated[not_replicated <= standata$N_old])
+    standata$Nobs_not_replicated_moult = length(not_replicated[not_replicated > standata$N_old])
+
+  }
   #additional input data for type 12 model
   if (type == 12){
     standata$N_moult_cat = length(data[[date_column]][data[[moult_column]]==2])
@@ -166,6 +192,7 @@ moultmcmc <- function(moult_column,
   out_struc$data <- data
   out_struc$na.action <- attr(data, "na.action")
   out_struc$type = paste0(type,ifelse(lump_non_moult,'L', ''), ifelse(is.null(id_column), '','R'))
+  out_struc$individual_ids <- if (is.null(id_column)) { NA } else { data.frame(index = as.numeric(unique(data[[id_column]])), id = unique(data[[id_column]])) }
   class(out_struc) <- 'moultmcmc'
   return(out_struc)
 }
