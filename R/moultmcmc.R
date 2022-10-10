@@ -78,10 +78,10 @@ moultmcmc <- function(moult_column,
   }
   #delete irrelevant observations depending on model type
   data <- switch(as.character(type),
-                 "3"=data[data[[moult_column]] > 0 & data[[moult_column]] < 1,],
-                 "4"=data[data[[moult_column]] > 0,],
-                 "5"=data[data[[moult_column]] < 1,],
-                 data)
+                 "3"=droplevels(data[data[[moult_column]] > 0 & data[[moult_column]] < 1,]),
+                 "4"=droplevels(data[data[[moult_column]] > 0,]),
+                 "5"=droplevels(data[data[[moult_column]] < 1,]),
+                 droplevels(data))
   #recode type 1 data in 1,2,3 format
   #TODO: this overwrites the input data, so decision to be made whether model slot data returns data as fitted or data as supplied - latter makes more sense in terms of values, but how to deal with deleted values in type 3,4,5 models? could pass them through and change indexing in stan model?!
   if (type == 1 & all(data[[moult_column]] %in% c(1,2,3))){
@@ -133,13 +133,17 @@ moultmcmc <- function(moult_column,
     standata$individual_first_index = as.array(id_first)
     standata$replicated = as.array(replicated)
     standata$not_replicated = as.array(not_replicated)
-    standata$not_replicated_old = as.array(not_replicated[not_replicated <= standata$N_old])
-    standata$not_replicated_moult = as.array(not_replicated[not_replicated > standata$N_old] - standata$N_old)
+    if (type %in% c(2,5)){
+      standata$not_replicated_old = as.array(not_replicated[not_replicated <= standata$N_old])
+      standata$not_replicated_moult = as.array(not_replicated[not_replicated > standata$N_old] - standata$N_old)
+    }
     standata$is_replicated = as.array(is_replicated)
     standata$replicated_individuals = unique(as.numeric(data[[id_column]])[replicated])
     standata$Nobs_replicated = length(replicated)
-    standata$Nobs_not_replicated_old = length(not_replicated[not_replicated <= standata$N_old])
-    standata$Nobs_not_replicated_moult = length(not_replicated[not_replicated > standata$N_old])
+    if (type %in% c(2,5)){
+      standata$Nobs_not_replicated_old = length(not_replicated[not_replicated <= standata$N_old])
+      standata$Nobs_not_replicated_moult = length(not_replicated[not_replicated > standata$N_old])
+    }
 
   }
   #additional input data for type 12 model
@@ -158,6 +162,7 @@ moultmcmc <- function(moult_column,
     stan_model_name <- paste0('uz',type,'_linpred')
   } else {
     stan_model_name <- paste0('uz',type,'_recap')
+    outpars <- c(outpars, 'mu_ind_star')
   }
 
   #guess initial values and sample
@@ -186,6 +191,7 @@ moultmcmc <- function(moult_column,
   out_struc$terms$date_column <- date_column
   out_struc$terms$moult_index_column <- moult_column
   out_struc$terms$moult_cat_column <- NA
+  out_struc$terms$id_column <- id_column
   out_struc$terms$start_formula <- start_formula
   out_struc$terms$duration_formula <- duration_formula
   out_struc$terms$sigma_formula <- sigma_formula
@@ -193,6 +199,7 @@ moultmcmc <- function(moult_column,
   out_struc$na.action <- attr(data, "na.action")
   out_struc$type = paste0(type,ifelse(lump_non_moult,'L', ''), ifelse(is.null(id_column), '','R'))
   out_struc$individual_ids <- if (is.null(id_column)) { NA } else { data.frame(index = as.numeric(unique(data[[id_column]])), id = unique(data[[id_column]])) }
+  out_struc$replicated_ids <- data.frame(index = 1:standata$N_ind_rep, id = levels(data[[id_column]])[standata$replicated_individuals])
   class(out_struc) <- 'moultmcmc'
   return(out_struc)
 }

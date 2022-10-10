@@ -47,7 +47,7 @@ consolidate_moult_records <- function(moult_score, moult_cat){
 #' @importFrom nlme fixef
 fixef.moultmcmc <-  function(object, summary = TRUE,
                            probs = c(0.025, 0.975), pars = NULL, ...) {
-  fpars <- names(object$stanfit) #TODO: need to filter out hierarchical pars here and things like lp__ and log_lik
+  fpars <- names(object$stanfit)[!grepl('lp__|log_lik|mu_ind',names(object$stanfit))] #TODO: need to filter out hierarchical pars here and things like lp__ and log_lik
   if (!is.null(pars)) {
     fpars <- as.character(pars)
   }
@@ -56,7 +56,47 @@ fixef.moultmcmc <-  function(object, summary = TRUE,
   }
   out <- as.matrix(object$stanfit, pars = fpars)
   if (summary) {
-    out <- summary(object$stanfit, probs = probs)$summary
+    out <- summary(object$stanfit, probs = probs, pars = fpars)$summary
+  }
+  out
+}
+
+#' Extract Individual-Level Estimates
+#'
+#' Extract the individual-level ('random') effects
+#' from a \code{moultmcmc} object.
+#'
+#' @aliases ranef
+#'
+#' @param object a moultmcmc model
+#' @param summary logical, should posterior samples be summarised for each parameter
+#' @param probs numeric, desired quantiles for summary statistics
+#' @param pars Optional names of coefficients to extract.
+#'   By default, all coefficients are extracted.
+#' @param ... Currently ignored.
+#'
+#' @return If \code{summary} is \code{TRUE}, a matrix for the individual-level effects.
+#'   If \code{summary} is \code{FALSE}, a matrix with one row per
+#'   posterior draw and one column per individual-level effect.
+#'
+#'
+#' @method ranef moultmcmc
+#' @export
+#' @export ranef
+#' @importFrom nlme ranef
+ranef.moultmcmc <-  function(object, summary = TRUE,
+                             probs = c(0.025, 0.975), pars = NULL, ...) {
+  fpars <- names(object$stanfit)[grepl('mu_ind',names(object$stanfit))]
+  if (!is.null(pars)) {
+    fpars <- as.character(pars)
+  }
+  if (!length(fpars)) {
+    return(NULL)
+  }
+  out <- as.matrix(object$stanfit, pars = fpars)
+  if (summary) {
+    out <- summary(object$stanfit, probs = probs, pars = fpars)$summary
+    rownames(out)<-object$replicated_ids$id
   }
   out
 }

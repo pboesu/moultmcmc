@@ -5,6 +5,7 @@ test_that("uz2_recap works", {
                   date_column = "date_sampled",
                   id_column = "id",
                   data = recaptures,
+                  type = 2,
                   log_lik = FALSE,
                   chains = 1,
                   iter = 200)
@@ -12,21 +13,23 @@ expect_s3_class(uz2r, "moultmcmc")
 })
 test_that("uz2l_recap works", {
   uz2rl = moultmcmc(moult_column = "pfmg_sampled",
-                          date_column = "date_sampled",
-                          id_column = "id",
-                          lump_non_moult = TRUE,
-                          data = recaptures,
-                          log_lik = FALSE,
-                          chains = 1,
-                          iter = 200)
+                    date_column = "date_sampled",
+                    id_column = "id",
+                    lump_non_moult = TRUE,
+                    type = 2,
+                    data = recaptures,
+                    log_lik = FALSE,
+                    chains = 1,
+                    iter = 200)
   expect_s3_class(uz2rl, "moultmcmc")
 })
-test_that("uz2l_active_moult_only", {
+test_that("uz2r_active_moult_only", {
   uz2ram = moultmcmc(moult_column = "pfmg_sampled",
                             date_column = "date_sampled",
                             id_column = "id",
                             lump_non_moult = FALSE,
                             active_moult_recaps_only = TRUE,
+                     type = 2,
                             data = recaptures,
                             log_lik = FALSE,
                             chains = 1,
@@ -47,12 +50,14 @@ test_that("uz2l_phi_approx", {
 })
 test_that("uz3r works", {
   uz3 = moultmcmc(moult_column = "pfmg_sampled",
-                          date_column = "date_sampled",
-                    id_column = "id",
-                    data = subset(recaptures, pfmg_sampled != 0 & pfmg_sampled != 1),
-                    log_lik = FALSE,
-                    chains = 1,
-                    iter = 200)
+                  date_column = "date_sampled",
+                  id_column = "id",
+                  data = subset(recaptures, pfmg_sampled != 0 & pfmg_sampled != 1),
+                  type = 3,
+                  log_lik = FALSE,
+                  chains = 2,
+                  cores = 2,#shoulld work on gh-actions
+                  iter = 300)
   expect_s3_class(uz3, "moultmcmc")
 })
 test_that("uz5r works", {
@@ -60,6 +65,7 @@ test_that("uz5r works", {
                           date_column = "date_sampled",
                           id_column = "id",
                           data = subset(recaptures, pfmg_sampled != 1),
+                  type = 5,
                     log_lik = FALSE,
                     chains = 1,
                     iter = 200)
