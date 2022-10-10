@@ -59,7 +59,13 @@ moultmcmc <- function(moult_column,
   #check input data are as expected
   stopifnot(is.data.frame(data))
   #prepare model.frame and handle missing values
-  data <- model.frame(nlme::asOneFormula(start_formula, duration_formula, sigma_formula, as.formula(paste(moult_column, '~ ', date_column, '+', id_column))), data = data)
+  #subset data to relevant columns
+  if (is.null(id_column)){
+    implicit_vars_formula <- as.formula(paste(moult_column, '~ ', date_column))
+  } else {
+    implicit_vars_formula <- as.formula(paste(moult_column, '~ ', date_column, '+', id_column))
+  }
+  data <- model.frame(nlme::asOneFormula(start_formula, duration_formula, sigma_formula, implicit_vars_formula), data = data)
 
   #check data encoding is as expected
   stopifnot(is.numeric(data[[date_column]]))
@@ -199,7 +205,7 @@ moultmcmc <- function(moult_column,
   out_struc$na.action <- attr(data, "na.action")
   out_struc$type = paste0(type,ifelse(lump_non_moult,'L', ''), ifelse(is.null(id_column), '','R'))
   out_struc$individual_ids <- if (is.null(id_column)) { NA } else { data.frame(index = as.numeric(unique(data[[id_column]])), id = unique(data[[id_column]])) }
-  out_struc$replicated_ids <- data.frame(index = 1:standata$N_ind_rep, id = levels(data[[id_column]])[standata$replicated_individuals])
+  out_struc$replicated_ids <- if (is.null(id_column)) { NA } else { data.frame(index = 1:standata$N_ind_rep, id = levels(data[[id_column]])[standata$replicated_individuals]) }
   class(out_struc) <- 'moultmcmc'
   return(out_struc)
 }
