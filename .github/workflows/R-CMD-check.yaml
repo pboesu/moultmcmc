@@ -86,6 +86,7 @@ jobs:
 
       - name: Install dependencies
         run: |
+          install.packages("rstan", repos = c("https://mc-stan.org/r-packages/", getOption("repos")))
           remotes::install_deps(dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
         shell: Rscript {0}

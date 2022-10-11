@@ -56,7 +56,7 @@ test_that("uz3r works", {
                   type = 3,
                   log_lik = FALSE,
                   chains = 2,
-                  cores = 2,#shoulld work on gh-actions
+                  cores = 2,#should work on gh-actions
                   iter = 300)
   expect_s3_class(uz3, "moultmcmc")
 })
