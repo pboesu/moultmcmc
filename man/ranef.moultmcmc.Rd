@@ -2,7 +2,7 @@
 % Please edit documentation in R/helpers.R
 \name{ranef.moultmcmc}
 \alias{ranef.moultmcmc}
-\alias{fixef}
+\alias{ranef}
 \title{Extract Individual-Level Estimates}
 \usage{
 \method{ranef}{moultmcmc}(object, summary = TRUE, probs = c(0.025, 0.975), pars = NULL, ...)

@@ -1,17 +1,22 @@
+library(dplyr)
 data(recaptures)
 
-test_that("uz2_recap works", {
+#recaptures %>% group_by(id) %>% summarize(start_date = unique(start_date))
+
+test_that("moultmcmc uz2_recap works", {
   uz2r = moultmcmc(moult_column = "pfmg_sampled",
                   date_column = "date_sampled",
                   id_column = "id",
                   data = recaptures,
                   type = 2,
                   log_lik = FALSE,
-                  chains = 1,
-                  iter = 200)
+                  chains = 2,
+                  cores = 2,
+                  control = list(adapt_delta = 0.9, max_treedepth = 11),
+                  iter = 1200)
 expect_s3_class(uz2r, "moultmcmc")
 })
-test_that("uz2l_recap works", {
+test_that("moultmcmc uz2l_recap works", {
   uz2rl = moultmcmc(moult_column = "pfmg_sampled",
                     date_column = "date_sampled",
                     id_column = "id",
@@ -23,7 +28,7 @@ test_that("uz2l_recap works", {
                     iter = 200)
   expect_s3_class(uz2rl, "moultmcmc")
 })
-test_that("uz2r_active_moult_only", {
+test_that("moultmcmc uz2r_active_moult_only", {
   uz2ram = moultmcmc(moult_column = "pfmg_sampled",
                             date_column = "date_sampled",
                             id_column = "id",
