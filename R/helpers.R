@@ -177,6 +177,7 @@ summary_table.moultmcmc <- function (x, pars = x$stanfit@sim$pars_oi, prob = 0.9
 
 #' Summary method for moultmcmc models
 #'
+#' @method summary moultmcmc
 #' @param object a moultmcmc object
 #' @param ... passed to summary_table
 #'
