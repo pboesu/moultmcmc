@@ -168,7 +168,8 @@ moultmcmc <- function(moult_column,
     stan_model_name <- paste0('uz',type,'_linpred')
   } else {
     stan_model_name <- paste0('uz',type,'_recap')
-    outpars <- c(outpars, 'mu_ind_star')
+    outpars <- c(outpars, 'beta_star', 'mu_ind_star', 'mu_ind_out')
+    outpars <- gsub('beta_mu','beta_mu_out', outpars)
   }
 
   #guess initial values and sample

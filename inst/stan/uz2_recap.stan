@@ -175,7 +175,7 @@ sigma_mu_ind ~ normal(0,1);
 
 generated quantities{
   vector[N_pred_mu] beta_mu_out;//regression coefficients for start date beta_mu_out
-  vector[N_ind] mu_ind_out;//individual intercepts for output
+  vector[N_ind_rep] mu_ind_out;//individual intercepts for output
   vector[N_old+N_moult+N_new] mu;//start date lin pred
   vector[N_old+N_moult+N_new] tau;//duration lin pred
   vector[N_old+N_moult+N_new] sigma;//duration lin pred
@@ -192,17 +192,7 @@ generated quantities{
     beta_mu_out[1] = beta_star;// intercept-only model
   }
 
-  for (i in 1:N_moult) {
-  if (is_replicated[individual[i+N_old]] == 1) {
-     mu_ind_out[individual[i+N_old]] = mu_ind[individual[i+N_old]] + mu[i+N_old];//replicated individuals
-     //tau_ind_out[individual[i]] = tau_ind[individual[i]] + tau[i];//replicated individuals
-  } else {
-    mu_ind_out[individual[i+N_old]] = moult_dates[i] - moult_indices[i]*tau[i+N_old];//unreplicated
-    //TODO: this occasionally produces NaN outputs which is strange when these are transformned data, really
-    //tau_ind_out[individual[i]] = tau[i];
-  }
-}
-
+  mu_ind_out = mu_ind_star + beta_star;
 
  if (llik == 1){
     //NB: code duplication for the likelihood calculation is less than ideal - refactor to a use stan function?

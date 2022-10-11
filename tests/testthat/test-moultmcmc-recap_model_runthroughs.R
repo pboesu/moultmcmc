@@ -4,7 +4,7 @@ data(recaptures)
 #recaptures %>% group_by(id) %>% summarize(start_date = unique(start_date))
 
 test_that("moultmcmc uz2_recap works", {
-  uz2r = moultmcmc(moult_column = "pfmg_sampled",
+  m2r = moultmcmc(moult_column = "pfmg_sampled",
                   date_column = "date_sampled",
                   id_column = "id",
                   data = recaptures,
@@ -12,9 +12,9 @@ test_that("moultmcmc uz2_recap works", {
                   log_lik = FALSE,
                   chains = 2,
                   cores = 2,
-                  control = list(adapt_delta = 0.9, max_treedepth = 11),
-                  iter = 1200)
-expect_s3_class(uz2r, "moultmcmc")
+                  control = list(adapt_delta = 0.99, max_treedepth = 11),
+                  iter = 2000)
+expect_s3_class(m2r, "moultmcmc")
 })
 test_that("moultmcmc uz2l_recap works", {
   uz2rl = moultmcmc(moult_column = "pfmg_sampled",

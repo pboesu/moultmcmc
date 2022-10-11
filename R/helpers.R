@@ -86,7 +86,7 @@ fixef.moultmcmc <-  function(object, summary = TRUE,
 #' @importFrom nlme ranef
 ranef.moultmcmc <-  function(object, summary = TRUE,
                              probs = c(0.025, 0.975), pars = NULL, ...) {
-  fpars <- names(object$stanfit)[grepl('mu_ind',names(object$stanfit))]
+  fpars <- names(object$stanfit)[grepl('mu_ind_star',names(object$stanfit))]
   if (!is.null(pars)) {
     fpars <- as.character(pars)
   }
