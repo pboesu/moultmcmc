@@ -175,6 +175,18 @@ summary_table.moultmcmc <- function (x, pars = x$stanfit@sim$pars_oi, prob = 0.9
   return(s)
 }
 
+#' Summary method for moultmcmc models
+#'
+#' @param object a moultmcmc object
+#' @param ... passed to summary_table
+#'
+#' @return a summary table
+#' @export
+#'
+summary.moultmcmc <- function(object, ...){
+  summary_table(object, ...)
+}
+
 #' internal helper function to create a named list
 #'
 #' original version by Ben Bolker: https://stackoverflow.com/a/16951524
