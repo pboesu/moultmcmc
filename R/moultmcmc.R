@@ -130,9 +130,18 @@ moultmcmc <- function(moult_column,
     stopifnot(is.factor(data[[id_column]]))
     #create vector of first occurrence of each individual in the model matrix to index unique linear predictor values for each individual
     id_first <- match(unique(data[[id_column]]), data[[id_column]])
-    replicated <- which(data[[id_column]] %in% names(table(data[[id_column]])[table(data[[id_column]])>1]))
-    not_replicated <- which(data[[id_column]] %in% names(table(data[[id_column]])[table(data[[id_column]])==1]))
-    is_replicated <- ifelse(table(data[[id_column]])>1, 1,0)
+    #create indicator  variable to identify active_moult records
+    active_moult <- data[[moult_column]] != 1 & data[[moult_column]] != 0
+
+    if(active_moult_recaps_only==TRUE){
+      replicated <- which(data[[id_column]] %in% rownames(table(data[[id_column]],active_moult))[table(data[[id_column]],active_moult)[,'TRUE']>0 & rowSums(table(data[[id_column]],active_moult))>1])
+      is_replicated <- ifelse(table(data[[id_column]],active_moult)[,'TRUE']>0 & rowSums(table(data[[id_column]],active_moult))>1, 1,0)#vector of length N_ind
+    } else {
+      replicated <- which(data[[id_column]] %in% names(table(data[[id_column]])[table(data[[id_column]])>1]))#indices of vector of length N_obs
+      is_replicated <- ifelse(table(data[[id_column]])>1, 1,0)#vector of length N_ind
+    }
+    not_replicated <- setdiff(seq_along(data[[id_column]]),replicated)
+
     standata$N_ind = length(unique(data[[id_column]]))
     standata$N_ind_rep = length(unique(as.numeric(data[[id_column]])[replicated]))
     standata$individual = as.numeric(data[[id_column]])#TODO: the resultant individual intercepts are hard to map onto original factor levels - this should be handled in the postprocessing of the model output
@@ -168,7 +177,7 @@ moultmcmc <- function(moult_column,
     stan_model_name <- paste0('uz',type,'_linpred')
   } else {
     stan_model_name <- paste0('uz',type,'_recap')
-    outpars <- c(outpars, 'beta_star', 'mu_ind_star', 'mu_ind_out')
+    outpars <- c(outpars, 'beta_star', 'mu_ind_star', 'mu_ind_out','sigma_mu_ind')
     outpars <- gsub('beta_mu','beta_mu_out', outpars)
   }
 

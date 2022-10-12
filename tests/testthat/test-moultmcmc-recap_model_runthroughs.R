@@ -2,18 +2,21 @@ library(dplyr)
 data(recaptures)
 
 #recaptures %>% group_by(id) %>% summarize(start_date = unique(start_date))
-
+#mcmc_iter = 200
+#mcmc_refresh = max(mcmc_iter/4,1)
 test_that("moultmcmc uz2_recap works", {
   m2r = moultmcmc(moult_column = "pfmg_sampled",
                   date_column = "date_sampled",
                   id_column = "id",
                   data = recaptures,
+                  flat_prior = FALSE,
                   type = 2,
                   log_lik = FALSE,
                   chains = 2,
                   cores = 2,
                   control = list(adapt_delta = 0.99, max_treedepth = 11),
-                  iter = 200)
+                  iter = 200,
+                  refresh = 50)
 expect_s3_class(m2r, "moultmcmc")
 
 as.data.frame(ranef(m2r)) %>% tibble::rownames_to_column('id') %>% left_join(recaptures %>% group_by(id) %>% summarize(start_date = unique(start_date), n_moult = sum(pfmg_sampled != 0 & pfmg_sampled != 1), n_total = n())) -> joined_df
@@ -43,8 +46,22 @@ test_that("moultmcmc uz2r_active_moult_only", {
                      log_lik = FALSE,
                      chains = 2,
                      cores = 2,
-                     iter = 2000)
+                     iter = 400)
   expect_s3_class(uz2ram, "moultmcmc")
+})
+test_that("moultmcmc uz2r_active_moult_only with unmodelled heterogeneity in tau", {
+  uz2ram2 = moultmcmc(moult_column = "pfmg_sampled",
+                     date_column = "date_sampled",
+                     id_column = "id",
+                     lump_non_moult = FALSE,
+                     active_moult_recaps_only = TRUE,
+                     type = 2,
+                     data = recaptures2,
+                     log_lik = FALSE,
+                     chains = 2,
+                     cores = 2,
+                     iter = 400)
+  expect_s3_class(uz2ram2, "moultmcmc")
 })
 test_that("uz2l_phi_approx", {
   uz2rapprox = moultmcmc(moult_column = "pfmg_sampled",

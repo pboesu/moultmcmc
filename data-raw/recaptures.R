@@ -2,3 +2,7 @@
 library(dplyr)
 recaptures = read.csv('data-raw/siskin03_sim_001.csv') %>% mutate(id = factor(id))
 usethis::use_data(recaptures, overwrite = TRUE)
+recaptures2 = read.csv('data-raw/siskin37_sim_001.csv') %>% mutate(id = factor(id))
+usethis::use_data(recaptures2, overwrite = TRUE)
+
+
