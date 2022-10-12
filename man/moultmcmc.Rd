@@ -20,6 +20,7 @@ moultmcmc(
   log_lik = FALSE,
   use_phi_approx = FALSE,
   active_moult_recaps_only = FALSE,
+  same_sigma = FALSE,
   ...
 )
 }
@@ -53,6 +54,8 @@ moultmcmc(
 \item{use_phi_approx}{logical flag whether to use stan's Phi_approx function to calculate the "old" likelihoods}
 
 \item{active_moult_recaps_only}{logical flag whether to ignore repeated observations outside the active moult phase}
+
+\item{same_sigma}{logical flag, currently unused}
 
 \item{...}{Arguments passed to \code{rstan::sampling} (e.g. iter, chains).}
 }

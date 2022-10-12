@@ -29,6 +29,6 @@ P. Boersch-Supan
 recaptures2
 }
 \description{
-A dataset containing the moult scores and capture dates for a simulated population of passerines including recaptures
+A dataset containing the moult scores and capture dates for a simulated population of passerines including recaptures. Simulation is based on an underlying population moult start date of 196.83, moult duration of 77.80 days and a population standard deviation of the start date of 8.1 days.
 }
 \keyword{datasets}

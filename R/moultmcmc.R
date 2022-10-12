@@ -16,6 +16,7 @@
 #' @param log_lik boolean retain pointwise log-likelihood in output? This enables model assessment and selection via the loo package. Defaults to FALSE, can lead to very large output arrays when sample size is large.
 #' @param use_phi_approx logical flag whether to use stan's Phi_approx function to calculate the "old" likelihoods
 #' @param active_moult_recaps_only logical flag whether to ignore repeated observations outside the active moult phase
+#' @param same_sigma logical flag, currently unused
 #' @param ... Arguments passed to `rstan::sampling` (e.g. iter, chains).
 #'
 #' @details
@@ -37,7 +38,7 @@
 #'
 #' @return An object of class `stanfit` returned by `rstan::sampling`
 #' @importFrom nlme asOneFormula
-#' @importFrom stats lm model.frame
+#' @importFrom stats lm model.frame as.formula
 
 #TODO: implement an input data class which ensures column names and correct encoding for categorical variables
 moultmcmc <- function(moult_column,

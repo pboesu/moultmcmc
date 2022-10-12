@@ -19,6 +19,7 @@ uz2_linpred_recap(
   beta_sd = 0,
   log_lik = FALSE,
   use_phi_approx = FALSE,
+  same_sigma = FALSE,
   ...
 )
 }
@@ -50,6 +51,8 @@ uz2_linpred_recap(
 \item{log_lik}{boolean retain pointwise log-likelihood in output? This enables model assessment and selection via the loo package. Defaults to FALSE, can lead to very large output arrays if sample size is large.}
 
 \item{use_phi_approx}{logical flag whether to use stan's Phi_approx function to calculate the "old" likelihoods}
+
+\item{same_sigma}{logical flag, currently unused}
 
 \item{...}{Arguments passed to \code{rstan::sampling} (e.g. iter, chains).}
 }

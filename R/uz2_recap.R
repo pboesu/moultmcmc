@@ -15,8 +15,10 @@
 #' @param log_lik boolean retain pointwise log-likelihood in output? This enables model assessment and selection via the loo package. Defaults to FALSE, can lead to very large output arrays if sample size is large.
 #' @param use_phi_approx logical flag whether to use stan's Phi_approx function to calculate the "old" likelihoods
 #' @param active_moult_recaps_only logical flag whether to ignore repeated observations outside the active moult phase
+#' @param same_sigma logical flag, currently unused
 #' @param ... Arguments passed to `rstan::sampling` (e.g. iter, chains).
 #' @return An object of class `stanfit` returned by `rstan::sampling`
+#'
 #'
 #TODO: implement an input data class which ensures column names and correct encoding for categorical variables
 uz2_linpred_recap <- function(moult_index_column,
