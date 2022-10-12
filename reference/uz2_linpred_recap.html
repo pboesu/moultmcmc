@@ -32,6 +32,9 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
+      <a href="../articles/extended-moult-models.html">Extended moult models</a>
+    </li>
+    <li>
       <a href="../articles/getting-started.html">Getting started with moultmcmc</a>
     </li>
     <li>
@@ -70,8 +73,9 @@
 <span>  init <span class="op">=</span> <span class="st">"auto"</span>,</span>
 <span>  flat_prior <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  beta_sd <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>  log_lik <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  log_lik <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  use_phi_approx <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  same_sigma <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -127,11 +131,15 @@
 
 
 <dt>log_lik</dt>
-<dd><p>boolean retain pointwise log-likelihood in output? This enables model assessment and selection via the loo package. Defaults to true, can lead to very large output arrays if sample size is large.</p></dd>
+<dd><p>boolean retain pointwise log-likelihood in output? This enables model assessment and selection via the loo package. Defaults to FALSE, can lead to very large output arrays if sample size is large.</p></dd>
 
 
 <dt>use_phi_approx</dt>
 <dd><p>logical flag whether to use stan's Phi_approx function to calculate the "old" likelihoods</p></dd>
+
+
+<dt>same_sigma</dt>
+<dd><p>logical flag, currently unused</p></dd>
 
 
 <dt>...</dt>

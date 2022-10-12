@@ -5,13 +5,13 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Getting started with moultmcmc • moultmcmc</title>
+<title>Extended moult models • moultmcmc</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="Getting started with moultmcmc">
+<script src="../pkgdown.js"></script><meta property="og:title" content="Extended moult models">
 <meta property="og:description" content="moultmcmc">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -71,30 +71,37 @@
 
       
 
-      </header><script src="getting-started_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="extended-moult-models_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Getting started with moultmcmc</h1>
+      <h1 data-toc-skip>Extended moult models</h1>
             
       
       
-      <div class="hidden name"><code>getting-started.Rmd</code></div>
+      <div class="hidden name"><code>extended-moult-models.Rmd</code></div>
 
     </div>
 
     
     
 <p>To install <code>moultmcmc</code> please follow the instructions in the <a href="https://github.com/pboesu/moultmcmc#installation" class="external-link">README file</a>.</p>
-<!--**Note that as of January 2022 the moult package [@erni2013moult] is archived on CRAN because of an incompatibility with the upcoming R version 4.2.x. This vignette therefore relies on a patched version of the moult package for the time being. The patched version can be installed from github using the following command**-->
-<!--
-
--->
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">moult</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">moultmcmc</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://mc-stan.org/rstan/" class="external-link">rstan</a></span><span class="op">)</span></span></code></pre></div>
+<div class="section level2">
+<h2 id="lumped-models">Lumped models<a class="anchor" aria-label="anchor" href="#lumped-models"></a>
+</h2>
+</div>
+<div class="section level2">
+<h2 id="mixed-moult-data">Mixed moult data<a class="anchor" aria-label="anchor" href="#mixed-moult-data"></a>
+</h2>
+</div>
+<div class="section level2">
+<h2 id="recapture-models">Recapture models<a class="anchor" aria-label="anchor" href="#recapture-models"></a>
+</h2>
 <p>For demonstration purposes we use the <code>sanderlings</code> dataset from <span class="citation">Underhill and Zucchini (1988)</span>. It contains observations of sampling dates <code>Day</code> and moult indices <code>MIndex</code> for 164 adult Sanderlings (<em>Calidris alba</em>) trapped on 11 days in the South Africa in the austral summer of 1978/79. The sample contains 85 pre-moult individuals, 66 in active moult and 13 post-moult individuals. The data are augmented with a column describing categorical moult status <code>MCat</code>, so we can demonstrate fitting Type 1 models when data are coded categorically.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"sanderlings"</span><span class="op">)</span></span>
@@ -103,7 +110,7 @@
 <span>                              <span class="cn">TRUE</span> <span class="op">~</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="co">#plot the data</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">sanderlings</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>y<span class="op">=</span><span class="va">MIndex</span>, x<span class="op">=</span><span class="va">Day</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">MCat</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_classic</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="getting-started_files/figure-html/data-preparation-1.png" width="672"></p>
+<p><img src="extended-moult-models_files/figure-html/data-preparation-1.png" width="672"></p>
 <p>The central function for model fitting is the <code><a href="../reference/moultmcmc.html">moultmcmc()</a></code> function. Model variants of the standard Underhill-Zucchini models are specified using the <code>type</code> argument to designate the relevant input data type. Additionally the user has to designate the input data columns containing moult records, and dates, respectively, as well well as linear predictor structures for the main moult parameters - the start date, duration and the standard deviation of the start date. To fit an intercept-only type 1 model we therefore use the following specification:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mcmc1</span> <span class="op">=</span> <span class="fu"><a href="../reference/moultmcmc.html">moultmcmc</a></span><span class="op">(</span>moult_column <span class="op">=</span> <span class="st">"MCat"</span>,</span>
@@ -119,8 +126,8 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; SAMPLING FOR MODEL 'uz1_linpred' NOW (CHAIN 1).</span></span>
 <span><span class="co">#&gt; Chain 1: </span></span>
-<span><span class="co">#&gt; Chain 1: Gradient evaluation took 0.000162 seconds</span></span>
-<span><span class="co">#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 1.62 seconds.</span></span>
+<span><span class="co">#&gt; Chain 1: Gradient evaluation took 0.000177 seconds</span></span>
+<span><span class="co">#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 1.77 seconds.</span></span>
 <span><span class="co">#&gt; Chain 1: Adjust your expectations accordingly!</span></span>
 <span><span class="co">#&gt; Chain 1: </span></span>
 <span><span class="co">#&gt; Chain 1: </span></span>
@@ -129,15 +136,15 @@
 <span><span class="co">#&gt; Chain 1: Iteration: 1001 / 2000 [ 50%]  (Sampling)</span></span>
 <span><span class="co">#&gt; Chain 1: Iteration: 2000 / 2000 [100%]  (Sampling)</span></span>
 <span><span class="co">#&gt; Chain 1: </span></span>
-<span><span class="co">#&gt; Chain 1:  Elapsed Time: 0.711711 seconds (Warm-up)</span></span>
-<span><span class="co">#&gt; Chain 1:                0.323038 seconds (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 1:                1.03475 seconds (Total)</span></span>
+<span><span class="co">#&gt; Chain 1:  Elapsed Time: 0.666127 seconds (Warm-up)</span></span>
+<span><span class="co">#&gt; Chain 1:                0.347362 seconds (Sampling)</span></span>
+<span><span class="co">#&gt; Chain 1:                1.01349 seconds (Total)</span></span>
 <span><span class="co">#&gt; Chain 1: </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; SAMPLING FOR MODEL 'uz1_linpred' NOW (CHAIN 2).</span></span>
 <span><span class="co">#&gt; Chain 2: </span></span>
-<span><span class="co">#&gt; Chain 2: Gradient evaluation took 5.8e-05 seconds</span></span>
-<span><span class="co">#&gt; Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.58 seconds.</span></span>
+<span><span class="co">#&gt; Chain 2: Gradient evaluation took 6e-05 seconds</span></span>
+<span><span class="co">#&gt; Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.6 seconds.</span></span>
 <span><span class="co">#&gt; Chain 2: Adjust your expectations accordingly!</span></span>
 <span><span class="co">#&gt; Chain 2: </span></span>
 <span><span class="co">#&gt; Chain 2: </span></span>
@@ -146,9 +153,9 @@
 <span><span class="co">#&gt; Chain 2: Iteration: 1001 / 2000 [ 50%]  (Sampling)</span></span>
 <span><span class="co">#&gt; Chain 2: Iteration: 2000 / 2000 [100%]  (Sampling)</span></span>
 <span><span class="co">#&gt; Chain 2: </span></span>
-<span><span class="co">#&gt; Chain 2:  Elapsed Time: 0.622971 seconds (Warm-up)</span></span>
-<span><span class="co">#&gt; Chain 2:                0.317623 seconds (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 2:                0.940594 seconds (Total)</span></span>
+<span><span class="co">#&gt; Chain 2:  Elapsed Time: 0.657564 seconds (Warm-up)</span></span>
+<span><span class="co">#&gt; Chain 2:                0.321663 seconds (Sampling)</span></span>
+<span><span class="co">#&gt; Chain 2:                0.979227 seconds (Total)</span></span>
 <span><span class="co">#&gt; Chain 2:</span></span></code></pre></div>
 <p>Most MCMC parameters, such as the number of chains (here 2), iterations, or cores are set in the same way as for <code><a href="https://mc-stan.org/rstan/reference/stanmodel-method-sampling.html" class="external-link">rstan::sampling</a></code>, however, for initial values <code>moultmcmc</code> defaults to an additional option <code>"auto"</code> which will provide initial values for the MCMC chains based on the input data. Custom initial values can be specified instead as detailed in the documentation of <code><a href="https://mc-stan.org/rstan/reference/stanmodel-method-sampling.html" class="external-link">rstan::sampling</a></code>.</p>
 <p>Once the MCMC has completed, a summary table of parameter estimates can be displayed with</p>
@@ -157,24 +164,24 @@
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 5 × 10</span></span></span>
 <span><span class="co">#&gt;   parameter      estim…¹ se_mean     sd     lci     uci n_eff  Rhat  prob method</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> mean_(Interce…  134.   0.100    3.56   127.    141.   <span style="text-decoration: underline;">1</span>260.  1.00  0.95 MCMC  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> duration_(Int…   98.6  0.307   10.8     78.5   122.   <span style="text-decoration: underline;">1</span>251.  1.00  0.95 MCMC  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> log_sd_(Inter…    3.33 0.007<span style="text-decoration: underline;">24</span>  0.240    2.83    3.78 <span style="text-decoration: underline;">1</span>103.  1.00  0.95 MCMC  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> sd_(Intercept)   28.7  0.208    6.86    17.0    43.9  <span style="text-decoration: underline;">1</span>090.  1.00  0.95 MCMC  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> lp__           -<span style="color: #BB0000;">104.</span>   0.051<span style="text-decoration: underline;">2</span>   1.32  -<span style="color: #BB0000;">107.</span>   -<span style="color: #BB0000;">103.</span>    661.  1.00  0.95 MCMC  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> mean_(Interce…  134.   0.093<span style="text-decoration: underline;">5</span>   3.31   128.    141.   <span style="text-decoration: underline;">1</span>255. 1.00   0.95 MCMC  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> duration_(Int…   97.6  0.299   10.8     77.7   119.   <span style="text-decoration: underline;">1</span>306. 0.999  0.95 MCMC  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> log_sd_(Inter…    3.34 0.006<span style="text-decoration: underline;">79</span>  0.228    2.87    3.78 <span style="text-decoration: underline;">1</span>130. 1.00   0.95 MCMC  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> sd_(Intercept)   29.0  0.193    6.61    17.7    43.7  <span style="text-decoration: underline;">1</span>170. 1.00   0.95 MCMC  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> lp__           -<span style="color: #BB0000;">104.</span>   0.043<span style="text-decoration: underline;">7</span>   1.21  -<span style="color: #BB0000;">107.</span>   -<span style="color: #BB0000;">103.</span>    765. 1.00   0.95 MCMC  </span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># … with abbreviated variable name ¹​estimate</span></span></span></code></pre></div>
 <p>and standard model assessment can be done as for any posterior sample from Stan, by directly accessing the <code>stanfit</code> slot of the returned S3 object. For example we can look at the traceplots for the model using <code><a href="https://mc-stan.org/rstan/reference/stan_plot.html" class="external-link">rstan::stan_trace</a></code></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://mc-stan.org/rstan/reference/stan_plot.html" class="external-link">stan_trace</a></span><span class="op">(</span><span class="va">mcmc1</span><span class="op">$</span><span class="va">stanfit</span><span class="op">)</span></span></code></pre></div>
-<p><img src="getting-started_files/figure-html/uz1-trace-plot-1.png" width="672"> We can also plot the model fit against the data using the <code>moult_plot</code> function</p>
+<p><img src="extended-moult-models_files/figure-html/uz1-trace-plot-1.png" width="672"> We can also plot the model fit against the data using the <code>moult_plot</code> function</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/moult_plot.html">moult_plot</a></span><span class="op">(</span><span class="va">mcmc1</span><span class="op">)</span></span></code></pre></div>
-<p><img src="getting-started_files/figure-html/uz1-moult-plot-1.png" width="672"></p>
+<p><img src="extended-moult-models_files/figure-html/uz1-moult-plot-1.png" width="672"></p>
 <p>For comparison we can fit the same model using maximum likelihood estimation via the <code>moult</code> package <span class="citation">(Erni et al. 2013)</span> and compare parameter estimates visually with the <code>compare_plot</code> function.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ml1</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/moult/man/moult.html" class="external-link">moult</a></span><span class="op">(</span><span class="va">MIndex</span> <span class="op">~</span> <span class="va">Day</span>,data <span class="op">=</span> <span class="va">sanderlings</span>, type <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/compare_plot.html">compare_plot</a></span><span class="op">(</span><span class="va">ml1</span>, <span class="va">mcmc1</span><span class="op">)</span></span></code></pre></div>
-<p><img src="getting-started_files/figure-html/uz1-model-ml-1.png" width="672"></p>
+<p><img src="extended-moult-models_files/figure-html/uz1-model-ml-1.png" width="672"></p>
 <p>The comparison plot shows very similar estimates for both methods.</p>
 <p>Similarly we can fit the corresponding Type 2 model, that makes use of the full information contained in the moult indices, by setting <code>type=2</code>. All <code>moultmcmc</code> models default to an intercept only model, so we do not need to explicitly specify the individual linear predictors here.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
@@ -188,8 +195,8 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; SAMPLING FOR MODEL 'uz2_linpred' NOW (CHAIN 1).</span></span>
 <span><span class="co">#&gt; Chain 1: </span></span>
-<span><span class="co">#&gt; Chain 1: Gradient evaluation took 9.6e-05 seconds</span></span>
-<span><span class="co">#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.96 seconds.</span></span>
+<span><span class="co">#&gt; Chain 1: Gradient evaluation took 7.1e-05 seconds</span></span>
+<span><span class="co">#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.71 seconds.</span></span>
 <span><span class="co">#&gt; Chain 1: Adjust your expectations accordingly!</span></span>
 <span><span class="co">#&gt; Chain 1: </span></span>
 <span><span class="co">#&gt; Chain 1: </span></span>
@@ -198,9 +205,9 @@
 <span><span class="co">#&gt; Chain 1: Iteration: 1001 / 2000 [ 50%]  (Sampling)</span></span>
 <span><span class="co">#&gt; Chain 1: Iteration: 2000 / 2000 [100%]  (Sampling)</span></span>
 <span><span class="co">#&gt; Chain 1: </span></span>
-<span><span class="co">#&gt; Chain 1:  Elapsed Time: 0.646543 seconds (Warm-up)</span></span>
-<span><span class="co">#&gt; Chain 1:                0.291508 seconds (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 1:                0.938051 seconds (Total)</span></span>
+<span><span class="co">#&gt; Chain 1:  Elapsed Time: 0.638914 seconds (Warm-up)</span></span>
+<span><span class="co">#&gt; Chain 1:                0.298723 seconds (Sampling)</span></span>
+<span><span class="co">#&gt; Chain 1:                0.937637 seconds (Total)</span></span>
 <span><span class="co">#&gt; Chain 1: </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; SAMPLING FOR MODEL 'uz2_linpred' NOW (CHAIN 2).</span></span>
@@ -215,19 +222,20 @@
 <span><span class="co">#&gt; Chain 2: Iteration: 1001 / 2000 [ 50%]  (Sampling)</span></span>
 <span><span class="co">#&gt; Chain 2: Iteration: 2000 / 2000 [100%]  (Sampling)</span></span>
 <span><span class="co">#&gt; Chain 2: </span></span>
-<span><span class="co">#&gt; Chain 2:  Elapsed Time: 0.592502 seconds (Warm-up)</span></span>
-<span><span class="co">#&gt; Chain 2:                0.300396 seconds (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 2:                0.892898 seconds (Total)</span></span>
+<span><span class="co">#&gt; Chain 2:  Elapsed Time: 0.611947 seconds (Warm-up)</span></span>
+<span><span class="co">#&gt; Chain 2:                0.344492 seconds (Sampling)</span></span>
+<span><span class="co">#&gt; Chain 2:                0.956439 seconds (Total)</span></span>
 <span><span class="co">#&gt; Chain 2:</span></span>
 <span><span class="co">#fit using ML</span></span>
 <span><span class="va">ml2</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/moult/man/moult.html" class="external-link">moult</a></span><span class="op">(</span><span class="va">MIndex</span> <span class="op">~</span> <span class="va">Day</span>,data <span class="op">=</span> <span class="va">sanderlings</span>, type <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="co">#compare parameter estimates</span></span>
 <span><span class="fu"><a href="../reference/compare_plot.html">compare_plot</a></span><span class="op">(</span><span class="va">ml2</span>, <span class="va">mcmc2</span><span class="op">)</span></span></code></pre></div>
-<p><img src="getting-started_files/figure-html/uz2-model-1.png" width="672"></p>
+<p><img src="extended-moult-models_files/figure-html/uz2-model-1.png" width="672"></p>
 <p>As before the comparison plot shows very similar estimates for both methods. Perhaps more interesting is a comparison of the two model types, which illustrates the gain in precision achieved by exploiting the information contained in the moult indices. Note that models can be given custom names for visualisation purposes using the <code>names</code> argument to <code>compare_plot</code></p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/compare_plot.html">compare_plot</a></span><span class="op">(</span><span class="va">mcmc1</span>, <span class="va">mcmc2</span>, names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'UZ1'</span>,<span class="st">'UZ2'</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="getting-started_files/figure-html/data-type-comparison-1.png" width="672"></p>
+<p><img src="extended-moult-models_files/figure-html/data-type-comparison-1.png" width="672"></p>
+</div>
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>

@@ -13,6 +13,9 @@
     <loc>/LICENSE-text.html</loc>
   </url>
   <url>
+    <loc>/articles/extended-moult-models.html</loc>
+  </url>
+  <url>
     <loc>/articles/getting-started.html</loc>
   </url>
   <url>
@@ -37,6 +40,9 @@
     <loc>/reference/compare_plot_annual_raneff.html</loc>
   </url>
   <url>
+    <loc>/reference/consolidate_moult_records.html</loc>
+  </url>
+  <url>
     <loc>/reference/fixef.moultmcmc.html</loc>
   </url>
   <url>
@@ -58,19 +64,34 @@
     <loc>/reference/moultmcmc-package.html</loc>
   </url>
   <url>
+    <loc>/reference/moultmcmc.html</loc>
+  </url>
+  <url>
+    <loc>/reference/namedList.html</loc>
+  </url>
+  <url>
     <loc>/reference/plot.moult.html</loc>
   </url>
   <url>
     <loc>/reference/predict.moultmcmc.html</loc>
   </url>
   <url>
+    <loc>/reference/ranef.moultmcmc.html</loc>
+  </url>
+  <url>
     <loc>/reference/recaptures.html</loc>
+  </url>
+  <url>
+    <loc>/reference/recaptures2.html</loc>
   </url>
   <url>
     <loc>/reference/residual_plot.html</loc>
   </url>
   <url>
     <loc>/reference/residual_plot.moult.html</loc>
+  </url>
+  <url>
+    <loc>/reference/summary.moultmcmc.html</loc>
   </url>
   <url>
     <loc>/reference/summary_table.html</loc>
