@@ -34,7 +34,7 @@ uz12_linpred <- function(moult_index_column, moult_cat_column, date_column, star
   old_data <- subset(data, get(moult_index_column) == 0)
   moult_score_data <- subset(data, get(moult_index_column) != 0 & get(moult_index_column) != 1)
   new_data <- subset(data, get(moult_index_column) == 1)
-  data <- bind_rows(old_data, moult_score_data, moult_cat_data, new_data)
+  data <- bind_rows(old_data, moult_score_data,new_data,moult_cat_data)
   #setup model matrices
   X_mu <- model.matrix(start_formula, data)
   X_tau <- model.matrix(duration_formula, data)

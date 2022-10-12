@@ -110,6 +110,7 @@ generated quantities{
 // vector[N_moult] log_lik;
 // vector[N_moult] q;
 // vector[N_moult] Q;
+vector[N_pred_mu] beta_mu_out;//regression coefficients for start date beta_mu_out
 vector[N_moult] mu;//start date lin pred
 vector[N_moult] tau;//duration lin pred
 vector[N_moult] sigma;//duration lin pred
@@ -124,7 +125,7 @@ vector[N_ind] mu_ind_out;//individual intercepts for output
 
 
 
-//TODO: this does not make sense?! duplicates calculations for replicated individuals
+//TODO: this is not efficient. duplicates calculations for replicated individuals
   for (i in 1:N_moult) {
   if (is_replicated[individual[i]] == 1) {
      mu_ind_out[individual[i]] = mu_ind[individual[i]] + mu[i];//replicated individuals
@@ -134,6 +135,11 @@ vector[N_ind] mu_ind_out;//individual intercepts for output
     //tau_ind_out[individual[i]] = tau[i];
   }
 }
+  if (N_pred_mu > 1){
+    beta_mu_out = append_row(beta_star,beta_mu[2:N_pred_mu]);// collate post-swept intercept with remaining
+  } else {
+    beta_mu_out[1] = beta_star;// intercept-only model
+  }
 
 
 // for (i in 1:N_moult) q[i] = log(tau[i]) + normal_lpdf((moult_dates[i] - moult_indices[i]*tau[i]) | mu[i], sigma[i]);//N.B. unlike Q this returns a log density

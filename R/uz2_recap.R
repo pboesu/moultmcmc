@@ -12,11 +12,13 @@
 #' @param init Specification of initial values for all or some parameters. Can be the string "auto" for an automatic guess based on the data, or any of the permitted rstan options: the digit 0, the strings "0" or "random", or a function. See the detailed documentation for the init argument in ?rstan::stan.
 #' @param flat_prior use uniform prior on start date and duration (TRUE) or vaguely informative truncated normal prior (FALSE). Defaults to TRUE.
 #' @param beta_sd use zero-centred normal priors for regression coefficients other than intercepts? If <= 0 the stan default of improper flat priors is used.
-#' @param log_lik boolean retain pointwise log-likelihood in output? This enables model assessment and selection via the loo package. Defaults to true, can lead to very large output arrays if sample size is large.
+#' @param log_lik boolean retain pointwise log-likelihood in output? This enables model assessment and selection via the loo package. Defaults to FALSE, can lead to very large output arrays if sample size is large.
 #' @param use_phi_approx logical flag whether to use stan's Phi_approx function to calculate the "old" likelihoods
 #' @param active_moult_recaps_only logical flag whether to ignore repeated observations outside the active moult phase
+#' @param same_sigma logical flag, currently unused
 #' @param ... Arguments passed to `rstan::sampling` (e.g. iter, chains).
 #' @return An object of class `stanfit` returned by `rstan::sampling`
+#'
 #'
 #TODO: implement an input data class which ensures column names and correct encoding for categorical variables
 uz2_linpred_recap <- function(moult_index_column,
@@ -31,8 +33,9 @@ uz2_linpred_recap <- function(moult_index_column,
                               init = "auto",
                               flat_prior = TRUE,
                               beta_sd = 0,
-                              log_lik = TRUE,
+                              log_lik = FALSE,
                               use_phi_approx = FALSE,
+                              same_sigma = FALSE,
                               ...) {
   stopifnot(all(data[[moult_index_column]] >= 0 & data[[moult_index_column]] <= 1))
   stopifnot(any(data[[moult_index_column]] == 0))
@@ -95,12 +98,13 @@ uz2_linpred_recap <- function(moult_index_column,
                    beta_sd = beta_sd,
                    llik = as.numeric(log_lik),
                    use_phi_approx = as.numeric(use_phi_approx),
-                   active_moult_recaps_only = as.numeric(active_moult_recaps_only))
+                   active_moult_recaps_only = as.numeric(active_moult_recaps_only),
+                   same_sigma = as.numeric(same_sigma))
   #include pointwise log_lik matrix  in output?
   if(log_lik){
-    outpars <- c('beta_mu_out','beta_tau','beta_sigma', 'sigma_intercept', 'sigma_mu_ind','beta_star','finite_sd', 'mu_ind_star', 'log_lik')
+    outpars <- c('beta_mu_out','beta_tau','beta_sigma', 'sigma_intercept', 'sigma_mu_ind','beta_star','finite_sd', 'mu_ind_star', 'mu_ind_out', 'log_lik')
   } else {
-    outpars <- c('beta_mu_out','beta_tau','beta_sigma', 'sigma_intercept', 'sigma_mu_ind','beta_star','finite_sd', 'mu_ind_star')
+    outpars <- c('beta_mu_out','beta_tau','beta_sigma', 'sigma_intercept', 'sigma_mu_ind','beta_star','finite_sd', 'mu_ind_star', 'mu_ind_out')
   }
   #guess initial values
   if(init == "auto"){
@@ -133,7 +137,7 @@ uz2_linpred_recap <- function(moult_index_column,
   out_struc$terms$duration_formula <- duration_formula
   out_struc$terms$sigma_formula <- sigma_formula
   out_struc$data <- data
-  out_struc$individual_ids <- data.frame(index = as.numeric(data[[id_column]]), id = data[[id_column]])
+  out_struc$individual_ids <- data.frame(index = as.numeric(unique(data[[id_column]])), id = unique(data[[id_column]]))
   class(out_struc) <- 'moultmcmc'
   return(out_struc)
 }

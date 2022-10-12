@@ -1,8 +1,8 @@
 ---
-title: "Getting started with moultmcmc"
+title: "Extended moult models"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Getting started with moultmcmc}
+  %\VignetteIndexEntry{Extended moult models}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 bibliography: moultmcmc.bib
@@ -17,15 +17,6 @@ knitr::opts_chunk$set(
 
 To install `moultmcmc` please follow the instructions in the [README file](https://github.com/pboesu/moultmcmc#installation).
 
-<!--**Note that as of January 2022 the moult package [@erni2013moult] is archived on CRAN because of an incompatibility with the upcoming R version 4.2.x. This vignette therefore relies on a patched version of the moult package for the time being. The patched version can be installed from github using the following command**-->
-
-<!--
-```{r setup0, warning=FALSE, message=FALSE, eval= FALSE, echo = FALSE}
-#install patched moult package from github to avoid R CMD CHECK failures on R-devel
-remotes::install_github('pboesu/moult', ref='patch_as_vector_error')
-```
--->
-
 ```{r setup, warning=FALSE, message=FALSE}
 library(moult)
 library(moultmcmc)
@@ -33,6 +24,12 @@ library(dplyr)
 library(ggplot2)
 library(rstan)
 ```
+
+# Lumped models
+
+# Mixed moult data
+
+# Recapture models
 
 For demonstration purposes we use the `sanderlings` dataset from @underhill1988model. It contains observations of sampling dates `Day` and moult indices `MIndex` for 164 adult Sanderlings (*Calidris alba*) trapped on 11 days in the South Africa in the austral summer of 1978/79. The sample contains 85 pre-moult individuals, 66 in active moult and 13 post-moult individuals. The data are augmented with a column describing categorical moult status `MCat`, so we can demonstrate fitting Type 1 models when data are coded categorically.
 

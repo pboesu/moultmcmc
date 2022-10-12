@@ -7,12 +7,14 @@ on:
       - master
       - predict-mk2
       - select_recap_type
+      - unified-frontend
   pull_request:
     branches:
       - main
       - master
       - predict-mk2
       - select_recap_type
+      - unified-frontend
 
 name: R-CMD-check
 
@@ -84,6 +86,7 @@ jobs:
 
       - name: Install dependencies
         run: |
+          install.packages("rstan", repos = c("https://mc-stan.org/r-packages/", getOption("repos")))
           remotes::install_deps(dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
         shell: Rscript {0}

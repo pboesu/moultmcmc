@@ -4,7 +4,6 @@
 #'
 #' @docType package
 #' @name moultmcmc-package
-#' @aliases moultmcmc
 #' @useDynLib moultmcmc, .registration = TRUE
 #' @import methods
 #' @import Rcpp

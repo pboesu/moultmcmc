@@ -17,8 +17,9 @@ uz2_linpred_recap(
   init = "auto",
   flat_prior = TRUE,
   beta_sd = 0,
-  log_lik = TRUE,
+  log_lik = FALSE,
   use_phi_approx = FALSE,
+  same_sigma = FALSE,
   ...
 )
 }
@@ -47,9 +48,11 @@ uz2_linpred_recap(
 
 \item{beta_sd}{use zero-centred normal priors for regression coefficients other than intercepts? If <= 0 the stan default of improper flat priors is used.}
 
-\item{log_lik}{boolean retain pointwise log-likelihood in output? This enables model assessment and selection via the loo package. Defaults to true, can lead to very large output arrays if sample size is large.}
+\item{log_lik}{boolean retain pointwise log-likelihood in output? This enables model assessment and selection via the loo package. Defaults to FALSE, can lead to very large output arrays if sample size is large.}
 
 \item{use_phi_approx}{logical flag whether to use stan's Phi_approx function to calculate the "old" likelihoods}
+
+\item{same_sigma}{logical flag, currently unused}
 
 \item{...}{Arguments passed to \code{rstan::sampling} (e.g. iter, chains).}
 }

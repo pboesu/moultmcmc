@@ -1,5 +1,27 @@
 #helper functions to plot moult and moultmcmc models
 
+#' Consolidate a mixture of continuous and categorical moult records
+#'
+#' This is a helper function to format input data for the Type 1+2 moult model.
+#'
+#' @param moult_score a numeric vector of (linearized) moult scores in \[0,1\] (0 = old plumage,1 = new plumage).
+#' @param moult_cat a numeric vector of categorical moult codes (1 = old plumage,2 = moulting, 3 = new plumage)
+#'
+#' @return a numeric vector of scores and categorical records with values \[0,1\] for old, new and continuous active moult scores, and value 2 for categorical active moult records.
+#' @export
+#'
+#'
+consolidate_moult_records <- function(moult_score, moult_cat){
+  stopifnot(all((moult_score >= 0 & moult_score <= 1) | is.na(moult_score)))
+  stopifnot(all(moult_cat %in% c(1,2,3,NA)))
+  stopifnot(length(moult_score)==length(moult_cat))
+  moult_score[is.na(moult_score) & moult_cat == 1] <- 0
+  moult_score[is.na(moult_score) & moult_cat == 2] <- 2
+  moult_score[is.na(moult_score) & moult_cat == 3] <- 1
+  return(moult_score)
+}
+
+
 #' Extract Population-Level Estimates
 #'
 #' Extract the population-level ('fixed') effects
@@ -25,7 +47,7 @@
 #' @importFrom nlme fixef
 fixef.moultmcmc <-  function(object, summary = TRUE,
                            probs = c(0.025, 0.975), pars = NULL, ...) {
-  fpars <- names(object$stanfit) #TODO: need to filter out hierarchical pars here and things like lp__ and log_lik
+  fpars <- names(object$stanfit)[!grepl('lp__|log_lik|mu_ind',names(object$stanfit))] #TODO: need to filter out hierarchical pars here and things like lp__ and log_lik
   if (!is.null(pars)) {
     fpars <- as.character(pars)
   }
@@ -34,7 +56,47 @@ fixef.moultmcmc <-  function(object, summary = TRUE,
   }
   out <- as.matrix(object$stanfit, pars = fpars)
   if (summary) {
-    out <- summary(object$stanfit, probs = probs)$summary
+    out <- summary(object$stanfit, probs = probs, pars = fpars)$summary
+  }
+  out
+}
+
+#' Extract Individual-Level Estimates
+#'
+#' Extract the individual-level ('random') effects
+#' from a \code{moultmcmc} object.
+#'
+#' @aliases ranef
+#'
+#' @param object a moultmcmc model
+#' @param summary logical, should posterior samples be summarised for each parameter
+#' @param probs numeric, desired quantiles for summary statistics
+#' @param pars Optional names of coefficients to extract.
+#'   By default, all coefficients are extracted.
+#' @param ... Currently ignored.
+#'
+#' @return If \code{summary} is \code{TRUE}, a matrix for the individual-level effects.
+#'   If \code{summary} is \code{FALSE}, a matrix with one row per
+#'   posterior draw and one column per individual-level effect.
+#'
+#'
+#' @method ranef moultmcmc
+#' @export
+#' @export ranef
+#' @importFrom nlme ranef
+ranef.moultmcmc <-  function(object, summary = TRUE,
+                             probs = c(0.025, 0.975), pars = NULL, ...) {
+  fpars <- names(object$stanfit)[grepl('mu_ind_star',names(object$stanfit))]
+  if (!is.null(pars)) {
+    fpars <- as.character(pars)
+  }
+  if (!length(fpars)) {
+    return(NULL)
+  }
+  out <- as.matrix(object$stanfit, pars = fpars)
+  if (summary) {
+    out <- summary(object$stanfit, probs = probs, pars = fpars)$summary
+    rownames(out)<-object$replicated_ids$id
   }
   out
 }
@@ -111,6 +173,19 @@ summary_table.moultmcmc <- function (x, pars = x$stanfit@sim$pars_oi, prob = 0.9
     dplyr::rename(estimate = mean) %>% dplyr::rename(lci = .data$`2.5%`, uci = .data$`97.5%`) %>% #TODO: this falls over when prob != 0.95. need to select by position or by assembling column names from prob or the stanfit summary
     mutate(prob = 0.95, method = 'MCMC')
   return(s)
+}
+
+#' Summary method for moultmcmc models
+#'
+#' @method summary moultmcmc
+#' @param object a moultmcmc object
+#' @param ... passed to summary_table
+#'
+#' @return a summary table
+#' @export
+#'
+summary.moultmcmc <- function(object, ...){
+  summary_table(object, ...)
 }
 
 #' internal helper function to create a named list

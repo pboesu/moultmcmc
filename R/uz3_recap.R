@@ -54,9 +54,9 @@ uz3_linpred_recap <- function(moult_index_column, date_column, id_column, start_
                    flat_prior = as.numeric(flat_prior))
   #include pointwise log_lik matrix  in output?
   if(log_lik){
-    outpars <- c('beta_mu','beta_tau','beta_sigma', 'sigma_intercept', 'beta_star','finite_sd','sigma_mu_ind', 'mu_ind_star', 'mu_ind', 'mu_ind_out',  'log_lik')
+    outpars <- c('beta_mu','beta_tau','beta_sigma', 'sigma_intercept', 'beta_star','finite_sd','sigma_mu_ind', 'mu_ind_star', 'mu_ind_out',  'log_lik')
   } else {
-    outpars <- c('beta_mu','beta_tau','beta_sigma', 'sigma_intercept', 'beta_star','finite_sd', 'sigma_mu_ind','mu_ind_star', 'mu_ind', 'mu_ind_out' )
+    outpars <- c('beta_mu','beta_tau','beta_sigma', 'sigma_intercept', 'beta_star','finite_sd', 'sigma_mu_ind','mu_ind_star', 'mu_ind_out' )
   }
   #guess initial values
   if(init == "auto"){
@@ -83,8 +83,7 @@ uz3_linpred_recap <- function(moult_index_column, date_column, id_column, start_
   out_struc$terms$date_column <- date_column
   out_struc$terms$moult_index_column <- moult_index_column
   out_struc$terms$moult_cat_column <- NA
-  out_struc$terms$id_column <- id_column
-  out_struc$terms$id_stan <- as.numeric(data[[id_column]])#return lookup to match individual intercepts to individual designators in the original data
+  out_struc$individual_ids <- data.frame(index = as.numeric(unique(data[[id_column]])), id = unique(data[[id_column]]))
   out_struc$terms$id_original <- as.character(data[[id_column]])
   out_struc$terms$start_formula <- start_formula
   out_struc$terms$duration_formula <- duration_formula

@@ -38,7 +38,7 @@ transformed parameters{
   real sigma_intercept = exp(beta_sigma[1]);
 }
 
-// The model to be estimated.
+// The model to be estimated. N.B. order of input data is old, moult_score, new, moult_cat
 model {
   vector[N_old] P;
   vector[N_moult] q;
@@ -57,8 +57,8 @@ model {
 for (i in 1:N_old) P[i] = 1 - Phi((old_dates[i] - mu[i])/sigma[i]);
 //print(P);
 for (i in 1:N_moult) q[i] = log(tau[i + N_old]) + normal_lpdf((moult_dates[i] - moult_indices[i]*tau[i + N_old]) | mu[i + N_old], sigma[i + N_old]);//N.B. unlike P and R this returns a log density
-for (i in 1:N_moult_cat) Q[i] = Phi((moult_cat_dates[i] - mu[i + N_old + N_moult])/sigma[i + N_old + N_moult]) - Phi((moult_cat_dates[i] - tau[i + N_old + N_moult] - mu[i + N_old + N_moult])/sigma[i + N_old + N_moult]);
-for (i in 1:N_new) R[i] = Phi((new_dates[i] - tau[i + N_old + N_moult + N_moult_cat] - mu[i + N_old + N_moult + N_moult_cat])/sigma[i + N_old + N_moult + N_moult_cat]);
+for (i in 1:N_new) R[i] = Phi((new_dates[i] - tau[i + N_old + N_moult] - mu[i + N_old + N_moult])/sigma[i + N_old + N_moult]);
+for (i in 1:N_moult_cat) Q[i] = Phi((moult_cat_dates[i] - mu[i + N_old + N_moult + N_new])/sigma[i + N_old + N_moult + N_new]) - Phi((moult_cat_dates[i] - tau[i + N_old + N_moult + N_new] - mu[i + N_old + N_moult+N_new])/sigma[i + N_old + N_moult + N_new]);
 //print(R);
 //print(sum(log(P)));
 //print(sum(log(Q)));
@@ -94,8 +94,8 @@ generated quantities{
 for (i in 1:N_old) P[i] = 1 - Phi((old_dates[i] - mu[i])/sigma[i]);
 //print(P);
 for (i in 1:N_moult) q[i] = log(tau[i + N_old]) + normal_lpdf((moult_dates[i] - moult_indices[i]*tau[i + N_old]) | mu[i + N_old], sigma[i + N_old]);//N.B. unlike P and R this returns a log density
-for (i in 1:N_moult_cat) Q[i] = Phi((moult_cat_dates[i] - mu[i + N_old + N_moult])/sigma[i + N_old + N_moult]) - Phi((moult_cat_dates[i] - tau[i + N_old + N_moult] - mu[i + N_old + N_moult])/sigma[i + N_old + N_moult]);
-for (i in 1:N_new) R[i] = Phi((new_dates[i] - tau[i + N_old + N_moult + N_moult_cat] - mu[i + N_old + N_moult + N_moult_cat])/sigma[i + N_old + N_moult + N_moult_cat]);
+for (i in 1:N_new) R[i] = Phi((new_dates[i] - tau[i + N_old + N_moult] - mu[i + N_old + N_moult])/sigma[i + N_old + N_moult]);
+for (i in 1:N_moult_cat) Q[i] = Phi((moult_cat_dates[i] - mu[i + N_old + N_moult + N_new])/sigma[i + N_old + N_moult + N_new]) - Phi((moult_cat_dates[i] - tau[i + N_old + N_moult + N_new] - mu[i + N_old + N_moult+N_new])/sigma[i + N_old + N_moult + N_new]);
 
-log_lik = append_row(log(P), append_row(q, append_row(log(Q), log(R))));
+log_lik = append_row(log(P), append_row(q, append_row(log(R),log(Q))));
 }

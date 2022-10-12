@@ -2,7 +2,7 @@
 title: "Moult data likelihoods and model priors"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Moult data likelihoods}
+  %\VignetteIndexEntry{Moult data likelihoods and model priors}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 bibliography: moultmcmc.bib
