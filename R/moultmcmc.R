@@ -162,7 +162,7 @@ moultmcmc <- function(moult_column,
       standata$Nobs_not_replicated_old = length(not_replicated[not_replicated <= standata$N_old])
       standata$Nobs_not_replicated_moult = length(not_replicated[not_replicated > standata$N_old])
     }
-
+    if(standata$N_ind_rep < 10) warning(paste0('There are only ', standata$N_ind_rep, ' individuals with recapture information.\n This dataset may not be suitable for the recaptures moult model.'))
   }
   #additional input data for type 12 model
   if (type == 12){
