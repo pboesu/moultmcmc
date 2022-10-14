@@ -29,77 +29,130 @@ library(rstan)
 
 # Mixed moult data
 
-# Recapture models
+# Repeated measures moult models 
+When the assumption of even sampling among and within moult categories is violated, the standard moult model can converge at biologically non-sensible results. 
 
-For demonstration purposes we use the `sanderlings` dataset from @underhill1988model. It contains observations of sampling dates `Day` and moult indices `MIndex` for 164 adult Sanderlings (*Calidris alba*) trapped on 11 days in the South Africa in the austral summer of 1978/79. The sample contains 85 pre-moult individuals, 66 in active moult and 13 post-moult individuals. The data are augmented with a column describing categorical moult status `MCat`, so we can demonstrate fitting Type 1 models when data are coded categorically.
+This problem can be greatly reduced when information about the pace of moult from within-season recaptures of individuals is explicitly incorporated into to the parameter estimation using the model.
 
-```{r data-preparation, fig.width=7}
-data("sanderlings")
-sanderlings$MCat <- case_when(sanderlings$MIndex == 0 ~ 1,
-                              sanderlings$MIndex == 1 ~3,
-                              TRUE ~ 2)
-#plot the data
-ggplot(sanderlings, aes(y=MIndex, x=Day, col = factor(MCat))) + geom_point() +theme_classic()
+The repeated measures model is currently implemented for data types 2, 3 and 5 in the `moultmcmc` function. The repeated mesures model is triggered by supplying the optional argument `id_column` which designates *within season* recaptures, typically formed of a combination of ring number and season.
+
+We demonstrate this here using a citizen science dataset of moult scores from Eurasian Siskins (*Spinus spinus*) which is biased towards records of birds in the early stages of moult (@insley2022moult).
+
+
+```{r siskin-hist, fig.pos = 'tp', fig.cap='Frequency distribution of moult records with respect to moult progress for actively moulting Eurasian Siskins [@insley2022moult] sampled in a sub-urban garden in Scotland (left) and seasonal progression of observed moult scores from the same dataset (right). Lines connect repeated observations of the same individuals.', echo= FALSE, message = FALSE, fig.height = 3}
+siskin_2012 <- readr::read_rds('../../../2021_siskin_moult/data/cleaned_data/data_clean_456_omn_no_late_4o.rds') %>% filter( year %in% c(2009:2010,2012) & site_name == 'Drummond, Inverness') %>% mutate(ro_sex = factor(ro_sex)) %>% filter(pfmg < 1)
+cowplot::plot_grid(
+ggplot(filter(siskin_2012, pfmg > 0), aes(x=pfmg)) + geom_histogram(breaks = c(0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1)) + theme_classic() + xlab("Moult index") + ylab("Number of records"),
+ggplot(siskin_2012, aes(x=yday,y=pfmg,group=ring_no_year)) + geom_point(alpha = 0.3) + geom_path(alpha = 0.5)+ theme_classic() + xlab('Days since Jan 01') + ylab('PFMG'))
 ```
 
-The central function for model fitting is the `moultmcmc()` function. Model variants of the standard Underhill-Zucchini models are specified using the `type` argument to designate the relevant input data type. Additionally the user has to designate the input data columns containing moult records, and dates, respectively, as well well as linear predictor structures for the main moult parameters - the start date, duration and the standard deviation of the start date. To fit an intercept-only type 1 model we therefore use the following specification:
-```{r uz1-model-mcmc}
-mcmc1 = moultmcmc(moult_column = "MCat",
-                  date_column = "Day",
+The standard models are fitted using the `moult` package
+```{r siskin-models}
+#fit standard Underhill-Zucchini models
+m3 <- moult(pfmg ~ yday, data = siskin_2012, type = 3)
+m5 <- moult(pfmg ~ yday, data = siskin_2012, type = 5)
+```
+
+```{r, echo = FALSE}
+# strangely the bayesian simple model appears to be largely unaffected by the bias??
+# Is this because of the somewhat informative prior on the sd?
+# recap model still features better precision on estimates though (nominal..., check coverage)
+uz3 <- moultmcmc('pfmg',
+                  'yday',
                   start_formula = ~1,
                   duration_formula = ~1,
-                  sigma_formula = ~1,
-                  data = sanderlings,
-                  type=1,
-                  init = "auto",
-                  chains = 2,
-                  refresh=1000)
-```
-Most MCMC parameters, such as the number of chains (here 2), iterations, or cores are set in the same way as for `rstan::sampling`, however, for initial values `moultmcmc` defaults to an additional option `"auto"` which will provide initial values for the MCMC chains based on the input data. Custom initial values can be specified instead as detailed in the documentation of `rstan::sampling`.
+                  log_lik = FALSE,
+                  data=siskin_2012,
+                  type = 3,
+                  iter = 2000,
+                  chain = 2,
+                  cores = 2)
+uz5 <- moultmcmc('pfmg',
+                  'yday',
+                  start_formula = ~1,
+                  duration_formula = ~1,
+                  log_lik = FALSE,
+                  data=siskin_2012,
+                  type = 5,
+                  iter = 2000,
+                  chain = 2,
+                  cores = 2)
 
-Once the MCMC has completed, a summary table of parameter estimates can be displayed with
-```{r uz1-model-summary}
-summary_table(mcmc1)
-```
-and standard model assessment can be done as for any posterior sample from Stan, by directly accessing the `stanfit` slot of the returned S3 object. For example we can look at the traceplots for the model using `rstan::stan_trace`
-```{r uz1-trace-plot, fig.width=7}
-stan_trace(mcmc1$stanfit)
-```
-We can also plot the model fit against the data using the `moult_plot` function
-```{r uz1-moult-plot, fig.width=7}
-moult_plot(mcmc1)
 ```
 
+and the repeated measures models with `moultmcmc`
 
+```{r sisikin-recap-models, cache = TRUE, warning=FALSE}
+#fit the equivalent recapture model
+uz3_recap <- moultmcmc(moult_column = 'pfmg',
+                       date_column = 'yday',
+                       id_column = 'ring_no_year',
+                       start_formula = ~1,
+                       duration_formula = ~1,
+                       type = 3,
+                       log_lik = FALSE,
+                       data=siskin_2012,
+                       iter = 2000,
+                       chain = 2,
+                       cores = 2)
+max(rowSums(get_elapsed_time(uz3_recap$stanfit)))
+uz5_recap <- moultmcmc('pfmg',
+                       'yday',
+                       'ring_no_year',
+                       start_formula = ~1,
+                       duration_formula = ~1,
+                       type = 5,
+                       log_lik = FALSE,
+                       data=siskin_2012,
+                       iter = 2000,
+                       chain = 2,
+                       cores = 2)
+max(rowSums(get_elapsed_time(uz5_recap$stanfit)))
 
-
-For comparison we can fit the same model using maximum likelihood estimation via the `moult` package [@erni2013moult] and compare parameter estimates visually with the `compare_plot` function.
-```{r uz1-model-ml, fig.width=7}
-ml1 = moult(MIndex ~ Day,data = sanderlings, type = 1)
-compare_plot(ml1, mcmc1)
 ```
+When comparing the results visually it is apparent that the moult period for the population predicted by the standard models fails to encapsulate a substantial proportion of the observed data (Fig. \@ref(fig:siskin-model-plots)), whereas this is not the case for the repeated measures models.
 
-The comparison plot shows very similar estimates for both methods.
+```{r siskin-model-plots, echo = FALSE, fig.cap='Standard type 3 and 5 moult models fitted to the Siskin dataset without considering within-season recaptures converge at biased parameter estimates (red lines and polygons). When recapture information is included in the model, the resulting fits (green lines and polygons) better encapsulate the observed data.'}
+m_summ <- bind_rows(moult_plot(m3, plot=F) %>% mutate(model = 'no recaptures ML'),
+                    moult_plot(uz3, plot = F) %>% mutate(model = 'no recaptures MCMC'),
+                    moult_plot(uz3_recap, plot=F) %>% mutate(model = 'recaptures'))
+#hacky way to reorder data to plot polygon
+filter(m_summ, line_type == '95 % quantile') %>% tidyr::pivot_longer(start_date:end_date, values_to = 'x', names_to = 'se') %>% group_by(model,se) %>% mutate(y = ifelse(se == 'start_date', 0, 1), lci = ifelse(x == min(x), 1,0)) %>% arrange(model,x) -> m_summ_poly
+m3_comp <-
+  ggplot(filter(siskin_2012, pfmg > 0), aes(x = yday, y = pfmg)) + 
+  geom_polygon(data = m_summ_poly[c(1, 2, 4, 3,
+                                    5, 6, 8, 7,
+                                    9, 10, 12, 11), ], aes(x = x, y = y, fill = model), alpha = 0.3) +
+  geom_segment(
+    data = filter(m_summ, line_type == 'Population mean'),
+    aes(
+      x = start_date,
+      y = 0,
+      xend = end_date,
+      yend = 1,
+      col = model
+    ),
+    lwd = 1
+  )  + theme_classic() + ggtitle('Type 3 model') + geom_point(alpha = 0.4) + xlim(170,340)
 
-Similarly we can fit the corresponding Type 2 model, that makes use of the full information contained in the moult indices, by setting `type=2`. All `moultmcmc` models default to an intercept only model, so we do not need to explicitly specify the individual linear predictors here.
+m_summ <- bind_rows(moult_plot(m5, plot=F) %>% mutate(model = 'no recaptures ML'),
+                    moult_plot(uz5, plot=F) %>% mutate(model = 'no recaptures MCMC'),
+                    moult_plot(uz5_recap, plot=F) %>% mutate(model = 'repeated measures model'))
+#hacky way to reorder data to plot polygon
+filter(m_summ, line_type == '95 % quantile') %>% tidyr::pivot_longer(start_date:end_date, values_to = 'x', names_to = 'se') %>% group_by(model,se) %>% mutate(y = ifelse(se == 'start_date', 0, 1), lci = ifelse(x == min(x), 1,0)) %>% arrange(model,x) -> m_summ_poly
 
-```{r uz2-model, fig.width=7}
-#fit using MCMC
-mcmc2 = moultmcmc(moult_column = "MIndex",
-                date_column = "Day",
-                type=2,
-                data = sanderlings,
-                chains = 2,
-                refresh = 1000)
-#fit using ML
-ml2 = moult(MIndex ~ Day,data = sanderlings, type = 2)
-#compare parameter estimates
-compare_plot(ml2, mcmc2)
-```
+m5_comp <- ggplot(filter(siskin_2012), aes(x = yday, y = pfmg)) + 
+  geom_polygon(data = m_summ_poly[c(1,2,4,3,
+                                    5,6,8,7,
+                                    9,10,12,11),],
+               aes(x = x, y = y, fill = model), alpha = 0.3 ) + 
+  geom_segment(data = filter(m_summ, line_type == 'Population mean'), aes(x = start_date, y = 0, xend = end_date, yend = 1, col = model), lwd = 1)  + theme_classic() + ggtitle('Type 5 model') + geom_point(alpha = 0.4) + theme(legend.position = 'bottom') + xlim(170,340)
 
-As before the comparison plot shows very similar estimates for both methods. Perhaps more interesting is a comparison of the two model types, which illustrates the gain in precision achieved by exploiting the information contained in the moult indices. Note that models can be given custom names for visualisation purposes using the `names` argument to `compare_plot`
-```{r data-type-comparison, fig.width=7}
-compare_plot(mcmc1, mcmc2, names = c('UZ1','UZ2'))
+m5_legend <- cowplot::get_legend(m5_comp)
+cowplot::plot_grid(cowplot::plot_grid(m3_comp+theme(legend.position='none')+ylab('PFMG')+xlab('Days since Jan 01'),
+                   m5_comp+theme(legend.position='none')+ylab('PFMG')+xlab('Days since Jan 01')),
+                                 m5_legend, nrow = 2, rel_heights =  c(1,.1))
+
 ```
 
 # References
