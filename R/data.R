@@ -43,3 +43,18 @@
 #' }
 #' @source P. Boersch-Supan
 "recaptures2"
+
+
+#' Moult records of Eurasian Siskins
+#'
+#' A dataset containing the moult scores and capture dates for Scottish population of Eurasian Siskins (Spinus spinus) including recaptures.
+#'
+#' @format A data frame with 299 rows and 13 variables:
+#' \describe{
+#'   \item{yday}{sampling date (days since Jan 01)}
+#'   \item{pfmg}{PFMG at sampling occasion}
+#'   \item{id}{individual identifier}
+#' }
+#' @source Hugh Insley
+#' @references Insley et al. (in prep). Breeding and moult phenology of siskins in the Scottish Highlands.
+"siskins"

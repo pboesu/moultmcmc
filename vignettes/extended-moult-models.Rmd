@@ -34,23 +34,27 @@ When the assumption of even sampling among and within moult categories is violat
 
 This problem can be greatly reduced when information about the pace of moult from within-season recaptures of individuals is explicitly incorporated into to the parameter estimation using the model.
 
-The repeated measures model is currently implemented for data types 2, 3 and 5 in the `moultmcmc` function. The repeated mesures model is triggered by supplying the optional argument `id_column` which designates *within season* recaptures, typically formed of a combination of ring number and season.
+The repeated measures model is currently implemented for data types 2, 3 and 5 in the `moultmcmc` function. The repeated measures model is triggered by supplying the optional argument `id_column` which designates *within season* recaptures, typically formed of a combination of ring number and season.
 
 We demonstrate this here using a citizen science dataset of moult scores from Eurasian Siskins (*Spinus spinus*) which is biased towards records of birds in the early stages of moult (@insley2022moult).
 
 
-```{r siskin-hist, fig.pos = 'tp', fig.cap='Frequency distribution of moult records with respect to moult progress for actively moulting Eurasian Siskins [@insley2022moult] sampled in a sub-urban garden in Scotland (left) and seasonal progression of observed moult scores from the same dataset (right). Lines connect repeated observations of the same individuals.', echo= FALSE, message = FALSE, fig.height = 3}
-siskin_2012 <- readr::read_rds('../../../2021_siskin_moult/data/cleaned_data/data_clean_456_omn_no_late_4o.rds') %>% filter( year %in% c(2009:2010,2012) & site_name == 'Drummond, Inverness') %>% mutate(ro_sex = factor(ro_sex)) %>% filter(pfmg < 1)
+```{r siskin-hist, fig.width = 7, fig.cap='Frequency distribution of moult records with respect to moult progress for actively moulting Eurasian Siskins [@insley2022moult] sampled in a sub-urban garden in Scotland (left) and seasonal progression of observed moult scores from the same dataset (right). Lines connect repeated observations of the same individuals.', echo= FALSE, message = FALSE, fig.height = 3}
+data(siskins)
 cowplot::plot_grid(
-ggplot(filter(siskin_2012, pfmg > 0), aes(x=pfmg)) + geom_histogram(breaks = c(0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1)) + theme_classic() + xlab("Moult index") + ylab("Number of records"),
-ggplot(siskin_2012, aes(x=yday,y=pfmg,group=ring_no_year)) + geom_point(alpha = 0.3) + geom_path(alpha = 0.5)+ theme_classic() + xlab('Days since Jan 01') + ylab('PFMG'))
+ggplot(filter(siskins, pfmg > 0), aes(x=pfmg)) +
+  geom_histogram(breaks = c(0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1)) +
+  theme_classic() + xlab("Moult index") + ylab("Number of records"),
+ggplot(siskins, aes(x=yday,y=pfmg,group=id)) +
+  geom_point(alpha = 0.3) + geom_path(alpha = 0.5)+
+  theme_classic() + xlab('Days since Jan 01') + ylab('PFMG'))
 ```
 
 The standard models are fitted using the `moult` package
 ```{r siskin-models}
 #fit standard Underhill-Zucchini models
-m3 <- moult(pfmg ~ yday, data = siskin_2012, type = 3)
-m5 <- moult(pfmg ~ yday, data = siskin_2012, type = 5)
+m3 <- moult(pfmg ~ yday, data = siskins, type = 3)
+m5 <- moult(pfmg ~ yday, data = siskins, type = 5)
 ```
 
 ```{r, echo = FALSE}
@@ -62,7 +66,7 @@ uz3 <- moultmcmc('pfmg',
                   start_formula = ~1,
                   duration_formula = ~1,
                   log_lik = FALSE,
-                  data=siskin_2012,
+                  data=siskins,
                   type = 3,
                   iter = 2000,
                   chain = 2,
@@ -72,7 +76,7 @@ uz5 <- moultmcmc('pfmg',
                   start_formula = ~1,
                   duration_formula = ~1,
                   log_lik = FALSE,
-                  data=siskin_2012,
+                  data=siskins,
                   type = 5,
                   iter = 2000,
                   chain = 2,
@@ -86,25 +90,25 @@ and the repeated measures models with `moultmcmc`
 #fit the equivalent recapture model
 uz3_recap <- moultmcmc(moult_column = 'pfmg',
                        date_column = 'yday',
-                       id_column = 'ring_no_year',
+                       id_column = 'id',
                        start_formula = ~1,
                        duration_formula = ~1,
                        type = 3,
                        log_lik = FALSE,
-                       data=siskin_2012,
-                       iter = 2000,
+                       data=siskins,
+                       iter = 1000,
                        chain = 2,
                        cores = 2)
 max(rowSums(get_elapsed_time(uz3_recap$stanfit)))
 uz5_recap <- moultmcmc('pfmg',
                        'yday',
-                       'ring_no_year',
+                       'id',
                        start_formula = ~1,
                        duration_formula = ~1,
                        type = 5,
                        log_lik = FALSE,
-                       data=siskin_2012,
-                       iter = 2000,
+                       data=siskins,
+                       iter = 1000,
                        chain = 2,
                        cores = 2)
 max(rowSums(get_elapsed_time(uz5_recap$stanfit)))
@@ -112,14 +116,14 @@ max(rowSums(get_elapsed_time(uz5_recap$stanfit)))
 ```
 When comparing the results visually it is apparent that the moult period for the population predicted by the standard models fails to encapsulate a substantial proportion of the observed data (Fig. \@ref(fig:siskin-model-plots)), whereas this is not the case for the repeated measures models.
 
-```{r siskin-model-plots, echo = FALSE, fig.cap='Standard type 3 and 5 moult models fitted to the Siskin dataset without considering within-season recaptures converge at biased parameter estimates (red lines and polygons). When recapture information is included in the model, the resulting fits (green lines and polygons) better encapsulate the observed data.'}
+```{r siskin-model-plots, fig.width=7, echo = FALSE, fig.cap='Standard type 3 and 5 moult models fitted to the Siskin dataset without considering within-season recaptures converge at biased parameter estimates (red lines and polygons). When recapture information is included in the model, the resulting fits (green lines and polygons) better encapsulate the observed data.'}
 m_summ <- bind_rows(moult_plot(m3, plot=F) %>% mutate(model = 'no recaptures ML'),
                     moult_plot(uz3, plot = F) %>% mutate(model = 'no recaptures MCMC'),
                     moult_plot(uz3_recap, plot=F) %>% mutate(model = 'recaptures'))
 #hacky way to reorder data to plot polygon
 filter(m_summ, line_type == '95 % quantile') %>% tidyr::pivot_longer(start_date:end_date, values_to = 'x', names_to = 'se') %>% group_by(model,se) %>% mutate(y = ifelse(se == 'start_date', 0, 1), lci = ifelse(x == min(x), 1,0)) %>% arrange(model,x) -> m_summ_poly
 m3_comp <-
-  ggplot(filter(siskin_2012, pfmg > 0), aes(x = yday, y = pfmg)) + 
+  ggplot(filter(siskins, pfmg > 0), aes(x = yday, y = pfmg)) + 
   geom_polygon(data = m_summ_poly[c(1, 2, 4, 3,
                                     5, 6, 8, 7,
                                     9, 10, 12, 11), ], aes(x = x, y = y, fill = model), alpha = 0.3) +
@@ -141,7 +145,7 @@ m_summ <- bind_rows(moult_plot(m5, plot=F) %>% mutate(model = 'no recaptures ML'
 #hacky way to reorder data to plot polygon
 filter(m_summ, line_type == '95 % quantile') %>% tidyr::pivot_longer(start_date:end_date, values_to = 'x', names_to = 'se') %>% group_by(model,se) %>% mutate(y = ifelse(se == 'start_date', 0, 1), lci = ifelse(x == min(x), 1,0)) %>% arrange(model,x) -> m_summ_poly
 
-m5_comp <- ggplot(filter(siskin_2012), aes(x = yday, y = pfmg)) + 
+m5_comp <- ggplot(filter(siskins), aes(x = yday, y = pfmg)) + 
   geom_polygon(data = m_summ_poly[c(1,2,4,3,
                                     5,6,8,7,
                                     9,10,12,11),],

@@ -6,3 +6,5 @@ recaptures2 = read.csv('data-raw/siskin37_sim_001.csv') %>% mutate(id = factor(i
 usethis::use_data(recaptures2, overwrite = TRUE)
 
 
+siskins = readRDS('data-raw/siskin_anon.rds')
+usethis::use_data(siskins, overwrite = TRUE)
