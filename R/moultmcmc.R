@@ -155,12 +155,20 @@ moultmcmc <- function(moult_column,
       standata$not_replicated_old = as.array(not_replicated[not_replicated <= standata$N_old])
       standata$not_replicated_moult = as.array(not_replicated[not_replicated > standata$N_old] - standata$N_old)
     }
+    if (type == 4){
+      standata$not_replicated_moult = as.array(not_replicated[not_replicated <= standata$N_moult])
+      standata$not_replicated_new = as.array(not_replicated[not_replicated > standata$N_moult] - standata$N_moult)
+    }
     standata$is_replicated = as.array(is_replicated)
     standata$replicated_individuals = unique(as.numeric(data[[id_column]])[replicated])
     standata$Nobs_replicated = length(replicated)
     if (type %in% c(2,5)){
-      standata$Nobs_not_replicated_old = length(not_replicated[not_replicated <= standata$N_old])
-      standata$Nobs_not_replicated_moult = length(not_replicated[not_replicated > standata$N_old])
+      standata$Nobs_not_replicated_old = length(standata$not_replicated_old)
+      standata$Nobs_not_replicated_moult = length(standata$not_replicated_moult)
+    }
+    if (type == 4){
+      standata$Nobs_not_replicated_new = length(standata$not_replicated_new)
+      standata$Nobs_not_replicated_moult = length(standata$not_replicated_moult)
     }
     if(standata$N_ind_rep < 10) warning(paste0('There are only ', standata$N_ind_rep, ' individuals with recapture information.\n This dataset may not be suitable for the recaptures moult model.'))
   }

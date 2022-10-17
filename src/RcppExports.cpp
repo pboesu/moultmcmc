@@ -19,6 +19,7 @@ RcppExport SEXP _rcpp_module_boot_stan_fit4uz2_recap_mod();
 RcppExport SEXP _rcpp_module_boot_stan_fit4uz3_linpred_mod();
 RcppExport SEXP _rcpp_module_boot_stan_fit4uz3_recap_mod();
 RcppExport SEXP _rcpp_module_boot_stan_fit4uz4_linpred_mod();
+RcppExport SEXP _rcpp_module_boot_stan_fit4uz4_recap_mod();
 RcppExport SEXP _rcpp_module_boot_stan_fit4uz5_linpred_mod();
 RcppExport SEXP _rcpp_module_boot_stan_fit4uz5_recap_mod();
 RcppExport SEXP _rcpp_module_boot_stan_fit4uz5_recap_annual_raneff_mod();
@@ -31,6 +32,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_rcpp_module_boot_stan_fit4uz3_linpred_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4uz3_linpred_mod, 0},
     {"_rcpp_module_boot_stan_fit4uz3_recap_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4uz3_recap_mod, 0},
     {"_rcpp_module_boot_stan_fit4uz4_linpred_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4uz4_linpred_mod, 0},
+    {"_rcpp_module_boot_stan_fit4uz4_recap_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4uz4_recap_mod, 0},
     {"_rcpp_module_boot_stan_fit4uz5_linpred_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4uz5_linpred_mod, 0},
     {"_rcpp_module_boot_stan_fit4uz5_recap_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4uz5_recap_mod, 0},
     {"_rcpp_module_boot_stan_fit4uz5_recap_annual_raneff_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4uz5_recap_annual_raneff_mod, 0},
