@@ -78,7 +78,7 @@ for (i in 1:N_moult){
   }
 }
 for (i in 1:N_new) {
-	if (is_replicated[individual[i]] == 1) {//longitudinal tobit-like likelihood (this only makes sense if within year recaptures contain at least one active moult score?!)
+	if (is_replicated[individual[i + N_moult]] == 1) {//longitudinal tobit-like likelihood (this only makes sense if within year recaptures contain at least one active moult score?!)
 	  Rv[i] = Phi((new_dates[i] - tau[i + N_moult] - (mu[i + N_moult] + mu_ind[individual[i + N_moult]]))/sigma_mu_ind);
 	} else {//standard likelihood for Type 4 model
     Pv[i] = 1 - Phi((new_dates[i] - mu[i + N_moult])/sigma[i + N_moult]);
@@ -87,11 +87,12 @@ for (i in 1:N_new) {
 }
 mu_ind[replicated_individuals] ~ normal(0, sigma[individual_first_index][replicated_individuals]);//
 
-print(sum(q));
-print(sum(log1m(Pv[not_replicated_new])));
-print(sum(log1m(Pu[not_replicated_moult])));
-//print(P);
-print(sum(log(Rv)));
+//print(sum(q));
+//print(sum(log1m(Pv[not_replicated_new])));//evaluates to nan
+//print(sum(log1m(Pu[not_replicated_moult])));
+//print(log1m(Pv));
+//print(log1m(Pv[not_replicated_new]));
+//print(sum(log(Rv)));
 //print(not_replicated_old);
 //print(is_replicated[individual[1]]);
 //print(is_replicated[individual[2]]);
