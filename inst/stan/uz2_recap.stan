@@ -14,16 +14,12 @@ data {
   int<lower=0> N_new;//K
   vector[N_new] new_dates;//v_k
   int<lower=0> Nobs_replicated;//number of observations from individuals with repeat measures
-  int<lower=0> Nobs_not_replicated_old;//number of old obs from unreplicated individuals
-  int<lower=0> Nobs_not_replicated_moult;//number of moult obs from unreplicated individuals
   vector[N_moult] moult_dates;//u_j
   vector<lower=0,upper=1>[N_moult] moult_indices;//index of moult
   int<lower=0>individual[N_moult+N_old+N_new]; //individual identifier
   int<lower=0>individual_first_index[N_ind];//row first occurrence of each individual in the model frame
   int<lower=0>replicated[Nobs_replicated];//indices of obs from individuals with repeat measures
   int<lower=0>not_replicated[(N_moult + N_old + N_new) - Nobs_replicated];//indices of obs from individuals without repeat measures
-  int<lower=0>not_replicated_old[Nobs_not_replicated_old];//indices of old obs from individuals without repeat measures
-  int<lower=0>not_replicated_moult[Nobs_not_replicated_moult];//indices of moult obs from individuals without repeat measures. NB these are relative to N_moult observations, NOT the full dataset
   int<lower=0>is_replicated[N_ind];
   int<lower=0>replicated_individuals[N_ind_rep];//individual id's that are replicated - i.e. indices of the random_effect intercept
   int<lower=0,upper=1> lumped; //indicator variable for t2l likelihood
@@ -62,9 +58,7 @@ transformed parameters{
 
 // The model to be estimated.
 model {
-  vector[N_old] Rt;
   vector[N_old] P;
-  vector[N_moult] Ru;
   vector[N_moult] q;
   vector[N_new] R;
   vector[N_old+N_moult+N_new] mu;//start date lin pred
@@ -76,6 +70,7 @@ model {
   tau = X_tau * beta_tau;
 //  print(tau);
   sigma = exp(X_sigma * beta_sigma);//use log link for variance lin pred
+
 if (lumped == 0){
   for (i in 1:N_old) {
 	  if (is_replicated[individual[i]] == 1) {//longitudinal tobit-like likelihood (this only makes sense if within year recaptures contain at least one active moult score?!)
@@ -127,21 +122,6 @@ if (lumped == 0){
 
 mu_ind[replicated_individuals] ~ normal(0, sigma[individual_first_index][replicated_individuals]);//
 
-//print(sum(q));
-//print(sum(log(P)));
-//print(P);
-//print(Rt);
-//print(not_replicated_old);
-//print(is_replicated[individual[1]]);
-//print(is_replicated[individual[2]]);
-//print(old_dates);
-//print(tau[1]);
-//print(mu[1]);
-//print(sigma[1]);
-//print(Ru[not_replicated_moult]);
-//print(not_replicated_moult);
-//print(sum(log1m(Rt[not_replicated_old])));
-//print(sum(log1m(Ru[not_replicated_moult])));
 target += sum(log(P))+sum(q)+sum(log(R));
 
 //priors

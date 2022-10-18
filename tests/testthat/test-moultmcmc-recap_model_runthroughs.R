@@ -16,7 +16,8 @@ test_that("moultmcmc uz2_recap works", {
                   cores = 2,
                   control = list(adapt_delta = 0.99, max_treedepth = 11),
                   iter = 200,
-                  refresh = 50)
+                  refresh = 50,
+                  open_progress = FALSE)
 expect_s3_class(m2r, "moultmcmc")
 
 as.data.frame(ranef(m2r)) %>% tibble::rownames_to_column('id') %>% left_join(recaptures %>% group_by(id) %>% summarize(start_date = unique(start_date), n_moult = sum(pfmg_sampled != 0 & pfmg_sampled != 1), n_total = n())) -> joined_df
@@ -86,6 +87,17 @@ test_that("uz3r works", {
                   cores = 2,#should work on gh-actions
                   iter = 300)
   expect_s3_class(uz3, "moultmcmc")
+})
+test_that("uz4r works", {
+  uz4 = moultmcmc(moult_column = "pfmg_sampled",
+                  date_column = "date_sampled",
+                  id_column = "id",
+                  data = subset(recaptures, pfmg_sampled != 0),
+                  type = 4,
+                  log_lik = FALSE,
+                  chains = 1,
+                  iter = 200)
+  expect_s3_class(uz4, "moultmcmc")
 })
 test_that("uz5r works", {
   uz5 = moultmcmc(moult_column = "pfmg_sampled",
