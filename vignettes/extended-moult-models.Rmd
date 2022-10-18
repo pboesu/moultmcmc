@@ -159,5 +159,10 @@ cowplot::plot_grid(cowplot::plot_grid(m3_comp+theme(legend.position='none')+ylab
 
 ```
 
+```{r fig.width=7}
+compare_plot(m3,uz3,uz3_recap,m5,uz5,uz5_recap)
+
+```
+
 # References
 

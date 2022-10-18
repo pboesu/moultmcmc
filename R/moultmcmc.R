@@ -160,7 +160,7 @@ moultmcmc <- function(moult_column,
       standata$not_replicated_new = as.array(not_replicated[not_replicated > standata$N_moult] - standata$N_moult)
     }
     standata$is_replicated = as.array(is_replicated)
-    standata$replicated_individuals = unique(as.numeric(data[[id_column]])[replicated])
+    standata$replicated_individuals = as.array(unique(as.numeric(data[[id_column]])[replicated]))
     standata$Nobs_replicated = length(replicated)
     if (type %in% c(2,5)){
       standata$Nobs_not_replicated_old = length(standata$not_replicated_old)
