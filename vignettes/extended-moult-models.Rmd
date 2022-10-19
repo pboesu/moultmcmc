@@ -27,6 +27,45 @@ library(rstan)
 
 # Lumped models
 
+The gradual transition from new to old plumage between successive moults can make the assignment of non-moulting birds to pre-moult and post-moult categories ambiguous.
+This classification problem can be sidestepped by distinguishing only two categories of
+birds: moulting and non-moulting birds, which is implemented in the so called "lumped" moult models in `moultmcmc`.
+
+The following example demonstrates the use of the lumped type 2 moult model.
+It is based on a dataset originally supplied with the `moult` package [@erni2013moult] on Southern Masked Weavers (*Ploceus velatus*), all caught in the Western Cape province of South Africa [@oschadleus2005patterns]. 
+For convenience the data set is provided with processed moult scores in `moultmcmc` as `weavers_processed`.
+
+```{r lumped-demo, fig.width = 7, fig.caption='A plot of the Masked Weaver dataset clearly shows that individuals scored as pre-moult (pfmg = 0) and post-moult (pfmg = 1) are present in the sample throughout the year, even though the active moult period appears to be reasonably well constrained within the year.'}
+data(weavers_processed)
+weavers_processed <- filter(weavers_processed, Year %in% 1993:2003)
+ggplot(weavers_processed, aes(x=day, y =pfmg)) + geom_point() + theme_classic() + ylab('PFMG') + xlab('Days since 01 August')
+```
+
+We then fit both standard and lumped type 2 moult models to this dataset. The lumped model can be activated by setting the option `lump_non_moult = TRUE`.
+```{r lumped-models}
+mc2 <- moultmcmc('pfmg','day',data=weavers_processed, chains = 2, cores = 2)
+mc2l <- moultmcmc('pfmg','day',data=weavers_processed, lump_non_moult = TRUE, chains = 2, cores = 2)
+```
+We also fit a type 3 model to these data, following the recommendation in @erni2013moult. This model type only uses active moult records, and therefore is unaffected by misclassification in the non-moulting birds.
+```{r lumped-models-t3}
+mc3 <- moultmcmc('pfmg','day',data=weavers_processed, type = 3, chains = 2, cores=2)
+```
+
+```{r lumped-model-plots, fig.width = 7, fig.height = 8}
+cowplot::plot_grid(
+   moult_plot(mc2) + theme(legend.position='none') + xlim(-150,575) + ggtitle('Type 2 model'),
+   moult_plot(mc2l) + theme(legend.position='none') + xlim(-150,575) + ggtitle('Lumped type 2 model (T2L)'),
+   moult_plot(mc3) + theme(legend.position='bottom') + xlim(-150,575) + ggtitle('Type 3 model'),
+   nrow=3
+)
+```
+The moult plots make it clear that the standard type 2 model estimates an unrealistically large standard deviation of the start date, implying that the moult period for the population exceeds a calendar year. 
+In contrast both the lumped type 2 model and the type 3 model give plausible estimates. Both of those are consistent with the estimates published in @oschadleus2005patterns, with the lumped type 2 model offering much higher nominal precision.
+
+```{r lumped-model-compare}
+compare_plot(mc3,mc2,mc2l)
+```
+
 # Mixed moult data
 
 # Repeated measures moult models 
@@ -50,17 +89,9 @@ ggplot(siskins, aes(x=yday,y=pfmg,group=id)) +
   theme_classic() + xlab('Days since Jan 01') + ylab('PFMG'))
 ```
 
-The standard models are fitted using the `moult` package
-```{r siskin-models}
-#fit standard Underhill-Zucchini models
-m3 <- moult(pfmg ~ yday, data = siskins, type = 3)
-m5 <- moult(pfmg ~ yday, data = siskins, type = 5)
-```
+The standard models are fitted by not specifying the `id_column` input argument (which implies `id_column = NULL`):
 
 ```{r, echo = FALSE}
-# strangely the bayesian simple model appears to be largely unaffected by the bias??
-# Is this because of the somewhat informative prior on the sd?
-# recap model still features better precision on estimates though (nominal..., check coverage)
 uz3 <- moultmcmc('pfmg',
                   'yday',
                   start_formula = ~1,
@@ -84,10 +115,10 @@ uz5 <- moultmcmc('pfmg',
 
 ```
 
-and the repeated measures models with `moultmcmc`
+and the repeated measures models by passing the information about bird identities to the  `moultmcmc()` function:
 
 ```{r sisikin-recap-models, cache = TRUE, warning=FALSE}
-#fit the equivalent recapture model
+#fit the equivalent recapture models
 uz3_recap <- moultmcmc(moult_column = 'pfmg',
                        date_column = 'yday',
                        id_column = 'id',
@@ -117,16 +148,19 @@ max(rowSums(get_elapsed_time(uz5_recap$stanfit)))
 When comparing the results visually it is apparent that the moult period for the population predicted by the standard models fails to encapsulate a substantial proportion of the observed data (Fig. \@ref(fig:siskin-model-plots)), whereas this is not the case for the repeated measures models.
 
 ```{r siskin-model-plots, fig.width=7, echo = FALSE, fig.cap='Standard type 3 and 5 moult models fitted to the Siskin dataset without considering within-season recaptures converge at biased parameter estimates (red lines and polygons). When recapture information is included in the model, the resulting fits (green lines and polygons) better encapsulate the observed data.'}
-m_summ <- bind_rows(moult_plot(m3, plot=F) %>% mutate(model = 'no recaptures ML'),
-                    moult_plot(uz3, plot = F) %>% mutate(model = 'no recaptures MCMC'),
+m_summ <- bind_rows(moult_plot(uz3, plot = F) %>% mutate(model = 'ignore recaptures'),
                     moult_plot(uz3_recap, plot=F) %>% mutate(model = 'recaptures'))
 #hacky way to reorder data to plot polygon
-filter(m_summ, line_type == '95 % quantile') %>% tidyr::pivot_longer(start_date:end_date, values_to = 'x', names_to = 'se') %>% group_by(model,se) %>% mutate(y = ifelse(se == 'start_date', 0, 1), lci = ifelse(x == min(x), 1,0)) %>% arrange(model,x) -> m_summ_poly
+filter(m_summ, line_type == '95 % quantile') %>%
+  tidyr::pivot_longer(start_date:end_date, values_to = 'x', names_to = 'se') %>%
+  group_by(model,se) %>%
+  mutate(y = ifelse(se == 'start_date', 0, 1), lci = ifelse(x == min(x), 1,0)) %>%
+  arrange(model,x) -> m_summ_poly
 m3_comp <-
   ggplot(filter(siskins, pfmg > 0), aes(x = yday, y = pfmg)) + 
+  geom_point(alpha = 0.4) +
   geom_polygon(data = m_summ_poly[c(1, 2, 4, 3,
-                                    5, 6, 8, 7,
-                                    9, 10, 12, 11), ], aes(x = x, y = y, fill = model), alpha = 0.3) +
+                                    5, 6, 8, 7), ], aes(x = x, y = y, fill = model), alpha = 0.3) +
   geom_segment(
     data = filter(m_summ, line_type == 'Population mean'),
     aes(
@@ -137,20 +171,19 @@ m3_comp <-
       col = model
     ),
     lwd = 1
-  )  + theme_classic() + ggtitle('Type 3 model') + geom_point(alpha = 0.4) + xlim(170,340)
+  )  + theme_classic() + ggtitle('Type 3 model') + xlim(170,340)
 
-m_summ <- bind_rows(moult_plot(m5, plot=F) %>% mutate(model = 'no recaptures ML'),
-                    moult_plot(uz5, plot=F) %>% mutate(model = 'no recaptures MCMC'),
+m_summ <- bind_rows(moult_plot(uz5, plot=F) %>% mutate(model = 'ignore recaptures'),
                     moult_plot(uz5_recap, plot=F) %>% mutate(model = 'repeated measures model'))
 #hacky way to reorder data to plot polygon
 filter(m_summ, line_type == '95 % quantile') %>% tidyr::pivot_longer(start_date:end_date, values_to = 'x', names_to = 'se') %>% group_by(model,se) %>% mutate(y = ifelse(se == 'start_date', 0, 1), lci = ifelse(x == min(x), 1,0)) %>% arrange(model,x) -> m_summ_poly
 
 m5_comp <- ggplot(filter(siskins), aes(x = yday, y = pfmg)) + 
   geom_polygon(data = m_summ_poly[c(1,2,4,3,
-                                    5,6,8,7,
-                                    9,10,12,11),],
+                                    5,6,8,7),],
                aes(x = x, y = y, fill = model), alpha = 0.3 ) + 
-  geom_segment(data = filter(m_summ, line_type == 'Population mean'), aes(x = start_date, y = 0, xend = end_date, yend = 1, col = model), lwd = 1)  + theme_classic() + ggtitle('Type 5 model') + geom_point(alpha = 0.4) + theme(legend.position = 'bottom') + xlim(170,340)
+  geom_point(alpha = 0.4) +
+  geom_segment(data = filter(m_summ, line_type == 'Population mean'), aes(x = start_date, y = 0, xend = end_date, yend = 1, col = model), lwd = 1)  + theme_classic() + ggtitle('Type 5 model')  + theme(legend.position = 'bottom') + xlim(170,340)
 
 m5_legend <- cowplot::get_legend(m5_comp)
 cowplot::plot_grid(cowplot::plot_grid(m3_comp+theme(legend.position='none')+ylab('PFMG')+xlab('Days since Jan 01'),
@@ -160,7 +193,7 @@ cowplot::plot_grid(cowplot::plot_grid(m3_comp+theme(legend.position='none')+ylab
 ```
 
 ```{r fig.width=7}
-compare_plot(m3,uz3,uz3_recap,m5,uz5,uz5_recap)
+compare_plot(uz3,uz3_recap,uz5,uz5_recap)
 
 ```
 
