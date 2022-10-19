@@ -130,7 +130,7 @@ summary_table <- function(...){UseMethod("summary_table")}
 #'
 summary_table.moult <-function(x, prob = 0.95, tidy_names = TRUE, ...){
   probs = c((1-prob)/2, 1 -(1-prob)/2)
-  plotdata <- tibble::tibble(parameter = names(coef(x)), estimate = coef(x), stderr = x$standard.errors, lci = coef(x) + qnorm(probs[1])*x$standard.errors, uci = coef(x) + qnorm(probs[2])*x$standard.errors, prob = prob, method = 'ML',type = x$type, Rhat = NA)
+  plotdata <- tibble::tibble(parameter = names(coef(x)), estimate = coef(x), stderr = x$standard.errors, lci = coef(x) + qnorm(probs[1])*x$standard.errors, uci = coef(x) + qnorm(probs[2])*x$standard.errors, prob = prob, method = 'ML',type = as.character(x$type), Rhat = NA)
   if (tidy_names)
   plotdata <- mutate(plotdata, parameter = stringr::str_replace_all(.data$parameter, "intercept.1", "(Intercept)"))
   plotdata <- mutate(plotdata, parameter = stringr::str_replace_all(.data$parameter, "duration_duration", "duration_(Intercept)"))
@@ -171,7 +171,7 @@ summary_table.moultmcmc <- function (x, pars = x$stanfit@sim$pars_oi, prob = 0.9
     pars <- setdiff(x$stanfit@sim$pars_oi, pars)
   s <- tibble::as_tibble(summary(x$stanfit, pars, probs, ...)$summary, rownames = "parameter") %>%
     dplyr::rename(estimate = mean) %>% dplyr::rename(lci = .data$`2.5%`, uci = .data$`97.5%`) %>% #TODO: this falls over when prob != 0.95. need to select by position or by assembling column names from prob or the stanfit summary
-    mutate(prob = 0.95, method = 'MCMC', type = x$type)
+    mutate(prob = 0.95, method = 'MCMC', type = as.character(x$type))
   return(s)
 }
 
