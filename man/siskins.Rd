@@ -5,7 +5,7 @@
 \alias{siskins}
 \title{Moult records of Eurasian Siskins}
 \format{
-A data frame with 299 rows and 13 variables:
+A data frame with 299 rows and 3 variables:
 \describe{
 \item{yday}{sampling date (days since Jan 01)}
 \item{pfmg}{PFMG at sampling occasion}
@@ -13,13 +13,13 @@ A data frame with 299 rows and 13 variables:
 }
 }
 \source{
-Hugh Insley
+Philipp Boersch-Supan
 }
 \usage{
 siskins
 }
 \description{
-A dataset containing the moult scores and capture dates for Scottish population of Eurasian Siskins (Spinus spinus) including recaptures.
+A dataset containing simulated moult scores and capture dates of Eurasian Siskins (Spinus spinus), based on a sub-urban Scottish population.
 }
 \references{
 Insley et al. (in prep). Breeding and moult phenology of siskins in the Scottish Highlands.
