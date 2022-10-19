@@ -197,7 +197,7 @@ moultmcmc <- function(moult_column,
     date_on_score_lm <- lm(standata$moult_dates ~ standata$moult_indices)
     mu_start = coef(date_on_score_lm)[1]
     tau_start = max(coef(date_on_score_lm)[2],2*sd(standata$moult_dates), na.rm=T)
-    sigma_start = min(10, sd(standata$moult_dates))
+    sigma_start = sd(standata$moult_dates)
     initfunc <- function(chain_id = 1) {
       # cat("chain_id =", chain_id, "\n")
       list(beta_mu = as.array(c(mu_start,rep(0, standata$N_pred_mu - 1))), #initialize intercept term from data, set inits for all other effects to 0
