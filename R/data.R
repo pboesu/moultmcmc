@@ -54,6 +54,8 @@
 #'   \item{yday}{sampling date (days since Jan 01)}
 #'   \item{pfmg}{PFMG at sampling occasion}
 #'   \item{id}{individual identifier}
+#'   \item{start_date} "true" individual start date
+#'   \item{duration} "true" individual moult duration
 #' }
 #' @source Philipp Boersch-Supan
 #' @references Insley et al. (in prep). Breeding and moult phenology of siskins in the Scottish Highlands.

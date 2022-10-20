@@ -197,5 +197,40 @@ compare_plot(uz3,uz3_recap,uz5,uz5_recap)
 
 ```
 
+As these are simulated data we can also assess how well the recapture model estimates individual start dates, by extracting the random intercept estimates with the `ranef()` method and comparing them to the simulated data.
+We find that agreement is good, even though the model does not explicitly model heterogeneity in individual moult durations.
+For both models a regression of estimated versus true start dates has an intercept indistinguishable form 0 and a slope indistinguishable from 1.
+
+```{r ind-intercepts, fig.width = 7, fig.caption = 'There is good agreement between the simulated individual start dates and their estimates in both the type 3r and type 5R models.'}
+ints <- ranef(uz3_recap) %>% as_tibble(rownames = 'id') %>% left_join(siskins) %>%
+  group_by(id) %>% summarise(est_start = unique(mean),
+                             lci_start = unique(`2.5%`),
+                             uci_start = unique(`97.5%`),
+                             true_start = unique(start_date),
+                             true_dur = unique(duration),
+                             n_total = n(),
+                             n_active = sum(pfmg != 0))
+
+t3r_intercepts <- ggplot(ints, aes(x = true_start - 196.83, y = est_start, ymin = lci_start, ymax = uci_start, fill = true_dur - 77.8)) + geom_pointrange(pch = 21) + scale_fill_gradient2() + theme_classic() + stat_smooth(method = 'lm') + ggtitle('T3R') + geom_abline(intercept = 0, slope = 1, lwd = 1, lty =2) + ylab('estimated start date') + xlab('true start date')
+
+confint(lm(est_start ~ I(true_start - 196.83), data = ints))
+
+ints <- ranef(uz5_recap) %>% as_tibble(rownames = 'id') %>% left_join(siskins) %>%
+  group_by(id) %>% summarise(est_start = unique(mean),
+                             lci_start = unique(`2.5%`),
+                             uci_start = unique(`97.5%`),
+                             true_start = unique(start_date),
+                             true_dur = unique(duration),
+                             n_total = n(),
+                             n_active = sum(pfmg != 0))
+
+t5r_intercepts <- ggplot(ints, aes(x = true_start - 196.83, y = est_start, ymin = lci_start, ymax = uci_start, fill = true_dur - 77.8)) + geom_pointrange(pch = 21) + scale_fill_gradient2() + theme_classic() + stat_smooth(method = 'lm') + ggtitle('T5R') + geom_abline(intercept = 0, slope = 1, lwd = 1, lty =2) + ylab('estimated start date') + xlab('true start date')
+
+confint(lm(est_start ~ I(true_start - 196.83), data = ints))
+
+cowplot::plot_grid(t3r_intercepts + theme(legend.position = 'none'),
+                   t5r_intercepts + theme(legend.position = 'none'))
+```
+
 # References
 

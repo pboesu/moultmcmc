@@ -7,7 +7,7 @@ usethis::use_data(recaptures2, overwrite = TRUE)
 
 
 siskins = readRDS('data-raw/siskin_sim.rds') %>%
-  select(date_sampled, pfmg_sampled, id) %>%
+  select(date_sampled, pfmg_sampled, id, start_date, duration) %>%
   rename(yday = date_sampled, pfmg = pfmg_sampled)
 usethis::use_data(siskins, overwrite = TRUE)
 
