@@ -154,6 +154,13 @@ generated quantities{
   vector[N_old+N_moult] tau;//duration lin pred
   vector[N_old+N_moult] sigma;//duration lin pred
   vector[N_old+N_moult] log_lik;
+  vector[N_pred_mu] beta_mu_out;//post-swept regression coefficients for start date
+
+  if (N_pred_mu > 1){
+    beta_mu_out = append_row(beta_star,beta_mu[2:N_pred_mu]);// collate post-swept intercept with remaining
+  } else {
+    beta_mu_out[1] = beta_star;// intercept-only model
+  }
 
   mu = X_mu * beta_mu + u_year_mean[year_factor];
 //  print(mu);

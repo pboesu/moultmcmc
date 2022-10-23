@@ -72,11 +72,11 @@ uz5_linpred_recap_annual_raneff <- function(moult_index_column, date_column, id_
                    N_years = length(unique(data[[year_factor_column]])))
   #include pointwise log_lik matrix  in output?
   if(log_lik){
-    outpars <- c('beta_mu','beta_tau','beta_sigma', 'sigma_intercept',
+    outpars <- c('beta_mu_out','beta_tau','beta_sigma', 'sigma_intercept',
 'u_year_mean', 'u_year_duration', 'sd_year_mean', 'sd_year_duration',
 'sigma_mu_ind','beta_star','finite_sd', 'mu_ind_star', 'log_lik')
   } else {
-    outpars <- c('beta_mu','beta_tau','beta_sigma', 'sigma_intercept',
+    outpars <- c('beta_mu_out','beta_tau','beta_sigma', 'sigma_intercept',
 'u_year_mean', 'u_year_duration', 'sd_year_mean', 'sd_year_duration',
 'sigma_mu_ind','beta_star','finite_sd', 'mu_ind_star')
   }
@@ -97,7 +97,7 @@ uz5_linpred_recap_annual_raneff <- function(moult_index_column, date_column, id_
     out <- rstan::sampling(stanmodels$uz5_recap_annual_raneff, data = standata, init = init, pars = outpars, ...)
   }
   #rename regression coefficients for output
-  names(out)[grep('beta_mu', names(out))] <- paste('mean',colnames(X_mu), sep = '_')
+  names(out)[grep('beta_mu_out', names(out))] <- paste('mean',colnames(X_mu), sep = '_')
   names(out)[grep('beta_tau', names(out))] <- paste('duration',colnames(X_tau), sep = '_')
   names(out)[grep('beta_sigma', names(out))] <- paste('log_sd',colnames(X_sigma), sep = '_')
   names(out)[grep('sigma_intercept', names(out))] <- 'sd_(Intercept)'
@@ -111,6 +111,7 @@ uz5_linpred_recap_annual_raneff <- function(moult_index_column, date_column, id_
   out_struc$terms$duration_formula <- duration_formula
   out_struc$terms$sigma_formula <- sigma_formula
   out_struc$data <- data
+  out_struc$type <- "5R"
   class(out_struc) <- 'moultmcmc'
   return(out_struc)
 }
