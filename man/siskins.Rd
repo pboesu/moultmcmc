@@ -10,8 +10,8 @@ A data frame with 299 rows and 3 variables:
 \item{yday}{sampling date (days since Jan 01)}
 \item{pfmg}{PFMG at sampling occasion}
 \item{id}{individual identifier}
-\item{start_date} "true" individual start date
-\item{duration} "true" individual moult duration
+\item{start_date}{"true" individual start date}
+\item{duration}{"true" individual moult duration}
 }
 }
 \source{
