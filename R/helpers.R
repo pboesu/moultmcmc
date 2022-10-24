@@ -130,7 +130,7 @@ summary_table <- function(...){UseMethod("summary_table")}
 #'
 summary_table.moult <-function(x, prob = 0.95, tidy_names = TRUE, ...){
   probs = c((1-prob)/2, 1 -(1-prob)/2)
-  plotdata <- tibble::tibble(parameter = names(coef(x)), estimate = coef(x), stderr = x$standard.errors, lci = coef(x) + qnorm(probs[1])*x$standard.errors, uci = coef(x) + qnorm(probs[2])*x$standard.errors, prob = prob, method = 'ML', Rhat = NA)
+  plotdata <- tibble::tibble(parameter = names(coef(x)), estimate = coef(x), stderr = x$standard.errors, lci = coef(x) + qnorm(probs[1])*x$standard.errors, uci = coef(x) + qnorm(probs[2])*x$standard.errors, prob = prob, method = 'ML',type = as.character(x$type), Rhat = NA)
   if (tidy_names)
   plotdata <- mutate(plotdata, parameter = stringr::str_replace_all(.data$parameter, "intercept.1", "(Intercept)"))
   plotdata <- mutate(plotdata, parameter = stringr::str_replace_all(.data$parameter, "duration_duration", "duration_(Intercept)"))
@@ -171,7 +171,7 @@ summary_table.moultmcmc <- function (x, pars = x$stanfit@sim$pars_oi, prob = 0.9
     pars <- setdiff(x$stanfit@sim$pars_oi, pars)
   s <- tibble::as_tibble(summary(x$stanfit, pars, probs, ...)$summary, rownames = "parameter") %>%
     dplyr::rename(estimate = mean) %>% dplyr::rename(lci = .data$`2.5%`, uci = .data$`97.5%`) %>% #TODO: this falls over when prob != 0.95. need to select by position or by assembling column names from prob or the stanfit summary
-    mutate(prob = 0.95, method = 'MCMC')
+    mutate(prob = 0.95, method = 'MCMC', type = as.character(x$type))
   return(s)
 }
 
@@ -204,52 +204,7 @@ namedList <- function(...) {
   setNames(L,nm)
 }
 
-#' Visual comparison of moult models
-#'
-#' @param ... two or a moult or moultmcmc model
-#' @param names optional character vector of model names
-#'
-#'
-#' @return a plot comparing parameter estimates and their uncertainties
-#'
-#' @importFrom dplyr bind_rows mutate filter
-#' @importFrom ggplot2 ggplot geom_pointrange aes position_dodge
-#' @importFrom rlang .data
-#' @export
-#'
-compare_plot <- function(...,names = NULL){
-  parlist <- moultmcmc:::namedList(...)
-  stopifnot(all(sapply(parlist, class) %in% c('moult','moultmcmc')))
-  #TODO:type checking etc
-  #TODO:import necessary dplyr and ggplot components
-  if(is.null(names)) names = names(parlist)
-  names(parlist) <- names
 
-  plotdata <- dplyr::bind_rows(lapply(parlist, function(x){summary_table(x)}), .id = 'model')
-  plotdata$not_converged <- ifelse(plotdata$Rhat > 1.05 & !is.na(plotdata$Rhat), TRUE, FALSE)
-  dplyr::filter(plotdata, !grepl("lp__|log_sd_\\(Intercept\\)|\\blp\\b|log_lik[[0-9]+]|mu_ind[[0-9]+]|mu_ind_star|mu_ind_out|tau_ind_out", .data$parameter)) %>%
-    ggplot(aes(x = .data$model, y = .data$estimate, col = .data$model, ymin = .data$lci, ymax = .data$uci, shape = .data$not_converged)) + geom_pointrange(position = position_dodge(0.1)) + facet_wrap(~ .data$parameter, scales = 'free')
-}
-
-#' Plot method for moult models
-#'
-#' @param x maximum likelihood fit of a moult model from the moult package (class moult)
-#' @param prob coverage probability of the confidence interval
-#' @param scales argument to facet_wrap. default is "free_x", "free" may enable a better comparison if parameter values are disparate
-#' @param ... not currently used
-#'
-#' @return a plot
-#' @importFrom ggplot2 facet_wrap
-#' @importFrom rlang .data
-#'
-#' @export
-#'
-plot.moult <- function(x, prob = 0.95,scales = "free_x", ...){
-  plotdata <- tibble::tibble(param = names(coef(x)), estimate = coef(x), stderr = x$standard.errors)
-  #plot(as.factor(names(coef(x))), coef(x))
-  #dotchart(coef(x))
-  ggplot(plotdata, aes(x = .data$param, y = .data$estimate, ymin = .data$estimate - qnorm(prob)*stderr, ymax = .data$estimate + qnorm(prob)*stderr)) + geom_pointrange() + facet_wrap(~.data$param, scales = scales)
-}
 
 #' Efficient approximate leave-one-out cross-validation (LOO)
 #'
@@ -280,47 +235,3 @@ loo.moultmcmc <- function(x, cores = getOption("mc.cores", 1)){
 
 
 
-#' residual_plot generic
-#'
-#' @param ... ...
-#'
-#' @return ...
-#' @export
-#'
-residual_plot <- function(...){UseMethod("residual_plot")}
-
-#' Residual plot for moult model
-#'
-#' This function displays a plot that shows where observed dates and moult scores fall relative to the predictions of the fitted model. Active moult observations should generally fall within +/- 3 start-date standard deviations of the regression line.
-#'
-#' @param x moult model object created with moult::moult
-#' @param plot logical, if TRUE (default) return a plot, else return a data.frame with calculated quantities
-#' @param ... not currently used
-#'
-#' @return a plot
-#'
-#' @importFrom stats coef qnorm
-#' @importFrom ggplot2 geom_hline aes scale_shape_manual ggplot theme theme_classic xlab ylab ggtitle geom_point
-#' @export
-#'
-#'
-residual_plot.moult <-function(x, plot = TRUE, ...){
-  model_data <- x$X
-  model_data$duration_pred <- predict(x, newdata = x$X, predict.type = 'duration')$duration
-  model_data$start_pred <- predict(x, newdata = x$X, predict.type = 'start')$mean.start
-  #calculate sd predictions by hand
-  p.sd <- unlist(x$coefficients$sd)
-  mm <- model.matrix(x$terms$sd, x$X)
-  model_data$sd_pred <- mm %*% p.sd
-
-  model_data$delta_day <-  x$Day - (x$y[[1]]*model_data$duration_pred+model_data$start_pred)
-  model_data$delta_day_zscore <- model_data$delta_day / model_data$sd_pred
-  model_data$active_moult <- x$y[[1]] > 0 & x$y[[1]] < 1
-
-  if(plot == TRUE){
-    ggplot(model_data, aes(x = get(names(model_data)[1]), y = .data$delta_day_zscore, pch = .data$active_moult)) + geom_point() + geom_hline(yintercept = -3:3, lty = 2, col = 'grey') + geom_hline(yintercept = 0) + scale_shape_manual(values = c(1,16)) + xlab('PFMG_observed') + ylab('Population SD of start date') + theme_classic() + theme(legend.position = 'bottom') + ggtitle('Experimental "residual" plot')
-  } else {
-    return(model_data)
-  }
-
-}

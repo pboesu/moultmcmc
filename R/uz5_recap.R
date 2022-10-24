@@ -105,6 +105,7 @@ uz5_linpred_recap <- function(moult_index_column, date_column, id_column, start_
   out_struc$terms$duration_formula <- duration_formula
   out_struc$terms$sigma_formula <- sigma_formula
   out_struc$data <- data
+  out_struc$type <- "5R"
   class(out_struc) <- 'moultmcmc'
   return(out_struc)
 }

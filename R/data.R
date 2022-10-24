@@ -47,14 +47,33 @@
 
 #' Moult records of Eurasian Siskins
 #'
-#' A dataset containing the moult scores and capture dates for Scottish population of Eurasian Siskins (Spinus spinus) including recaptures.
+#' A dataset containing simulated moult scores and capture dates of Eurasian Siskins (Spinus spinus), based on a sub-urban Scottish population.
 #'
-#' @format A data frame with 299 rows and 13 variables:
+#' @format A data frame with 299 rows and 3 variables:
 #' \describe{
 #'   \item{yday}{sampling date (days since Jan 01)}
 #'   \item{pfmg}{PFMG at sampling occasion}
 #'   \item{id}{individual identifier}
+#'   \item{start_date}{"true" individual start date}
+#'   \item{duration}{"true" individual moult duration}
 #' }
-#' @source Hugh Insley
+#' @source Philipp Boersch-Supan
 #' @references Insley et al. (in prep). Breeding and moult phenology of siskins in the Scottish Highlands.
 "siskins"
+
+#' Moult records of Southern Masked Weavers
+#'
+#' A dataset containing the moult scores and capture dates for Southern Masked Weavers (Ploceus velatus) from the Western Cape, South Africa.
+#'
+#' @format A data frame with 5282 rows and 6 variables:
+#' \describe{
+#'   \item{RDate}{sampling date (calendar date)}
+#'   \item{Sex}{SAFRING sex code}
+#'   \item{Year}{Sampling Year}
+#'   \item{Moult}{feather scores for primaries}
+#'   \item{pfmg}{Proportion of feather mass grown}
+#'   \item{day}{sampling date (days since August 01 of each year)}
+#' }
+#' @source Erni et al. 2013
+#' @references Oschadleus 2005, Patterns of primary moult in the weavers, Ploceidae. University of Cape Town.
+"weavers_processed"

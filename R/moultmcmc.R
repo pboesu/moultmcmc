@@ -160,7 +160,7 @@ moultmcmc <- function(moult_column,
       standata$not_replicated_new = as.array(not_replicated[not_replicated > standata$N_moult] - standata$N_moult)
     }
     standata$is_replicated = as.array(is_replicated)
-    standata$replicated_individuals = unique(as.numeric(data[[id_column]])[replicated])
+    standata$replicated_individuals = as.array(unique(as.numeric(data[[id_column]])[replicated]))
     standata$Nobs_replicated = length(replicated)
     if (type %in% c(2,5)){
       standata$Nobs_not_replicated_old = length(standata$not_replicated_old)
@@ -197,7 +197,7 @@ moultmcmc <- function(moult_column,
     date_on_score_lm <- lm(standata$moult_dates ~ standata$moult_indices)
     mu_start = coef(date_on_score_lm)[1]
     tau_start = max(coef(date_on_score_lm)[2],2*sd(standata$moult_dates), na.rm=T)
-    sigma_start = min(10, sd(standata$moult_dates))
+    sigma_start = sd(standata$moult_dates)
     initfunc <- function(chain_id = 1) {
       # cat("chain_id =", chain_id, "\n")
       list(beta_mu = as.array(c(mu_start,rep(0, standata$N_pred_mu - 1))), #initialize intercept term from data, set inits for all other effects to 0
