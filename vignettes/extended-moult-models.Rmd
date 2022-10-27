@@ -38,24 +38,40 @@ For convenience the data set is provided with processed moult scores in `moultmc
 ```{r lumped-demo, fig.width = 7, fig.caption='A plot of the Masked Weaver dataset clearly shows that individuals scored as pre-moult (pfmg = 0) and post-moult (pfmg = 1) are present in the sample throughout the year, even though the active moult period appears to be reasonably well constrained within the year.'}
 data(weavers_processed)
 weavers_processed <- filter(weavers_processed, Year %in% 1993:2003)
-ggplot(weavers_processed, aes(x=day, y =pfmg)) + geom_point() + theme_classic() + ylab('PFMG') + xlab('Days since 01 August')
+ggplot(weavers_processed, aes(x=day, y =pfmg)) +
+  geom_point() + theme_classic() +
+  ylab('PFMG') + xlab('Days since 01 August')
 ```
 
 We then fit both standard and lumped type 2 moult models to this dataset. The lumped model can be activated by setting the option `lump_non_moult = TRUE`.
 ```{r lumped-models}
-mc2 <- moultmcmc('pfmg','day',data=weavers_processed, chains = 2, cores = 2)
-mc2l <- moultmcmc('pfmg','day',data=weavers_processed, lump_non_moult = TRUE, chains = 2, cores = 2)
+mc2 <- moultmcmc('pfmg',
+                 'day',
+                 data=weavers_processed,
+                 chains = 2, cores = 2)
+mc2l <- moultmcmc('pfmg',
+                  'day',
+                  data=weavers_processed,
+                  lump_non_moult = TRUE,
+                  chains = 2, cores = 2)
 ```
 We also fit a type 3 model to these data, following the recommendation in @erni2013moult. This model type only uses active moult records, and therefore is unaffected by misclassification in the non-moulting birds.
 ```{r lumped-models-t3}
-mc3 <- moultmcmc('pfmg','day',data=weavers_processed, type = 3, chains = 2, cores=2)
+mc3 <- moultmcmc('pfmg',
+                 'day',
+                 data=weavers_processed,
+                 type = 3,
+                 chains = 2, cores=2)
 ```
 
 ```{r lumped-model-plots, fig.width = 7, fig.height = 8}
 cowplot::plot_grid(
-   moult_plot(mc2) + theme(legend.position='none') + xlim(-150,575) + ggtitle('Type 2 model'),
-   moult_plot(mc2l) + theme(legend.position='none') + xlim(-150,575) + ggtitle('Lumped type 2 model (T2L)'),
-   moult_plot(mc3) + theme(legend.position='bottom') + xlim(-150,575) + ggtitle('Type 3 model'),
+   moult_plot(mc2) + theme(legend.position='none') +
+     xlim(-150,575) + ggtitle('Type 2 model'),
+   moult_plot(mc2l) + theme(legend.position='none') +
+     xlim(-150,575) + ggtitle('Lumped type 2 model (T2L)'),
+   moult_plot(mc3) + theme(legend.position='bottom') +
+     xlim(-150,575) + ggtitle('Type 3 model'),
    nrow=3
 )
 ```
@@ -63,8 +79,8 @@ cowplot::plot_grid(
 The moult plots make it clear that the standard type 2 model estimates an unrealistically large standard deviation of the start date, implying that the moult period for the population exceeds a calendar year. 
 In contrast both the lumped type 2 model and the type 3 model give plausible estimates, in that both sets of estimates are consistent with published moult parameters for this species [@oschadleus2005patterns]. However, the lumped type 2 model offers much higher nominal precision, as apparent from the model comparison plot.
 
-```{r lumped-model-compare}
-compare_plot(mc3,mc2,mc2l)
+```{r lumped-model-compare, fig.width=7, fig.height=5}
+compare_plot(mc3,mc2,mc2l) + theme(axis.text.x = element_text(angle = 30, vjust = 1, hjust=1))
 ```
 
 # Repeated measures moult models 
@@ -144,7 +160,8 @@ uz5_recap <- moultmcmc('pfmg',
 max(rowSums(get_elapsed_time(uz5_recap$stanfit)))
 
 ```
-When comparing the results visually it is apparent that the moult period for the population predicted by the standard models fails to encapsulate a substantial proportion of the observed data (Fig. \@ref(fig:siskin-model-plots)), whereas this is not the case for the repeated measures models.
+When comparing the results visually it is apparent that the moult period for the population predicted by the standard Type 3 models fails to encapsulate a substantial proportion of the observed data, whereas this is not the case for the repeated measures model.
+The bias in Type 5 model estimates is less severe.
 
 ```{r siskin-model-plots, fig.width=7, echo = FALSE, fig.cap='Standard type 3 and 5 moult models fitted to the Siskin dataset without considering within-season recaptures converge at biased parameter estimates (red lines and polygons). When recapture information is included in the model, the resulting fits (green lines and polygons) better encapsulate the observed data.'}
 m_summ <- bind_rows(moult_plot(uz3, plot = F) %>% mutate(model = 'ignore recaptures'),
@@ -192,7 +209,7 @@ cowplot::plot_grid(cowplot::plot_grid(m3_comp+theme(legend.position='none')+ylab
 ```
 
 ```{r fig.width=7}
-compare_plot(uz3,uz3_recap,uz5,uz5_recap)
+compare_plot(uz3,uz3_recap,uz5,uz5_recap) + theme(axis.text.x = element_text(angle = 30, vjust = 1, hjust=1), legend.position = 'bottom')
 
 ```
 
@@ -271,7 +288,7 @@ sanderlings_combined$MIndexCat <- consolidate_moult_records(sanderlings_combined
 
 We can then fit Type 1 and Type 2 models to each of the split datasets, as well as the Type 12 model for the recombined dataset, and for reference a Type 2 model to the original data.
 
-```{r mixed-data-models, message=FALSE, warning=FALSE}
+```{r mixed-data-models, message=FALSE, warning=FALSE, results='hide'}
 fit_scores <- moultmcmc(moult_column = "MIndex",
                  date_column = "Day",
                  data = sanderlings_scores,
