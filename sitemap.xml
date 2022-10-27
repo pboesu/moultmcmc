@@ -31,13 +31,7 @@
     <loc>/index.html</loc>
   </url>
   <url>
-    <loc>/reference/compairs_plot.html</loc>
-  </url>
-  <url>
     <loc>/reference/compare_plot.html</loc>
-  </url>
-  <url>
-    <loc>/reference/compare_plot_annual_raneff.html</loc>
   </url>
   <url>
     <loc>/reference/consolidate_moult_records.html</loc>
@@ -128,9 +122,6 @@
   </url>
   <url>
     <loc>/reference/uz5_linpred_recap.html</loc>
-  </url>
-  <url>
-    <loc>/reference/uz5_linpred_recap_annual_raneff.html</loc>
   </url>
   <url>
     <loc>/reference/weavers_processed.html</loc>
