@@ -59,23 +59,22 @@ cowplot::plot_grid(
    nrow=3
 )
 ```
+
 The moult plots make it clear that the standard type 2 model estimates an unrealistically large standard deviation of the start date, implying that the moult period for the population exceeds a calendar year. 
-In contrast both the lumped type 2 model and the type 3 model give plausible estimates. Both of those are consistent with the estimates published in @oschadleus2005patterns, with the lumped type 2 model offering much higher nominal precision.
+In contrast both the lumped type 2 model and the type 3 model give plausible estimates, in that both sets of estimates are consistent with published moult parameters for this species [@oschadleus2005patterns]. However, the lumped type 2 model offers much higher nominal precision, as apparent from the model comparison plot.
 
 ```{r lumped-model-compare}
 compare_plot(mc3,mc2,mc2l)
 ```
-
-# Mixed moult data
 
 # Repeated measures moult models 
 When the assumption of even sampling among and within moult categories is violated, the standard moult model can converge at biologically non-sensible results. 
 
 This problem can be greatly reduced when information about the pace of moult from within-season recaptures of individuals is explicitly incorporated into to the parameter estimation using the model.
 
-The repeated measures model is currently implemented for data types 2, 3 and 5 in the `moultmcmc` function. The repeated measures model is triggered by supplying the optional argument `id_column` which designates *within season* recaptures, typically formed of a combination of ring number and season.
+The repeated measures model is currently implemented for data types 2, 3 and 5 in the `moultmcmc` function. The repeated measures model is selected by supplying the optional argument `id_column` which designates *within season* recaptures, typically formed of a combination of ring number and season.
 
-We demonstrate this here using a citizen science dataset of moult scores from Eurasian Siskins (*Spinus spinus*) which is biased towards records of birds in the early stages of moult (@insley2022moult).
+We demonstrate this here using simulated data which is biased towards records of birds in the early stages of moult, based on a citizen science dataset of moult scores from Eurasian Siskins (*Spinus spinus*)  (@insley2022moult).
 
 
 ```{r siskin-hist, fig.width = 7, fig.cap='Frequency distribution of moult records with respect to moult progress for actively moulting Eurasian Siskins [@insley2022moult] sampled in a sub-urban garden in Scotland (left) and seasonal progression of observed moult scores from the same dataset (right). Lines connect repeated observations of the same individuals.', echo= FALSE, message = FALSE, fig.height = 3}
@@ -198,8 +197,7 @@ compare_plot(uz3,uz3_recap,uz5,uz5_recap)
 ```
 
 As these are simulated data we can also assess how well the recapture model estimates individual start dates, by extracting the random intercept estimates with the `ranef()` method and comparing them to the simulated data.
-We find that agreement is good, even though the model does not explicitly model heterogeneity in individual moult durations.
-For both models a regression of estimated versus true start dates has an intercept indistinguishable form 0 and a slope indistinguishable from 1.
+
 
 ```{r ind-intercepts, fig.width = 7, fig.caption = 'There is good agreement between the simulated individual start dates and their estimates in both the type 3r and type 5R models.'}
 ints <- ranef(uz3_recap) %>% as_tibble(rownames = 'id') %>% left_join(siskins) %>%
@@ -231,6 +229,82 @@ confint(lm(est_start ~ I(true_start - 196.83), data = ints))
 cowplot::plot_grid(t3r_intercepts + theme(legend.position = 'none'),
                    t5r_intercepts + theme(legend.position = 'none'))
 ```
+
+We find that agreement between simulations and estimates is good, even though the model does not explicitly account for heterogeneity in individual moult durations.
+For both models a regression of estimated versus true start dates has an intercept indistinguishable form 0 and a slope indistinguishable from 1.
+
+
+# Mixed moult records
+
+`moultmcmc` also allows to fit a mixture of categorical and continuous moult records, by combining the relevant likelihoods from the type 1 and type 2 models, as originally suggested in @underhill1988model.
+This, so-called **Type 12** model can be employed to boost sample sizes and/or allow better balancing of moult and non-moult records [@bonnevie2010balancing] when multiple types of records are available.
+
+We can simulate such a dataset by splitting the `sanderlings` dataset into two, and degrading the moult scores in one subsample to mout categories
+
+```{r mixed-data, fig.width=7}
+sanderlings <- moult::sanderlings
+
+sanderlings$MCat[sanderlings$MIndex == 0] <- 1
+sanderlings$MCat[sanderlings$MIndex == 1] <- 3
+sanderlings$MCat[is.na(sanderlings$MCat)] <- 2
+#introduce a couple of NAs
+set.seed(1234)
+sanderlings$keep_score <- sample(c(0,1), size = nrow(sanderlings), replace = TRUE)
+sanderlings_scores <- subset(sanderlings, keep_score==1)
+sanderlings_cat <- subset(sanderlings, keep_score==0)
+sanderlings_cat$MCat[sanderlings_cat$MIndex == 0] <- 1
+sanderlings_cat$MCat[sanderlings_cat$MIndex == 1] <- 3
+sanderlings_cat$MCat[sanderlings_cat$MIndex != 1 & sanderlings_cat$MIndex != 0] <- 2
+sanderlings_cat$MIndex <- NULL
+
+cowplot::plot_grid(
+  ggplot(sanderlings_scores, aes(x = Day, y = MIndex)) + geom_point() + theme_classic(),
+  ggplot(sanderlings_cat, aes(x = Day, y = MCat)) + geom_point() + theme_classic()
+)
+```
+
+The two datasets can then be pieced together again, and the function `consolidate_moult_records` is used to consolidate and recode moult score and moult category data.
+```{r mixed-data-assembly}
+sanderlings_combined <- bind_rows(sanderlings_scores, sanderlings_cat)
+sanderlings_combined$MIndexCat <- consolidate_moult_records(sanderlings_combined$MIndex, sanderlings_combined$MCat)
+```
+
+We can then fit Type 1 and Type 2 models to each of the split datasets, as well as the Type 12 model for the recombined dataset, and for reference a Type 2 model to the original data.
+
+```{r mixed-data-models, message=FALSE, warning=FALSE}
+fit_scores <- moultmcmc(moult_column = "MIndex",
+                 date_column = "Day",
+                 data = sanderlings_scores,
+                 type = 2,
+                 log_lik = FALSE,
+                 chains = 1)
+
+fit_cat <- moultmcmc(moult_column = "MCat",
+                 date_column = "Day",
+                 data = sanderlings_cat,
+                 type = 1,
+                 log_lik = FALSE,
+                 chains = 1)
+
+fit_combined = moultmcmc(moult_column = "MIndexCat",
+                 date_column = "Day",
+                 data = sanderlings_combined,
+                 type = 12,
+                 log_lik = FALSE,
+                 chains = 1)
+
+fit_original = moultmcmc(moult_column = "MIndex",
+                 date_column = "Day",
+                 data = sanderlings,
+                 type = 2,
+                 log_lik = FALSE,
+                 chains = 1)
+```
+
+```{r mixed-data-model-comparison, fig.width = 7}
+compare_plot(fit_scores, fit_cat, fit_combined, fit_original) + theme(axis.text.x = element_text(angle = 30, vjust = 1, hjust=1))
+```
+The estimates from the combined model (T12) are closer to the estimates from the original dataset, than estimates from either partial dataset.
 
 # References
 
