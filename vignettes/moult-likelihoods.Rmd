@@ -1,6 +1,8 @@
 ---
 title: "Moult data likelihoods and model priors"
-output: rmarkdown::html_vignette
+output: 
+    rmarkdown::html_vignette:
+         keep_md: true
 vignette: >
   %\VignetteIndexEntry{Moult data likelihoods and model priors}
   %\VignetteEngine{knitr::rmarkdown}
@@ -42,6 +44,13 @@ $$
 \mathcal{L}(\theta,t,u,y,v) = \prod_{i=1}^IP(t_i)\prod_{j = 1}^Jq(u_j,y_j)\prod_{k=1}^KR(v_k),
 $$
 where $q(u_j,y_j) = \tau f_T(u_j-y_j\tau).$
+
+## Lumped Type 2
+Lumped type 2 data consist of observations of birds in all three moult states (pre-moult, active moult, post-moult), but where the pre-moult and post-moult states cannot be distinguished from each other, yielding $I$ observations of dates $t_i$ on which non-moulting birds were observed. Sampling is representative for all three categories, and for actively moulting birds a sufficiently linear moult index $y$ (e.g. percent feather mass grown) is known. The likelihood of these observations is
+$$
+\mathcal{L}(\boldsymbol\theta,t,u,y) = \prod_{i=1}^IPR(t_i)\prod_{j = 1}^Jq(u_j,y_j),
+$$
+where $q(u_j,y_j) = \tau f_T(u_j-y_j\tau)$ and $PR(t_i)=P(t_i)+R(t_i).$
 
 ## Type 3
 Type 3 data consist of observations of actively moulting birds only, and a sufficiently linear moult index $y$ (e.g. percent feather mass grown) is known for each individual. The likelihood of these observations is

@@ -20,7 +20,7 @@ Both models are special cases of more general categorical regression models.    
 `moultmcmc` implements a Bayesian inference framework for this class of models with the aim of (eventually) allowing the inclusion of hierarchical model structures to accommodate 
 1) the integration of moult data sets using different modes of recording (☑), 
 2) individual heterogeneity in moult timing (☑) and progression (☐), and 
-3) hierarchical spatial/temporal effects for multi-site/multi-season data sets (☐).
+3) misclassified observations of non-moulting birds (☑)
 
 `moultmcmc` implements fast inference for these models using Hamiltonian Monte Carlo samplers from [Stan](https://mc-stan.org/). The currently implemented models are described in detail in the vignette ['Moult data likelihoods'](https://pboesu.github.io/moultmcmc/articles/moult-likelihoods.html).
 
@@ -35,6 +35,7 @@ On Mac and Windows systems this will make use of pre-compiled binaries, which me
 To install `moultmcmc` from the github source (not generally recommended for Windows users) use the following code. This requires a working C++ compiler and a working installation of [rstan](https://mc-stan.org/rstan):
 
 ```r
+#not generally recommended for Windows/MacOS users
 install.packages("remotes")
 remotes::install_github("pboesu/moultmcmc")
 ```

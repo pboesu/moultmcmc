@@ -171,7 +171,7 @@ summary_table.moultmcmc <- function (x, pars = x$stanfit@sim$pars_oi, prob = 0.9
     pars <- setdiff(x$stanfit@sim$pars_oi, pars)
   s <- tibble::as_tibble(summary(x$stanfit, pars, probs, ...)$summary, rownames = "parameter") %>%
     dplyr::rename(estimate = mean) %>% dplyr::rename(lci = .data$`2.5%`, uci = .data$`97.5%`) %>% #TODO: this falls over when prob != 0.95. need to select by position or by assembling column names from prob or the stanfit summary
-    mutate(prob = 0.95, method = 'MCMC', type = as.character(x$type))
+    mutate(prob = 0.95, method = 'MCMC', type = ifelse(is.null(x$type), NA_character_, as.character(x$type)))
   return(s)
 }
 

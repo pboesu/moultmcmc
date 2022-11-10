@@ -3,6 +3,7 @@
 *.h
 *.dll
 *.so
+*.cc
 inst/doc
 docs
 doc
