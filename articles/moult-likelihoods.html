@@ -113,6 +113,13 @@ f_Y(t)(y)=\tau f_T(t-y\tau),\quad0 &lt; y &lt; 1,
 \]</span> where <span class="math inline">\(q(u_j,y_j) = \tau f_T(u_j-y_j\tau).\)</span></p>
 </div>
 <div class="section level3">
+<h3 id="lumped-type-2">Lumped Type 2<a class="anchor" aria-label="anchor" href="#lumped-type-2"></a>
+</h3>
+<p>Lumped type 2 data consist of observations of birds in all three moult states (pre-moult, active moult, post-moult), but where the pre-moult and post-moult states cannot be distinguished from each other, yielding <span class="math inline">\(I\)</span> observations of dates <span class="math inline">\(t_i\)</span> on which non-moulting birds were observed. Sampling is representative for all three categories, and for actively moulting birds a sufficiently linear moult index <span class="math inline">\(y\)</span> (e.g. percent feather mass grown) is known. The likelihood of these observations is <span class="math display">\[
+\mathcal{L}(\boldsymbol\theta,t,u,y) = \prod_{i=1}^IPR(t_i)\prod_{j = 1}^Jq(u_j,y_j),
+\]</span> where <span class="math inline">\(q(u_j,y_j) = \tau f_T(u_j-y_j\tau)\)</span> and <span class="math inline">\(PR(t_i)=P(t_i)+R(t_i).\)</span></p>
+</div>
+<div class="section level3">
 <h3 id="type-3">Type 3<a class="anchor" aria-label="anchor" href="#type-3"></a>
 </h3>
 <p>Type 3 data consist of observations of actively moulting birds only, and a sufficiently linear moult index <span class="math inline">\(y\)</span> (e.g. percent feather mass grown) is known for each individual. The likelihood of these observations is <span class="math display">\[
