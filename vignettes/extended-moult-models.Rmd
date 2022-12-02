@@ -288,7 +288,7 @@ For both models a regression of estimated versus true start dates has an interce
 `moultmcmc` also allows to fit a mixture of categorical and continuous moult records, by combining the relevant likelihoods from the type 1 and type 2 models, as originally suggested in @underhill1988model.
 This, so-called **Type 12** model can be employed to boost sample sizes and/or allow better balancing of moult and non-moult records [@bonnevie2010balancing] when multiple types of records are available.
 
-We can simulate such a dataset by splitting the `sanderlings` dataset into two, and degrading the moult scores in one subsample to mout categories
+We can simulate such a dataset by splitting the `sanderlings` dataset into two, and degrading the moult scores in one subsample to moult categories
 
 ```{r mixed-data, fig.width=7}
 sanderlings <- moult::sanderlings
