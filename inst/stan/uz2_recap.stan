@@ -49,11 +49,7 @@ parameters {
 }
 
 transformed parameters{
-  real sigma_intercept = exp(beta_sigma[1]);
-  //post-sweep random effects
-  real beta_star = beta_mu[1] + mean(mu_ind[replicated_individuals]);
-  vector[N_ind_rep] mu_ind_star = mu_ind[replicated_individuals] - mean(mu_ind[replicated_individuals]);
-  real finite_sd = sd(mu_ind_star);
+  //all moved to generated quantities
 }
 
 // The model to be estimated.
@@ -156,15 +152,23 @@ sigma_mu_ind ~ normal(0,1);
 generated quantities{
   vector[N_pred_mu] beta_mu_out;//regression coefficients for start date beta_mu_out
   vector[N_ind_rep] mu_ind_out;//individual intercepts for output
-  vector[N_old+N_moult+N_new] mu;//start date lin pred
-  vector[N_old+N_moult+N_new] tau;//duration lin pred
-  vector[N_old+N_moult+N_new] sigma;//duration lin pred
+  real sigma_intercept = exp(beta_sigma[1]);//transformed sigma intercept for output
 
-  mu = X_mu * beta_mu;
+  //post-sweep random effects
+  real beta_star = beta_mu[1] + mean(mu_ind[replicated_individuals]);
+  vector[N_ind_rep] mu_ind_star = mu_ind[replicated_individuals] - mean(mu_ind[replicated_individuals]);
+  real finite_sd = sd(mu_ind_star);
+
+  //these are redundant until log_lik is required
+  //vector[N_old+N_moult+N_new] mu;//start date lin pred
+  //vector[N_old+N_moult+N_new] tau;//duration lin pred
+  //vector[N_old+N_moult+N_new] sigma;//duration lin pred
+
+  //mu = X_mu * beta_mu;
 //  print(mu);
-  tau = X_tau * beta_tau;
+  //tau = X_tau * beta_tau;
 //  print(tau);
-  sigma = exp(X_sigma * beta_sigma);//use log link for variance lin pred
+  //sigma = exp(X_sigma * beta_sigma);//use log link for variance lin pred
 
   if (N_pred_mu > 1){
     beta_mu_out = append_row(beta_star,beta_mu[2:N_pred_mu]);// collate post-swept intercept with remaining
