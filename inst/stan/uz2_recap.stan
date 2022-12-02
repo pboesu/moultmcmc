@@ -122,10 +122,10 @@ target += sum(log(P))+sum(q)+sum(log(R));
 
 //priors
 if (flat_prior == 1) {
- beta_mu[1] ~ uniform(0,366);
+ beta_mu[1] ~ uniform(-366,366);
  beta_tau[1] ~ uniform(0,366);
 } else {
- beta_mu[1] ~ normal(150,50)T[0,366];
+ beta_mu[1] ~ normal(150,50)T[-366,366];
  beta_tau[1] ~ normal(100,30)T[0,366];
 }
  if (beta_sd > 0){//messy implementation, better to do flat priors by default, non-flat priors by explicit values only?
