@@ -158,6 +158,7 @@ generated quantities{
   real beta_star = beta_mu[1] + mean(mu_ind[replicated_individuals]);
   vector[N_ind_rep] mu_ind_star = mu_ind[replicated_individuals] - mean(mu_ind[replicated_individuals]);
   real finite_sd = sd(mu_ind_star);
+  vector[(N_old+N_moult+N_new)*llik] log_lik;//log_lik - make zero length when not requested
 
 
 
@@ -169,7 +170,7 @@ generated quantities{
 
   mu_ind_out = mu_ind_star + beta_star;
 
-  vector[(N_old+N_moult+N_new)*llik] log_lik;//log_lik - make zero length when not requested
+
 
  if (llik == 1){
   vector[N_old] P;
