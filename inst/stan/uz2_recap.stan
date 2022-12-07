@@ -146,7 +146,7 @@ if (flat_prior == 1) {
   }
 }
 beta_sigma[1] ~ normal(0,2);// on log link scale!
-sigma_mu_ind ~ normal(0,1);
+sigma_mu_ind ~ normal(0,10);
 }
 
 generated quantities{
