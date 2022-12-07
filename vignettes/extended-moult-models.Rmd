@@ -132,7 +132,7 @@ uz5 <- moultmcmc('pfmg',
 
 and the repeated measures models by passing the information about bird identities to the  `moultmcmc()` function:
 
-```{r sisikin-recap-models, cache = TRUE, warning=FALSE}
+```{r sisikin-recap-models, cache = FALSE, warning=FALSE}
 #fit the equivalent recapture models
 uz3_recap <- moultmcmc(moult_column = 'pfmg',
                        date_column = 'yday',
@@ -146,6 +146,7 @@ uz3_recap <- moultmcmc(moult_column = 'pfmg',
                        chain = 2,
                        cores = 2)
 max(rowSums(get_elapsed_time(uz3_recap$stanfit)))
+#
 uz5_recap <- moultmcmc('pfmg',
                        'yday',
                        'id',
