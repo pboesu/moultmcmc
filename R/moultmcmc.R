@@ -198,11 +198,13 @@ moultmcmc <- function(moult_column,
     mu_start = coef(date_on_score_lm)[1]
     tau_start = max(coef(date_on_score_lm)[2],2*sd(standata$moult_dates), na.rm=T)
     sigma_start = sd(standata$moult_dates)
+    sigma_mu_ind_start = jitter(20)
     initfunc <- function(chain_id = 1) {
       # cat("chain_id =", chain_id, "\n")
       list(beta_mu = as.array(c(mu_start,rep(0, standata$N_pred_mu - 1))), #initialize intercept term from data, set inits for all other effects to 0
            beta_tau = as.array(c(tau_start, rep(0, standata$N_pred_tau - 1))),
-           beta_sigma = as.array(c(log(sigma_start), rep(0, standata$N_pred_sigma - 1))))#NB this is on log link scale
+           beta_sigma = as.array(c(log(sigma_start), rep(0, standata$N_pred_sigma - 1))),
+           sigma_mu_ind = as.array(sigma_mu_ind_start))#NB this is on log link scale
     }
     out <- rstan::sampling(stanmodels[[stan_model_name]], data = standata, init = initfunc, pars = outpars, ...)
   } else {
