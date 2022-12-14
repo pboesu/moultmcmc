@@ -132,7 +132,7 @@ uz5 <- moultmcmc('pfmg',
 
 and the repeated measures models by passing the information about bird identities to the  `moultmcmc()` function:
 
-```{r sisikin-recap-models, cache = TRUE, warning=FALSE}
+```{r sisikin-recap-models, eval = TRUE, cache = FALSE, warning=FALSE}
 #fit the equivalent recapture models
 uz3_recap <- moultmcmc(moult_column = 'pfmg',
                        date_column = 'yday',
@@ -146,6 +146,7 @@ uz3_recap <- moultmcmc(moult_column = 'pfmg',
                        chain = 2,
                        cores = 2)
 max(rowSums(get_elapsed_time(uz3_recap$stanfit)))
+#
 uz5_recap <- moultmcmc('pfmg',
                        'yday',
                        'id',
@@ -163,7 +164,7 @@ max(rowSums(get_elapsed_time(uz5_recap$stanfit)))
 When comparing the results visually it is apparent that the moult period for the population predicted by the standard Type 3 models fails to encapsulate a substantial proportion of the observed data, whereas this is not the case for the repeated measures model.
 The bias in Type 5 model estimates is less severe.
 
-```{r siskin-model-plots, fig.width=7, echo = FALSE, fig.cap='Standard type 3 and 5 moult models fitted to the Siskin dataset without considering within-season recaptures converge at biased parameter estimates (red lines and polygons). When recapture information is included in the model, the resulting fits (green lines and polygons) better encapsulate the observed data.'}
+```{r siskin-model-plots, fig.width=7, eval = TRUE, echo = FALSE, fig.cap='Standard type 3 and 5 moult models fitted to the Siskin dataset without considering within-season recaptures converge at biased parameter estimates (red lines and polygons). When recapture information is included in the model, the resulting fits (green lines and polygons) better encapsulate the observed data.'}
 m_summ <- bind_rows(moult_plot(uz3, plot = F) %>% mutate(model = 'ignore recaptures'),
                     moult_plot(uz3_recap, plot=F) %>% mutate(model = 'recaptures'))
 #hacky way to reorder data to plot polygon
@@ -208,7 +209,7 @@ cowplot::plot_grid(cowplot::plot_grid(m3_comp+theme(legend.position='none')+ylab
 
 ```
 
-```{r fig.width=7, fig.height=5}
+```{r fig.width=7, fig.height=5, eval = TRUE}
 compare_plot(uz3,uz3_recap,uz5,uz5_recap) + theme(axis.text.x = element_text(angle = 30, vjust = 1, hjust=1), legend.position = 'bottom')
 
 ```
@@ -216,7 +217,7 @@ compare_plot(uz3,uz3_recap,uz5,uz5_recap) + theme(axis.text.x = element_text(ang
 As these are simulated data we can also assess how well the recapture model estimates individual start dates, by extracting the random intercept estimates with the `ranef()` method and comparing them to the simulated data.
 
 
-```{r ind-intercepts, fig.width = 7, fig.caption = 'There is good agreement between the simulated individual start dates and their estimates in both the type 3r and type 5R models.'}
+```{r ind-intercepts,eval = TRUE, fig.width = 7, fig.caption = 'There is good agreement between the simulated individual start dates and their estimates in both the type 3r and type 5R models.'}
 ints <- ranef(uz3_recap) %>% 
   as_tibble(rownames = 'id') %>%
   left_join(siskins) %>%
@@ -288,7 +289,7 @@ For both models a regression of estimated versus true start dates has an interce
 `moultmcmc` also allows to fit a mixture of categorical and continuous moult records, by combining the relevant likelihoods from the type 1 and type 2 models, as originally suggested in @underhill1988model.
 This, so-called **Type 12** model can be employed to boost sample sizes and/or allow better balancing of moult and non-moult records [@bonnevie2010balancing] when multiple types of records are available.
 
-We can simulate such a dataset by splitting the `sanderlings` dataset into two, and degrading the moult scores in one subsample to mout categories
+We can simulate such a dataset by splitting the `sanderlings` dataset into two, and degrading the moult scores in one subsample to moult categories
 
 ```{r mixed-data, fig.width=7}
 sanderlings <- moult::sanderlings

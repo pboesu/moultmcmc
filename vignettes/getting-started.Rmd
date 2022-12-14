@@ -45,7 +45,7 @@ sanderlings$MCat <- case_when(sanderlings$MIndex == 0 ~ 1,
 ggplot(sanderlings, aes(y=MIndex, x=Day, col = factor(MCat))) + geom_point() +theme_classic()
 ```
 
-The central function for model fitting is the `moultmcmc()` function. Model variants of the standard Underhill-Zucchini models are specified using the `type` argument to designate the relevant input data type. Additionally the user has to designate the input data columns containing moult records, and dates, respectively, as well well as linear predictor structures for the main moult parameters - the start date, duration and the standard deviation of the start date. To fit an intercept-only type 1 model we therefore use the following specification:
+The central function for model fitting is the `moultmcmc()` function. Model variants of the standard Underhill-Zucchini models are specified using the `type` argument to designate the relevant input data type. Additionally the user has to designate the input data columns containing moult records, and dates, respectively, as well as linear predictor structures for the main moult parameters - the start date, duration and the standard deviation of the start date. To fit an intercept-only type 1 model we therefore use the following specification:
 ```{r uz1-model-mcmc}
 mcmc1 = moultmcmc(moult_column = "MCat",
                   date_column = "Day",

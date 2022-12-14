@@ -9,7 +9,7 @@
 <!-- badges: end -->
 
 # Introduction
-In most free-living bird populations moult progression and duration in individuals can not be observed fully.
+In most free-living animal populations moult progression and duration in individuals can not be observed fully.
 Instead snapshot measurements of (re)captured individuals are typically used to infer these parameters on a population level.
 As an additional complication, recording of moult in the field may take various forms both in terms of the subset of the population that is sampled and whether moult is recorded as a categorical state, or a (semi-)continuous progression.
 
@@ -22,7 +22,7 @@ Both models are special cases of more general categorical regression models.    
 2) individual heterogeneity in moult timing (☑) and progression (☐), and 
 3) misclassified observations of non-moulting birds (☑)
 
-`moultmcmc` implements fast inference for these models using Hamiltonian Monte Carlo samplers from [Stan](https://mc-stan.org/). The currently implemented models are described in detail in the vignette ['Moult data likelihoods'](https://pboesu.github.io/moultmcmc/articles/moult-likelihoods.html).
+`moultmcmc` implements fast inference for these models using Hamiltonian Monte Carlo samplers from [Stan](https://mc-stan.org/). The currently implemented models are described in detail in [Boersch-Supan et al. 2022](https://doi.org/10.48550/arXiv.2205.12120) and the vignette ['Moult data likelihoods'](https://pboesu.github.io/moultmcmc/articles/moult-likelihoods.html).
 
 # Installation
 The package `moultmcmc` is built around pre-compiled [Stan](https://mc-stan.org/) models, the easiest and quickest way of installing it is to install the package from [R-universe](https://pboesu.r-universe.dev/) use the following code:

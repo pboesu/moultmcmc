@@ -49,11 +49,7 @@ parameters {
 }
 
 transformed parameters{
-  real sigma_intercept = exp(beta_sigma[1]);
-  //post-sweep random effects
-  real beta_star = beta_mu[1] + mean(mu_ind[replicated_individuals]);
-  vector[N_ind_rep] mu_ind_star = mu_ind[replicated_individuals] - mean(mu_ind[replicated_individuals]);
-  real finite_sd = sd(mu_ind_star);
+  //all moved to generated quantities
 }
 
 // The model to be estimated.
@@ -126,10 +122,10 @@ target += sum(log(P))+sum(q)+sum(log(R));
 
 //priors
 if (flat_prior == 1) {
- beta_mu[1] ~ uniform(0,366);
+ beta_mu[1] ~ uniform(-366,366);
  beta_tau[1] ~ uniform(0,366);
 } else {
- beta_mu[1] ~ normal(150,50)T[0,366];
+ beta_mu[1] ~ normal(150,50)T[-366,366];
  beta_tau[1] ~ normal(100,30)T[0,366];
 }
  if (beta_sd > 0){//messy implementation, better to do flat priors by default, non-flat priors by explicit values only?
@@ -150,21 +146,21 @@ if (flat_prior == 1) {
   }
 }
 beta_sigma[1] ~ normal(0,2);// on log link scale!
-sigma_mu_ind ~ normal(0,1);
+sigma_mu_ind ~ normal(0,10);
 }
 
 generated quantities{
   vector[N_pred_mu] beta_mu_out;//regression coefficients for start date beta_mu_out
   vector[N_ind_rep] mu_ind_out;//individual intercepts for output
-  vector[N_old+N_moult+N_new] mu;//start date lin pred
-  vector[N_old+N_moult+N_new] tau;//duration lin pred
-  vector[N_old+N_moult+N_new] sigma;//duration lin pred
+  real sigma_intercept = exp(beta_sigma[1]);//transformed sigma intercept for output
 
-  mu = X_mu * beta_mu;
-//  print(mu);
-  tau = X_tau * beta_tau;
-//  print(tau);
-  sigma = exp(X_sigma * beta_sigma);//use log link for variance lin pred
+  //post-sweep random effects
+  real beta_star = beta_mu[1] + mean(mu_ind[replicated_individuals]);
+  vector[N_ind_rep] mu_ind_star = mu_ind[replicated_individuals] - mean(mu_ind[replicated_individuals]);
+  real finite_sd = sd(mu_ind_star);
+  vector[(N_old+N_moult+N_new)*llik] log_lik;//log_lik - make zero length when not requested
+
+
 
   if (N_pred_mu > 1){
     beta_mu_out = append_row(beta_star,beta_mu[2:N_pred_mu]);// collate post-swept intercept with remaining
@@ -174,34 +170,75 @@ generated quantities{
 
   mu_ind_out = mu_ind_star + beta_star;
 
+
+
  if (llik == 1){
-    //NB: code duplication for the likelihood calculation is less than ideal - refactor to a use stan function?
-    //real end_date;
-    // end_date = mu + tau;
-    //
-    //vector[N_old + N_moult] log_lik;
-    //vector[N_old] Rt;
-    //vector[N_old] P;
-    //vector[N_moult] Ru;
-    //vector[N_moult] q;
-    //vector[N_old+N_moult] mu;//start date lin pred
-    //vector[N_old+N_moult] tau;//duration lin pred
-    //vector[N_old+N_moult] sigma;//duration lin pred
-    //
-    //  mu = X_mu * beta_mu;
-    //  print(mu);
-    //  tau = X_tau * beta_tau;
-    //  print(tau);
-    //  sigma = exp(X_sigma * beta_sigma);
-    //
-    //for (i in 1:N_old) {
-      //P[i] = 1 - Phi((old_dates[i] - mu[i])/sigma[i]);
-      //Rt[i] = Phi((old_dates[i] - tau[i] - mu[i])/sigma[i]);
-    //}
-    //for (i in 1:N_moult){
-      // Ru[i] = Phi((moult_dates[i] - tau[i + N_old] - mu[i + N_old])/sigma[i + N_old]);
-      // q[i] = log(tau[i + N_old]) + normal_lpdf((moult_dates[i] - moult_indices[i]*tau[i + N_old]) | mu[i + N_old], sigma[i + N_old]);//N.B. unlike P and R this returns a log density
-    //}
+  vector[N_old] P;
+  vector[N_moult] q;
+  vector[N_new] R;
+  vector[N_old+N_moult+N_new] mu;//start date lin pred
+  vector[N_old+N_moult+N_new] tau;//duration lin pred
+  vector[N_old+N_moult+N_new] sigma;//duration lin pred
+
+
+  mu = X_mu * beta_mu;
+//  print(mu);
+  tau = X_tau * beta_tau;
+//  print(tau);
+  sigma = exp(X_sigma * beta_sigma);//use log link for variance lin pred
+
+if (lumped == 0){
+  for (i in 1:N_old) {
+	  if (is_replicated[individual[i]] == 1) {//longitudinal tobit-like likelihood (this only makes sense if within year recaptures contain at least one active moult score?!)
+	  if(use_phi_approx == 0){
+	    P[i] = 1 - Phi((old_dates[i] - (mu[i] + mu_ind[individual[i]]))/sigma_mu_ind);
+	  } else {
+	    P[i] = 1 - Phi_approx((old_dates[i] - (mu[i] + mu_ind[individual[i]]))/sigma_mu_ind);
+	  }
+
+	  } else {//standard likelihood for Type 2 model
+      P[i] = 1 - Phi((old_dates[i] - mu[i])/sigma[i]);
+	  }
+  }
+} else {//lumped likelihood
+  for (i in 1:N_old) {
+	  if (is_replicated[individual[i]] == 1) {//longitudinal tobit-like likelihood (this only makes sense if within year recaptures contain at least one active moult score?!)
+	    P[i] = (1 - Phi((old_dates[i] - (mu[i] + mu_ind[individual[i]]))/sigma_mu_ind)) + Phi((old_dates[i] - tau[i] - (mu[i] + mu_ind[individual[i]]))/sigma_mu_ind);
+	  } else {//standard likelihood for Type 2 model
+      P[i] = (1 - Phi((old_dates[i] - mu[i])/sigma[i])) + Phi((old_dates[i] - tau[i] - mu[i])/sigma[i]);
+	  }
+  }
+}
+
+for (i in 1:N_moult){
+  if (is_replicated[individual[i + N_old]] == 1) {
+   q[i] = normal_lpdf((moult_dates[i] - moult_indices[i]*tau[i + N_old]) | mu[i + N_old] + mu_ind[individual[i + N_old]], sigma_mu_ind);//replicated individuals. NB - indexing looks messy because i runs from 1:N_moult, but the function uses both vectors of the total dataset (1:(N_old+N_moult) and the moult dataset (1:N_moult))
+  } else {
+      q[i] = log(tau[i + N_old]) + normal_lpdf((moult_dates[i] - moult_indices[i]*tau[i + N_old]) | mu[i + N_old], sigma[i + N_old]);//N.B. unlike P and R this returns a log density
+  }
+}
+
+if (lumped == 0){
+  for (i in 1:N_new) {
+	  if (is_replicated[individual[i]] == 1) {//longitudinal tobit-like likelihood (this only makes sense if within year recaptures contain at least one active moult score?!)
+	    R[i] = Phi((new_dates[i] - tau[i + N_old + N_moult] - (mu[i + N_old + N_moult] + mu_ind[individual[i + N_old + N_moult]]))/sigma_mu_ind);
+	  } else {//standard likelihood for Type 2 model
+      R[i] = Phi((new_dates[i] - tau[i + N_old + N_moult] - mu[i + N_old + N_moult])/sigma[i + N_old + N_moult]);
+	  }
+  }
+} else {//lumped likelihood
+  for (i in 1:N_new) {
+	  if (is_replicated[individual[i]] == 1) {//longitudinal tobit-like likelihood (this only makes sense if within year recaptures contain at least one active moult score?!)
+	    R[i] = Phi((new_dates[i] - tau[i + N_old + N_moult] - (mu[i + N_old + N_moult] + mu_ind[individual[i + N_old + N_moult]]))/sigma_mu_ind) + (1 - Phi((new_dates[i] - (mu[i + N_moult + N_old] + mu_ind[individual[i + N_moult + N_old]]))/sigma_mu_ind));
+	  } else {//standard likelihood for Type 2 model
+      R[i] = Phi((new_dates[i] - tau[i + N_old + N_moult] - mu[i + N_old + N_moult])/sigma[i + N_old + N_moult]) + (1 - Phi((new_dates[i] - (mu[i + N_moult + N_old]))/sigma[i + N_moult + N_old]));
+	  }
+  }
+}
+
+//mu_ind[replicated_individuals] ~ normal(0, sigma[individual_first_index][replicated_individuals]);//
+
+log_lik = append_row(append_row(log(P),q),log(R));
     //log_lik = append_row((log(P) - log1m(Rt)), (q - log1m(Ru)));
   }
 }
