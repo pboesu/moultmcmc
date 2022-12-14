@@ -1,6 +1,6 @@
 Package: moultmcmc
 Title: Bayesian Inference for Avian Moult Phenology Models
-Version: 0.0.0.9000
+Version: 0.0.0.9001
 Date: 2022-12-14
 Authors@R: 
     person(given = "Philipp",
