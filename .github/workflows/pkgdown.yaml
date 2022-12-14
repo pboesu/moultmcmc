@@ -38,6 +38,12 @@ jobs:
           install.packages("pkgdown", type = "binary")
         shell: Rscript {0}
 
+      - name: Install stan-dev
+        run: |
+          remove.packages(c("StanHeaders", "rstan"))
+          install.packages("rstan", repos = c("https://mc-stan.org/r-packages/", getOption("repos")))
+        shell: Rscript {0}
+
       - name: Install package
         run: R CMD INSTALL .
 
