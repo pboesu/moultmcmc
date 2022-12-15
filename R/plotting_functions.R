@@ -75,6 +75,7 @@ moult_plot.moult <-function(x, prob = 0.95, plot_data = TRUE, plot = TRUE, ...){
 #' @importFrom stats coef qnorm
 #' @importFrom rlang .data
 #' @importFrom ggplot2 geom_segment aes scale_linetype_manual ggplot theme_classic xlab ylab geom_point
+#' @importFrom dplyr left_join
 #' @export
 #'
 #'
@@ -106,8 +107,9 @@ moult_plot.moultmcmc <-function(x, prob = 0.95, prob_ci = NULL, plot_data = TRUE
                             mutate(line_type = quantile_name,
                                    scenario = rownames(newdata),
                                    start_date = .data$start_date - qnorm(probs[1])*.data$start_sd,
-                                   end_date = .data$end_date - qnorm(probs[1])*.data$start_sd))#TODO: optionally(?) append newdata to this, so facetting works
-
+                                   end_date = .data$end_date - qnorm(probs[1])*.data$start_sd))
+    newdata$scenario = rownames(newdata)
+    plotdata = dplyr::left_join(plotdata,newdata, by = 'scenario')
   }
   if(!is.null(prob_ci)){
   }
