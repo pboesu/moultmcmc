@@ -188,7 +188,7 @@ moultmcmc <- function(moult_column,
     stan_model_name <- paste0('uz',type,'_linpred')
   } else {
     stan_model_name <- paste0('uz',type,'_recap')
-    outpars <- c(outpars, 'beta_star', 'mu_ind_star', 'mu_ind_out','sigma_mu_ind')
+    outpars <- c(outpars, 'mu_ind_star', 'mu_ind_out','sigma_mu_ind')
     outpars <- gsub('beta_mu','beta_mu_out', outpars)
   }
 
@@ -203,8 +203,8 @@ moultmcmc <- function(moult_column,
       # cat("chain_id =", chain_id, "\n")
       list(beta_mu = as.array(c(mu_start,rep(0, standata$N_pred_mu - 1))), #initialize intercept term from data, set inits for all other effects to 0
            beta_tau = as.array(c(tau_start, rep(0, standata$N_pred_tau - 1))),
-           beta_sigma = as.array(c(log(sigma_start), rep(0, standata$N_pred_sigma - 1))),
-           sigma_mu_ind = as.array(sigma_mu_ind_start))#NB this is on log link scale
+           beta_sigma = as.array(c(log(sigma_start), rep(0, standata$N_pred_sigma - 1))),#NB on log link scale
+           sigma_mu_ind = sigma_mu_ind_start)
     }
     out <- rstan::sampling(stanmodels[[stan_model_name]], data = standata, init = initfunc, pars = outpars, ...)
   } else {
