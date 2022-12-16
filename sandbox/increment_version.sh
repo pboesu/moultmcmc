@@ -11,3 +11,4 @@ new_version="$current_tag.$((current_commit + 9000))" # results in 0.1.0.9040
 sed -i -- "s/^Version: .*/Version: ${new_version}/" DESCRIPTION
 echo "First 3 lines of DESCRIPTION:"
 head -3 DESCRIPTION
+git add DESCRIPTION
