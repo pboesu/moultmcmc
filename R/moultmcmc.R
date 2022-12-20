@@ -56,7 +56,7 @@ moultmcmc <- function(moult_column,
                         beta_sd = 0,
                         log_lik = FALSE,
                         use_phi_approx = FALSE,
-                        active_moult_recaps_only = FALSE,
+                        active_moult_recaps_only = TRUE,
                         same_sigma = FALSE,
                         mk2 =FALSE,
                         ...) {
@@ -153,6 +153,8 @@ moultmcmc <- function(moult_column,
     standata$individual_first_index = as.array(id_first)
     standata$replicated = as.array(replicated)
     standata$not_replicated = as.array(not_replicated)
+    standata$replicated_id <- as.array(cumsum(is_replicated)*is_replicated
+)# column of length N_ind that contains a new running id from 1:N_ind_rep to index the individual start date estimates. Unreplicated individuals receive a zero value
     if (type %in% c(2,5)){
       standata$not_replicated_old = as.array(not_replicated[not_replicated <= standata$N_old])
       standata$not_replicated_moult = as.array(not_replicated[not_replicated > standata$N_old] - standata$N_old)
