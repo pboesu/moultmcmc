@@ -19,7 +19,7 @@ moultmcmc(
   beta_sd = 0,
   log_lik = FALSE,
   use_phi_approx = FALSE,
-  active_moult_recaps_only = FALSE,
+  active_moult_recaps_only = TRUE,
   same_sigma = FALSE,
   mk2 = FALSE,
   ...
