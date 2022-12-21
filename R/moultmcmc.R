@@ -129,7 +129,9 @@ moultmcmc <- function(moult_column,
                    llik = as.numeric(log_lik),
                    use_phi_approx = as.numeric(use_phi_approx),
                    active_moult_recaps_only = as.numeric(active_moult_recaps_only),
-                   same_sigma = as.numeric(same_sigma))
+                   same_sigma = as.numeric(same_sigma),
+                   flat_prior = as.numeric(flat_prior),
+                   beta_sd = beta_sd)
   # setup replication information
   if (!is.null(id_column)){
     stopifnot(is.factor(data[[id_column]]))
