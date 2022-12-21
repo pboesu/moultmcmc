@@ -84,7 +84,7 @@ if (lumped == 0){
 } else {//lumped likelihood
   for (i in 1:N_old) {
 	  if (is_replicated[individual[i]] == 1) {//longitudinal tobit-like likelihood (this only makes sense if within year recaptures contain at least one active moult score?!)
-	    P[i] = (1 - Phi((old_dates[i] - (mu[i] + mu_ind[individual[i]]))/sigma_mu_ind)) + Phi((old_dates[i] - tau[i] - (mu[i] + mu_ind[replicated_id[individual[i]]]))/sigma_mu_ind);
+	    P[i] = (1 - Phi((old_dates[i] - (mu[i] + mu_ind[replicated_id[individual[i]]]))/sigma_mu_ind)) + Phi((old_dates[i] - tau[i] - (mu[i] + mu_ind[replicated_id[individual[i]]]))/sigma_mu_ind);
 	  } else {//standard likelihood for Type 2 model
       P[i] = (1 - Phi((old_dates[i] - mu[i])/sigma[i])) + Phi((old_dates[i] - tau[i] - mu[i])/sigma[i]);
 	  }
