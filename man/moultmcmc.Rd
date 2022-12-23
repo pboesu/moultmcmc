@@ -21,7 +21,6 @@ moultmcmc(
   use_phi_approx = FALSE,
   active_moult_recaps_only = TRUE,
   same_sigma = FALSE,
-  mk2 = FALSE,
   ...
 )
 }
@@ -57,8 +56,6 @@ moultmcmc(
 \item{active_moult_recaps_only}{logical flag whether to ignore repeated observations outside the active moult phase}
 
 \item{same_sigma}{logical flag, currently unused}
-
-\item{mk2}{logical flag, for dev purposes only}
 
 \item{...}{Arguments passed to \code{rstan::sampling} (e.g. iter, chains).}
 }

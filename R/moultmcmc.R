@@ -17,7 +17,6 @@
 #' @param use_phi_approx logical flag whether to use stan's Phi_approx function to calculate the "old" likelihoods
 #' @param active_moult_recaps_only logical flag whether to ignore repeated observations outside the active moult phase
 #' @param same_sigma logical flag, currently unused
-#' @param mk2 logical flag, for dev purposes only
 #' @param ... Arguments passed to `rstan::sampling` (e.g. iter, chains).
 #'
 #' @details
@@ -58,7 +57,6 @@ moultmcmc <- function(moult_column,
                         use_phi_approx = FALSE,
                         active_moult_recaps_only = TRUE,
                         same_sigma = FALSE,
-                        mk2 =FALSE,
                         ...) {
   #check input data are as expected
   stopifnot(is.data.frame(data))
