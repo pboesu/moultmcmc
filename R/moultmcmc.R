@@ -236,7 +236,7 @@ moultmcmc <- function(moult_column,
   out_struc$na.action <- attr(data, "na.action")
   out_struc$type = paste0(type,ifelse(lump_non_moult,'L', ''), ifelse(is.null(id_column), '','R'))
   out_struc$individual_ids <- if (is.null(id_column)) { NA } else { data.frame(index = as.numeric(unique(data[[id_column]])), id = unique(data[[id_column]])) }
-  out_struc$replicated_ids <- if (is.null(id_column)) { NA } else { subset(data.frame(index = standata$replicated_id_obs[standata$individual_first_index], id = standata$individual[standata$individual_first_index]), index > 0) }
+  out_struc$replicated_ids <- if (is.null(id_column)) { NA } else { dd = subset(data.frame(ranef_index = standata$replicated_id_obs[standata$individual_first_index], ind_index = standata$individual[standata$individual_first_index], id = data[[id_column]][standata$individual_first_index]), ranef_index > 0); dd[order(dd$ranef_index),] }
   class(out_struc) <- 'moultmcmc'
   return(out_struc)
 }
