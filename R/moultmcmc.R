@@ -197,7 +197,6 @@ moultmcmc <- function(moult_column,
     outpars <- gsub('beta_mu','beta_mu_out', outpars)
   }
 
-  if(mk2==TRUE) stan_model_name <- paste0(stan_model_name, '_mk2')
   #guess initial values and sample
   if(init == "auto"){
     date_on_score_lm <- lm(standata$moult_dates ~ standata$moult_indices)
