@@ -55,7 +55,7 @@ moultmcmc <- function(moult_column,
                         beta_sd = 0,
                         log_lik = FALSE,
                         use_phi_approx = FALSE,
-                        active_moult_recaps_only = FALSE,
+                        active_moult_recaps_only = TRUE,
                         same_sigma = FALSE,
                         ...) {
   #check input data are as expected
@@ -127,7 +127,9 @@ moultmcmc <- function(moult_column,
                    llik = as.numeric(log_lik),
                    use_phi_approx = as.numeric(use_phi_approx),
                    active_moult_recaps_only = as.numeric(active_moult_recaps_only),
-                   same_sigma = as.numeric(same_sigma))
+                   same_sigma = as.numeric(same_sigma),
+                   flat_prior = as.numeric(flat_prior),
+                   beta_sd = beta_sd)
   # setup replication information
   if (!is.null(id_column)){
     stopifnot(is.factor(data[[id_column]]))
@@ -151,6 +153,9 @@ moultmcmc <- function(moult_column,
     standata$individual_first_index = as.array(id_first)
     standata$replicated = as.array(replicated)
     standata$not_replicated = as.array(not_replicated)
+    standata$replicated_id <- as.array(cumsum(is_replicated)*is_replicated
+)# column of length N_ind that contains a new running id from 1:N_ind_rep to index the individual start date estimates. Unreplicated individuals receive a zero value
+    standata$replicated_id_obs <- standata$replicated_id[standata$individual]
     if (type %in% c(2,5)){
       standata$not_replicated_old = as.array(not_replicated[not_replicated <= standata$N_old])
       standata$not_replicated_moult = as.array(not_replicated[not_replicated > standata$N_old] - standata$N_old)
@@ -228,7 +233,7 @@ moultmcmc <- function(moult_column,
   out_struc$na.action <- attr(data, "na.action")
   out_struc$type = paste0(type,ifelse(lump_non_moult,'L', ''), ifelse(is.null(id_column), '','R'))
   out_struc$individual_ids <- if (is.null(id_column)) { NA } else { data.frame(index = as.numeric(unique(data[[id_column]])), id = unique(data[[id_column]])) }
-  out_struc$replicated_ids <- if (is.null(id_column)) { NA } else { data.frame(index = 1:standata$N_ind_rep, id = levels(data[[id_column]])[standata$replicated_individuals]) }
+  out_struc$replicated_ids <- if (is.null(id_column)) { NA } else { dd = subset(data.frame(ranef_index = standata$replicated_id_obs[standata$individual_first_index], ind_index = standata$individual[standata$individual_first_index], id = data[[id_column]][standata$individual_first_index]), ranef_index > 0); dd[order(dd$ranef_index),] }
   class(out_struc) <- 'moultmcmc'
   return(out_struc)
 }

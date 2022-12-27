@@ -95,6 +95,7 @@ We demonstrate this here using simulated data which is biased towards records of
 
 ```{r siskin-hist, fig.width = 7, fig.cap='Frequency distribution of moult records with respect to moult progress for actively moulting Eurasian Siskins [@insley2022moult] sampled in a sub-urban garden in Scotland (left) and seasonal progression of observed moult scores from the same dataset (right). Lines connect repeated observations of the same individuals.', echo= FALSE, message = FALSE, fig.height = 3}
 data(siskins)
+siskins$hexid = factor(format(as.hexmode(as.numeric(siskins$id)), width = 3))
 cowplot::plot_grid(
 ggplot(filter(siskins, pfmg > 0), aes(x=pfmg)) +
   geom_histogram(breaks = c(0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1)) +
@@ -136,7 +137,7 @@ and the repeated measures models by passing the information about bird identitie
 #fit the equivalent recapture models
 uz3_recap <- moultmcmc(moult_column = 'pfmg',
                        date_column = 'yday',
-                       id_column = 'id',
+                       id_column = 'hexid',
                        start_formula = ~1,
                        duration_formula = ~1,
                        type = 3,
@@ -149,7 +150,7 @@ max(rowSums(get_elapsed_time(uz3_recap$stanfit)))
 #
 uz5_recap <- moultmcmc('pfmg',
                        'yday',
-                       'id',
+                       'hexid',
                        start_formula = ~1,
                        duration_formula = ~1,
                        type = 5,
@@ -219,7 +220,7 @@ As these are simulated data we can also assess how well the recapture model esti
 
 ```{r ind-intercepts,eval = TRUE, fig.width = 7, fig.caption = 'There is good agreement between the simulated individual start dates and their estimates in both the type 3r and type 5R models.'}
 ints <- ranef(uz3_recap) %>% 
-  as_tibble(rownames = 'id') %>%
+  as_tibble(rownames = 'hexid') %>%
   left_join(siskins) %>%
   group_by(id) %>%
   summarise(est_start = unique(mean),
@@ -248,7 +249,7 @@ t3r_intercepts <- ggplot(ints,
 confint(lm(est_start ~ I(true_start - 196.83), data = ints))
 
 ints <- ranef(uz5_recap) %>%
-  as_tibble(rownames = 'id') %>%
+  as_tibble(rownames = 'hexid') %>%
   left_join(siskins) %>%
   group_by(id) %>%
   summarise(est_start = unique(mean),
@@ -278,6 +279,7 @@ confint(lm(est_start ~ I(true_start - 196.83), data = ints))
 
 cowplot::plot_grid(t3r_intercepts + theme(legend.position = 'none'),
                    t5r_intercepts + theme(legend.position = 'none'))
+#TODO: I think the function now returns the internal index of the random effects vector but matches that to the global index of individuals?!
 ```
 
 We find that agreement between simulations and estimates is good, even though the model does not explicitly account for heterogeneity in individual moult durations.
