@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">moultmcmc</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.0.9030</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.0.9037</span>
       </span>
     </div>
 
@@ -165,7 +165,7 @@ Frequency distribution of moult records with respect to moult progress for activ
 <span>                       chain <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>                       cores <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">rowSums</a></span><span class="op">(</span><span class="fu"><a href="https://mc-stan.org/rstan/reference/stanfit-class.html" class="external-link">get_elapsed_time</a></span><span class="op">(</span><span class="va">uz3_recap</span><span class="op">$</span><span class="va">stanfit</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 102.864</span></span>
+<span><span class="co">#&gt; [1] 95.363</span></span>
 <span><span class="co">#</span></span>
 <span><span class="va">uz5_recap</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/moultmcmc.html">moultmcmc</a></span><span class="op">(</span><span class="st">'pfmg'</span>,</span>
 <span>                       <span class="st">'yday'</span>,</span>
@@ -179,7 +179,7 @@ Frequency distribution of moult records with respect to moult progress for activ
 <span>                       chain <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>                       cores <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">rowSums</a></span><span class="op">(</span><span class="fu"><a href="https://mc-stan.org/rstan/reference/stanfit-class.html" class="external-link">get_elapsed_time</a></span><span class="op">(</span><span class="va">uz5_recap</span><span class="op">$</span><span class="va">stanfit</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 3.807</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 3.993</span></span></code></pre></div>
 <p>When comparing the results visually it is apparent that the moult period for the population predicted by the standard Type 3 models fails to encapsulate a substantial proportion of the observed data, whereas this is not the case for the repeated measures model. The bias in Type 5 model estimates is less severe.</p>
 <pre><code><span><span class="co">#&gt; Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Please use `linewidth` instead.</span></span>
@@ -225,8 +225,8 @@ Standard type 3 and 5 moult models fitted to the Siskin dataset without consider
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/confint.html" class="external-link">confint</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">est_start</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="va">true_start</span> <span class="op">-</span> <span class="fl">196.83</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">ints</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                             2.5 %   97.5 %</span></span>
-<span><span class="co">#&gt; (Intercept)            -3.6512665 1.228751</span></span>
-<span><span class="co">#&gt; I(true_start - 196.83)  0.7615629 1.700839</span></span>
+<span><span class="co">#&gt; (Intercept)            -3.6800347 1.256537</span></span>
+<span><span class="co">#&gt; I(true_start - 196.83)  0.7566195 1.706781</span></span>
 <span></span>
 <span><span class="va">ints</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ranef.moultmcmc.html">ranef</a></span><span class="op">(</span><span class="va">uz5_recap</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span>rownames <span class="op">=</span> <span class="st">'hexid'</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -258,8 +258,8 @@ Standard type 3 and 5 moult models fitted to the Siskin dataset without consider
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/confint.html" class="external-link">confint</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">est_start</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="va">true_start</span> <span class="op">-</span> <span class="fl">196.83</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">ints</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                             2.5 %    97.5 %</span></span>
-<span><span class="co">#&gt; (Intercept)            -0.3362297 0.9051314</span></span>
-<span><span class="co">#&gt; I(true_start - 196.83)  0.8724174 1.0485303</span></span>
+<span><span class="co">#&gt; (Intercept)            -0.3412524 0.9095836</span></span>
+<span><span class="co">#&gt; I(true_start - 196.83)  0.8707821 1.0482392</span></span>
 <span></span>
 <span><span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html" class="external-link">plot_grid</a></span><span class="op">(</span><span class="va">t3r_intercepts</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">'none'</span><span class="op">)</span>,</span>
 <span>                   <span class="va">t5r_intercepts</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">'none'</span><span class="op">)</span><span class="op">)</span></span>
