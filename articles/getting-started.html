@@ -119,8 +119,8 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; SAMPLING FOR MODEL 'uz1_linpred' NOW (CHAIN 1).</span></span>
 <span><span class="co">#&gt; Chain 1: </span></span>
-<span><span class="co">#&gt; Chain 1: Gradient evaluation took 0.000158 seconds</span></span>
-<span><span class="co">#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 1.58 seconds.</span></span>
+<span><span class="co">#&gt; Chain 1: Gradient evaluation took 0.000173 seconds</span></span>
+<span><span class="co">#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 1.73 seconds.</span></span>
 <span><span class="co">#&gt; Chain 1: Adjust your expectations accordingly!</span></span>
 <span><span class="co">#&gt; Chain 1: </span></span>
 <span><span class="co">#&gt; Chain 1: </span></span>
@@ -129,15 +129,15 @@
 <span><span class="co">#&gt; Chain 1: Iteration: 1001 / 2000 [ 50%]  (Sampling)</span></span>
 <span><span class="co">#&gt; Chain 1: Iteration: 2000 / 2000 [100%]  (Sampling)</span></span>
 <span><span class="co">#&gt; Chain 1: </span></span>
-<span><span class="co">#&gt; Chain 1:  Elapsed Time: 0.681 seconds (Warm-up)</span></span>
-<span><span class="co">#&gt; Chain 1:                0.299 seconds (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 1:                0.98 seconds (Total)</span></span>
+<span><span class="co">#&gt; Chain 1:  Elapsed Time: 0.603 seconds (Warm-up)</span></span>
+<span><span class="co">#&gt; Chain 1:                0.325 seconds (Sampling)</span></span>
+<span><span class="co">#&gt; Chain 1:                0.928 seconds (Total)</span></span>
 <span><span class="co">#&gt; Chain 1: </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; SAMPLING FOR MODEL 'uz1_linpred' NOW (CHAIN 2).</span></span>
 <span><span class="co">#&gt; Chain 2: </span></span>
-<span><span class="co">#&gt; Chain 2: Gradient evaluation took 5e-05 seconds</span></span>
-<span><span class="co">#&gt; Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.5 seconds.</span></span>
+<span><span class="co">#&gt; Chain 2: Gradient evaluation took 5.8e-05 seconds</span></span>
+<span><span class="co">#&gt; Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.58 seconds.</span></span>
 <span><span class="co">#&gt; Chain 2: Adjust your expectations accordingly!</span></span>
 <span><span class="co">#&gt; Chain 2: </span></span>
 <span><span class="co">#&gt; Chain 2: </span></span>
@@ -146,9 +146,9 @@
 <span><span class="co">#&gt; Chain 2: Iteration: 1001 / 2000 [ 50%]  (Sampling)</span></span>
 <span><span class="co">#&gt; Chain 2: Iteration: 2000 / 2000 [100%]  (Sampling)</span></span>
 <span><span class="co">#&gt; Chain 2: </span></span>
-<span><span class="co">#&gt; Chain 2:  Elapsed Time: 0.65 seconds (Warm-up)</span></span>
-<span><span class="co">#&gt; Chain 2:                0.305 seconds (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 2:                0.955 seconds (Total)</span></span>
+<span><span class="co">#&gt; Chain 2:  Elapsed Time: 0.67 seconds (Warm-up)</span></span>
+<span><span class="co">#&gt; Chain 2:                0.328 seconds (Sampling)</span></span>
+<span><span class="co">#&gt; Chain 2:                0.998 seconds (Total)</span></span>
 <span><span class="co">#&gt; Chain 2:</span></span></code></pre></div>
 <p>Most MCMC parameters, such as the number of chains (here 2), iterations, or cores are set in the same way as for <code><a href="https://mc-stan.org/rstan/reference/stanmodel-method-sampling.html" class="external-link">rstan::sampling</a></code>, however, for initial values <code>moultmcmc</code> defaults to an additional option <code>"auto"</code> which will provide initial values for the MCMC chains based on the input data. Custom initial values can be specified instead as detailed in the documentation of <code><a href="https://mc-stan.org/rstan/reference/stanmodel-method-sampling.html" class="external-link">rstan::sampling</a></code>.</p>
 <p>Once the MCMC has completed, a summary table of parameter estimates can be displayed with</p>
@@ -157,11 +157,11 @@
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 5 × 11</span></span></span>
 <span><span class="co">#&gt;   parame…¹ estim…² se_mean     sd     lci     uci n_eff  Rhat  prob method type </span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> mean_(I…  134.   0.106    3.50   128.    142.   <span style="text-decoration: underline;">1</span>080. 1.00   0.95 MCMC   1    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> duratio…   97.2  0.299   10.9     76.4   120.   <span style="text-decoration: underline;">1</span>317. 1.00   0.95 MCMC   1    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> log_sd_…    3.33 0.006<span style="text-decoration: underline;">60</span>  0.227    2.88    3.77 <span style="text-decoration: underline;">1</span>186. 1.00   0.95 MCMC   1    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> sd_(Int…   28.7  0.188    6.53    17.8    43.2  <span style="text-decoration: underline;">1</span>201. 1.00   0.95 MCMC   1    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> lp__     -<span style="color: #BB0000;">104.</span>   0.040<span style="text-decoration: underline;">1</span>   1.24  -<span style="color: #BB0000;">107.</span>   -<span style="color: #BB0000;">103.</span>    957. 0.999  0.95 MCMC   1    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> mean_(I…  134.   0.099<span style="text-decoration: underline;">1</span>   3.32   128.    141.   <span style="text-decoration: underline;">1</span>123. 1.00   0.95 MCMC   1    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> duratio…   98.4  0.324   10.8     78.4   121.   <span style="text-decoration: underline;">1</span>111. 0.999  0.95 MCMC   1    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> log_sd_…    3.33 0.006<span style="text-decoration: underline;">67</span>  0.235    2.89    3.77 <span style="text-decoration: underline;">1</span>240. 1.00   0.95 MCMC   1    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> sd_(Int…   28.7  0.194    6.77    17.9    43.5  <span style="text-decoration: underline;">1</span>221. 1.00   0.95 MCMC   1    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> lp__     -<span style="color: #BB0000;">104.</span>   0.048<span style="text-decoration: underline;">5</span>   1.20  -<span style="color: #BB0000;">107.</span>   -<span style="color: #BB0000;">103.</span>    609. 1.00   0.95 MCMC   1    </span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># … with abbreviated variable names ¹​parameter, ²​estimate</span></span></span></code></pre></div>
 <p>and standard model assessment can be done as for any posterior sample from Stan, by directly accessing the <code>stanfit</code> slot of the returned S3 object. For example we can look at the traceplots for the model using <code><a href="https://mc-stan.org/rstan/reference/stan_plot.html" class="external-link">rstan::stan_trace</a></code></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
@@ -188,8 +188,8 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; SAMPLING FOR MODEL 'uz2_linpred' NOW (CHAIN 1).</span></span>
 <span><span class="co">#&gt; Chain 1: </span></span>
-<span><span class="co">#&gt; Chain 1: Gradient evaluation took 5.6e-05 seconds</span></span>
-<span><span class="co">#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.56 seconds.</span></span>
+<span><span class="co">#&gt; Chain 1: Gradient evaluation took 6.9e-05 seconds</span></span>
+<span><span class="co">#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.69 seconds.</span></span>
 <span><span class="co">#&gt; Chain 1: Adjust your expectations accordingly!</span></span>
 <span><span class="co">#&gt; Chain 1: </span></span>
 <span><span class="co">#&gt; Chain 1: </span></span>
@@ -198,9 +198,9 @@
 <span><span class="co">#&gt; Chain 1: Iteration: 1001 / 2000 [ 50%]  (Sampling)</span></span>
 <span><span class="co">#&gt; Chain 1: Iteration: 2000 / 2000 [100%]  (Sampling)</span></span>
 <span><span class="co">#&gt; Chain 1: </span></span>
-<span><span class="co">#&gt; Chain 1:  Elapsed Time: 0.618 seconds (Warm-up)</span></span>
-<span><span class="co">#&gt; Chain 1:                0.264 seconds (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 1:                0.882 seconds (Total)</span></span>
+<span><span class="co">#&gt; Chain 1:  Elapsed Time: 0.665 seconds (Warm-up)</span></span>
+<span><span class="co">#&gt; Chain 1:                0.279 seconds (Sampling)</span></span>
+<span><span class="co">#&gt; Chain 1:                0.944 seconds (Total)</span></span>
 <span><span class="co">#&gt; Chain 1: </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; SAMPLING FOR MODEL 'uz2_linpred' NOW (CHAIN 2).</span></span>
@@ -215,9 +215,9 @@
 <span><span class="co">#&gt; Chain 2: Iteration: 1001 / 2000 [ 50%]  (Sampling)</span></span>
 <span><span class="co">#&gt; Chain 2: Iteration: 2000 / 2000 [100%]  (Sampling)</span></span>
 <span><span class="co">#&gt; Chain 2: </span></span>
-<span><span class="co">#&gt; Chain 2:  Elapsed Time: 0.714 seconds (Warm-up)</span></span>
-<span><span class="co">#&gt; Chain 2:                0.258 seconds (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 2:                0.972 seconds (Total)</span></span>
+<span><span class="co">#&gt; Chain 2:  Elapsed Time: 0.652 seconds (Warm-up)</span></span>
+<span><span class="co">#&gt; Chain 2:                0.303 seconds (Sampling)</span></span>
+<span><span class="co">#&gt; Chain 2:                0.955 seconds (Total)</span></span>
 <span><span class="co">#&gt; Chain 2:</span></span>
 <span><span class="co">#fit using ML</span></span>
 <span><span class="va">ml2</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/moult/man/moult.html" class="external-link">moult</a></span><span class="op">(</span><span class="va">MIndex</span> <span class="op">~</span> <span class="va">Day</span>,data <span class="op">=</span> <span class="va">sanderlings</span>, type <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
