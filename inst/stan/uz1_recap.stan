@@ -1,5 +1,5 @@
 //
-// This Stan program defines the Underhill-Zucchini Type 2 model
+// This Stan program defines the Underhill-Zucchini Type 1 model
 //
 
 // The input data is a vector 'y' of length 'N'.
@@ -13,9 +13,13 @@ data {
   vector[N_old] old_dates;//t_i
   int<lower=0> N_moult;//J
   vector[N_moult] moult_dates;//u_j
-  vector<lower=0,upper=1>[N_moult] moult_indices;//index of moult
   int<lower=0> N_new;//K
   vector[N_new] new_dates;//v_k
+  int<lower=0> Nobs_replicated;//number of observations from individuals with repeat measures
+  int<lower=0>individual[N_moult+N_old+N_new]; //individual identifier
+  int<lower=0>individual_first_index[N_ind];//row first occurrence of each individual in the model frame
+  int<lower=0>is_replicated[N_ind];
+  int<lower=0>replicated_individuals[N_ind_rep];//individual id's that are replicated - i.e. indices of the random_effect intercept
   //predictors
   int N_pred_mu;//number of predictors for start date
   matrix[N_old+N_moult+N_new,N_pred_mu] X_mu;//design matrix for start date NB: when forming design matrix must paste together responses in blocks old, moult, new
@@ -36,16 +40,18 @@ parameters {
   vector[N_pred_mu] beta_mu;//regression coefficients for start date
   vector[N_pred_tau] beta_tau;//regression coefficients for duration
   vector[N_pred_sigma] beta_sigma;//regression coefficients for sigma start date
+  vector[N_ind_rep] mu_ind;//individual effect on sigma start date
+  real<lower=0> sigma_mu_ind;//?residual variance in regression of score on date within individuals
 }
 
 transformed parameters{
- // real sigma_intercept = exp(beta_sigma[1]);
+  real sigma_intercept = exp(beta_sigma[1]);
 }
 
 // The model to be estimated.
 model {
   vector[N_old] P;
-  vector[N_moult] q;
+  vector[N_moult] Q;
   vector[N_new] R;
   vector[N_old+N_moult+N_new] mu;//start date lin pred
   vector[N_old+N_moult+N_new] tau;//duration lin pred
@@ -55,15 +61,17 @@ model {
 //  print(mu);
   tau = X_tau * beta_tau;
 //  print(tau);
-  sigma = exp(X_sigma * beta_sigma);//use log link for variance lin pred
+  sigma = exp(X_sigma * beta_sigma);
+
  if (lumped == 0){
     for (i in 1:N_old) P[i] = 1 - Phi((old_dates[i] - mu[i])/sigma[i]);
  } else {
    for (i in 1:N_old) P[i] = (1 - Phi((old_dates[i] - mu[i])/sigma[i])) + Phi((old_dates[i] - tau[i] - mu[i])/sigma[i]);
  }
 //print(P);
-  for (i in 1:N_moult) q[i] = log(tau[i + N_old]) + normal_lpdf((moult_dates[i] - moult_indices[i]*tau[i + N_old]) | mu[i + N_old], sigma[i + N_old]);//N.B. unlike P and R this returns a log density
-  if (lumped == 0){
+for (i in 1:N_moult) Q[i] = Phi((moult_dates[i] - mu[i + N_old])/sigma[i + N_old]) - Phi((moult_dates[i] - tau[i + N_old] - mu[i + N_old])/sigma[i + N_old]);
+//print(Q);
+if (lumped == 0){
       for (i in 1:N_new) R[i] = Phi((new_dates[i] - tau[i + N_old + N_moult] - mu[i + N_old + N_moult])/sigma[i + N_old + N_moult]);
     } else {
       for (i in 1:N_new) R[i] = Phi((new_dates[i] - tau[i + N_old + N_moult] - mu[i + N_old + N_moult])/sigma[i + N_old + N_moult]) + (1 - Phi((new_dates[i] - mu[i + N_old + N_moult])/sigma[i + N_old + N_moult]));
@@ -72,7 +80,7 @@ model {
 //print(sum(log(P)));
 //print(sum(log(Q)));
 //print(sum(log(R)));
-target += sum(log(P))+sum(q)+sum(log(R));
+target += sum(log(P))+sum(log(Q))+sum(log(R));
 //priors
 if (flat_prior == 1) {
  beta_mu[1] ~ uniform(-366,366);
@@ -99,36 +107,32 @@ if (flat_prior == 1) {
   }
 }
 beta_sigma[1] ~ normal(0,2);// on log link scale!
-}
+sigma_mu_ind ~ normal(0,10);}
 
 generated quantities{
-real sigma_intercept = exp(beta_sigma[1]);//transformed sigma intercept for output
-
-//NB: code duplication for the likelihood calculation is less than ideal - refactor to a use stan function?
 //real end_date;
 // end_date = mu + tau;
 if (llik == 1){
   vector[N_old+N_moult+N_new] log_lik;
   vector[N_old] P;
-  vector[N_moult] q;
+  vector[N_moult] Q;
   vector[N_new] R;
   vector[N_old+N_moult+N_new] mu;//start date lin pred
   vector[N_old+N_moult+N_new] tau;//duration lin pred
   vector[N_old+N_moult+N_new] sigma;//duration lin pred
 
-  mu = X_mu * beta_mu;
-//  print(mu);
-  tau = X_tau * beta_tau;
-//  print(tau);
-  sigma = exp(X_sigma * beta_sigma);
+    mu = X_mu * beta_mu;
+  //  print(mu);
+    tau = X_tau * beta_tau;
+  //  print(tau);
+    sigma = exp(X_sigma * beta_sigma);
 
   for (i in 1:N_old) P[i] = 1 - Phi((old_dates[i] - mu[i])/sigma[i]);
-    //print(P);
-    //for (i in 1:N_moult) Q[i] = Phi((moult_dates[i] - mu[i + N_old])/sigma[i + N_old]) - Phi((moult_dates[i] - tau[i + N_old] - mu[i + N_old])/sigma[i + N_old]);
-  for (i in 1:N_moult) q[i] = log(tau[i + N_old]) + normal_lpdf((moult_dates[i] - moult_indices[i]*tau[i + N_old]) | mu[i + N_old], sigma[i + N_old]);//N.B. unlike P and R this returns a log density
-    //print(Q);
+  //print(P);
+  for (i in 1:N_moult) Q[i] = Phi((moult_dates[i] - mu[i + N_old])/sigma[i + N_old]) - Phi((moult_dates[i] - tau[i + N_old] - mu[i + N_old])/sigma[i + N_old]);
+  //print(Q);
   for (i in 1:N_new) R[i] = Phi((new_dates[i] - tau[i + N_old + N_moult] - mu[i + N_old + N_moult])/sigma[i + N_old + N_moult]);
 
-  log_lik = append_row(log(P), append_row(q, log(R)));
-}
+  log_lik = append_row(log(P), append_row(log(Q), log(R)));
+  }
 }
