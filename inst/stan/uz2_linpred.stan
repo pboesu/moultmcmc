@@ -7,8 +7,8 @@ data {
   //responses
   int<lower=0,upper=1> flat_prior;//translated logical use flat prior on start and duration?
   real beta_sd;//sd for non-flat prior on regression coeficients
-  int<lower=0> N_ind;//number of individuals
-  int<lower=0> N_ind_rep;//number of recaptured individuals
+  //int<lower=0> N_ind;//number of individuals
+  //int<lower=0> N_ind_rep;//number of recaptured individuals
   int<lower=0> N_old;//I in original derivation
   vector[N_old] old_dates;//t_i
   int<lower=0> N_moult;//J
