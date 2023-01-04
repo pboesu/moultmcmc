@@ -5,6 +5,24 @@ data(recaptures)
 #mcmc_iter = 200
 #mcmc_refresh = max(mcmc_iter/4,1)
 test_that("moultmcmc uz2_recap works", {
+  m1r = moultmcmc(moult_column = "pfmg_sampled",
+                  date_column = "date_sampled",
+                  id_column = "id",
+                  data = recaptures,
+                  flat_prior = FALSE,
+                  type = 1,
+                  log_lik = FALSE,
+                  chains = 1,
+                  cores = 2,
+                  control = list(adapt_delta = 0.99, max_treedepth = 11),
+                  iter = 300,
+                  refresh = 50,
+                  open_progress = FALSE)
+  expect_s3_class(m1r, "moultmcmc")
+})
+
+
+test_that("moultmcmc uz2_recap works", {
   m2r = moultmcmc(moult_column = "pfmg_sampled",
                   date_column = "date_sampled",
                   id_column = "id",
