@@ -279,7 +279,6 @@ confint(lm(est_start ~ I(true_start - 196.83), data = ints))
 
 cowplot::plot_grid(t3r_intercepts + theme(legend.position = 'none'),
                    t5r_intercepts + theme(legend.position = 'none'))
-#TODO: I think the function now returns the internal index of the random effects vector but matches that to the global index of individuals?!
 ```
 
 We find that agreement between simulations and estimates is good, even though the model does not explicitly account for heterogeneity in individual moult durations.

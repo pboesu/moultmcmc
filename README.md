@@ -30,9 +30,11 @@ The package `moultmcmc` is built around pre-compiled [Stan](https://mc-stan.org/
 ```r
 install.packages("moultmcmc", repos = "https://pboesu.r-universe.dev")
 ```
-On Mac and Windows systems this will make use of pre-compiled binaries, which means the models can be run  without having to install a C++ compiler. On Linux this will install the package from a source tarball. Because of the way the Stan models are currently structured, compilation from source can be a lengthy process (15-45 minutes), depending on system setup and compiler toolchain.
+On Mac and Windows systems this will make use of pre-compiled binaries, which means the models can be run  without having to install a C++ compiler. 
+A Linux binary is available for `r-release` on `ubuntu:latest` and repository settings to obtain this are explained in the [r-universe help](https://github.com/r-universe-org/help#does-r-universe-have-linux-binaries). 
+For all other Linux platforms the above code will install the package from a source tarball. Because of the way the Stan models are currently structured, compilation from source can be a lengthy process (15-45 minutes), depending on system setup and compiler toolchain.
 
-To install `moultmcmc` from the github source (not generally recommended for Windows users) use the following code. This requires a working C++ compiler and a working installation of [rstan](https://mc-stan.org/rstan):
+To install `moultmcmc` from the github source (not generally recommended for MacOS or Windows users) use the following code. This requires a working C++ compiler and a working installation of [rstan](https://mc-stan.org/rstan):
 
 ```r
 #not generally recommended for Windows/MacOS users
