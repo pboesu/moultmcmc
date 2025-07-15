@@ -6,20 +6,19 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Moult data likelihoods and model priors • moultmcmc</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="Moult data likelihoods and model priors">
-<meta property="og:description" content="moultmcmc">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
-    
+
 
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -45,7 +44,7 @@
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
-     
+
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
@@ -69,138 +68,308 @@
 </div>
 <!--/.navbar -->
 
-      
 
-      </header><script src="moult-likelihoods_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Moult data likelihoods and model priors</h1>
             
       
-      
+
       <div class="hidden name"><code>moult-likelihoods.Rmd</code></div>
 
     </div>
 
     
     
-<p>The <code>moultmcmc</code> package implements the regression models outlined in <span class="citation">Underhill and Zucchini (1988)</span> and <span class="citation">Underhill, Zucchini, and Summers (1990)</span>. In their notation<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>, samples consist of <span class="math inline">\(I\)</span> pre-moult birds, <span class="math inline">\(J\)</span> birds in active moult, and <span class="math inline">\(K\)</span> post-moult birds. Birds in each category are observed on days <span class="math inline">\(t = t_1,\ldots,t_I\)</span>; <span class="math inline">\(u = u_1,\ldots,u_J\)</span>; <span class="math inline">\(v = v_1,\ldots,v_K\)</span>, respectively. Moult scores for actively moulting birds, where available, are encoded as <span class="math inline">\(y = y_1,\ldots,y_J\)</span>.</p>
-<p>Each moult state has a probability of occurrence <span class="math display">\[
+<p>The <code>moultmcmc</code> package implements the regression models
+outlined in <span class="citation">Les G. Underhill and Zucchini
+(1988)</span> and <span class="citation">L. G. Underhill, Zucchini, and
+Summers (1990)</span>. In their notation<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>, samples consist of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>I</mi><annotation encoding="application/x-tex">I</annotation></semantics></math>
+pre-moult birds,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>J</mi><annotation encoding="application/x-tex">J</annotation></semantics></math>
+birds in active moult, and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
+post-moult birds. Birds in each category are observed on days
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><msub><mi>t</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>t</mi><mi>I</mi></msub></mrow><annotation encoding="application/x-tex">t = t_1,\ldots,t_I</annotation></semantics></math>;
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mo>=</mo><msub><mi>u</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>u</mi><mi>J</mi></msub></mrow><annotation encoding="application/x-tex">u = u_1,\ldots,u_J</annotation></semantics></math>;
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>v</mi><mo>=</mo><msub><mi>v</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>v</mi><mi>K</mi></msub></mrow><annotation encoding="application/x-tex">v = v_1,\ldots,v_K</annotation></semantics></math>,
+respectively. Moult scores for actively moulting birds, where available,
+are encoded as
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi><mo>=</mo><msub><mi>y</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>y</mi><mi>J</mi></msub></mrow><annotation encoding="application/x-tex">y = y_1,\ldots,y_J</annotation></semantics></math>.</p>
+<p>Each moult state has a probability of occurrence
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><mo>Pr</mo><mo stretchy="false" form="prefix">{</mo><mi>Y</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0</mn><mo stretchy="false" form="postfix">}</mo></mtd><mtd columnalign="right" style="text-align: right"><mo>=</mo></mtd><mtd columnalign="left" style="text-align: left"><mn>1</mn><mo>−</mo><msub><mi>F</mi><mi>T</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"><mi>Q</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><mo>Pr</mo><mo stretchy="false" form="prefix">{</mo><mn>0</mn><mo>&lt;</mo><mi>Y</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>&lt;</mo><mn>1</mn><mo stretchy="false" form="postfix">}</mo></mtd><mtd columnalign="right" style="text-align: right"><mo>=</mo></mtd><mtd columnalign="left" style="text-align: left"><msub><mi>F</mi><mi>T</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><msub><mi>F</mi><mi>T</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>−</mo><mi>τ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"><mi>R</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><mo>Pr</mo><mo stretchy="false" form="prefix">{</mo><mi>Y</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>1</mn><mo stretchy="false" form="postfix">}</mo></mtd><mtd columnalign="right" style="text-align: right"><mo>=</mo></mtd><mtd columnalign="left" style="text-align: left"><mn>1</mn><mo>−</mo><msub><mi>F</mi><mi>T</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>−</mo><mi>τ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd></mtr></mtable><annotation encoding="application/x-tex">
 \begin{aligned}
 P(t) &amp;= \Pr\{Y(t)=0\}&amp;= &amp;1-F_T(t)\\
 Q(t) &amp;= \Pr\{0&lt;Y(t)&lt;1\}&amp; =&amp;F_T(t)-F_T(t-\tau)\\
 R(t) &amp;= \Pr\{Y(t)=1\}&amp;= &amp;1-F_T(t-\tau)\\
 \end{aligned}
-\]</span> Further, assuming a linear progression of the moult indices over time, the probability density of a particular moult score at time <span class="math inline">\(t\)</span> is <span class="math display">\[
+</annotation></semantics></math> Further, assuming a linear progression
+of the moult indices over time, the probability density of a particular
+moult score at time
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+is
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>f</mi><mi>Y</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>τ</mi><msub><mi>f</mi><mi>T</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>−</mo><mi>y</mi><mi>τ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mspace width="1.0em"></mspace><mn>0</mn><mo>&lt;</mo><mi>y</mi><mo>&lt;</mo><mn>1</mn><mo>,</mo></mrow><annotation encoding="application/x-tex">
 f_Y(t)(y)=\tau f_T(t-y\tau),\quad0 &lt; y &lt; 1,
-\]</span> In <code>moultmcmc</code> the unobserved start date of the study population is assumed to follow a normal distribution with mean <span class="math inline">\(\mu\)</span> and standard deviation <span class="math inline">\(\sigma\)</span>, such that <span class="math display">\[F_T(t)=\Phi\left(\frac{t-\mu}{\sigma}\right)\]</span> where <span class="math inline">\(\Phi\)</span> is the standard normal distribution function and <span class="math display">\[f_T(t) = \phi(t) = \frac{1}{\sqrt{2\pi}}\exp\frac{-t^2}{2}\]</span>.</p>
-<p>We further assume that <span class="math inline">\(F_T(t)\)</span> has <span class="math inline">\(p\)</span> parameters <span class="math inline">\(\mathbf{\theta} = \theta_1, \theta_2, \ldots, \theta_p\)</span> and for convenience the start date <span class="math inline">\(\mu\)</span>, duration <span class="math inline">\(\tau\)</span>, and population standard deviation of moult <span class="math inline">\(\sigma\)</span> will be elements of <span class="math inline">\(\mathbf{\theta}\)</span>.</p>
+</annotation></semantics></math> In <code>moultmcmc</code> the
+unobserved start date of the study population is assumed to follow a
+normal distribution with mean
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>μ</mi><annotation encoding="application/x-tex">\mu</annotation></semantics></math>
+and standard deviation
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math>,
+such that
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mi>T</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>Φ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><mrow><mi>t</mi><mo>−</mo><mi>μ</mi></mrow><mi>σ</mi></mfrac><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">F_T(t)=\Phi\left(\frac{t-\mu}{\sigma}\right)</annotation></semantics></math>
+where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Φ</mi><annotation encoding="application/x-tex">\Phi</annotation></semantics></math>
+is the standard normal distribution function and
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>f</mi><mi>T</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>ϕ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mn>1</mn><msqrt><mrow><mn>2</mn><mi>π</mi></mrow></msqrt></mfrac><mo>exp</mo><mfrac><mrow><mo>−</mo><msup><mi>t</mi><mn>2</mn></msup></mrow><mn>2</mn></mfrac></mrow><annotation encoding="application/x-tex">f_T(t) = \phi(t) = \frac{1}{\sqrt{2\pi}}\exp\frac{-t^2}{2}</annotation></semantics></math>.</p>
+<p>We further assume that
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mi>T</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">F_T(t)</annotation></semantics></math>
+has
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>
+parameters
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝛉</mi><mo>=</mo><msub><mi>θ</mi><mn>1</mn></msub><mo>,</mo><msub><mi>θ</mi><mn>2</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>θ</mi><mi>p</mi></msub></mrow><annotation encoding="application/x-tex">\mathbf{\theta} = \theta_1, \theta_2, \ldots, \theta_p</annotation></semantics></math>
+and for convenience the start date
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>μ</mi><annotation encoding="application/x-tex">\mu</annotation></semantics></math>,
+duration
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math>,
+and population standard deviation of moult
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math>
+will be elements of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝛉</mi><annotation encoding="application/x-tex">\mathbf{\theta}</annotation></semantics></math>.</p>
 <div class="section level2">
 <h2 id="likelihoods">Likelihoods<a class="anchor" aria-label="anchor" href="#likelihoods"></a>
 </h2>
 <div class="section level3">
 <h3 id="type-1">Type 1<a class="anchor" aria-label="anchor" href="#type-1"></a>
 </h3>
-<p>Type 1 data consist of observations of categorical moult state (pre-moult, active moult, post-moult) and sampling is representative in all three categories. The likelihood of these observations is <span class="math display">\[
+<p>Type 1 data consist of observations of categorical moult state
+(pre-moult, active moult, post-moult) and sampling is representative in
+all three categories. The likelihood of these observations is
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℒ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝛉</mi><mo>,</mo><mi>t</mi><mo>,</mo><mi>u</mi><mo>,</mo><mi>v</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><munderover><mo>∏</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>I</mi></munderover><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>t</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><munderover><mo>∏</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mi>J</mi></munderover><mi>Q</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>u</mi><mi>j</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><munderover><mo>∏</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>K</mi></munderover><mi>R</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>v</mi><mi>k</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
 \mathcal{L}(\boldsymbol\theta,t,u,v) = \prod_{i=1}^IP(t_i)\prod_{j = 1}^JQ(u_j)\prod_{k=1}^KR(v_k).
-\]</span></p>
+</annotation></semantics></math></p>
 </div>
 <div class="section level3">
 <h3 id="type-2">Type 2<a class="anchor" aria-label="anchor" href="#type-2"></a>
 </h3>
-<p>Type 2 data consist of observations of birds in all three moult states (pre-moult, active moult, post-moult). Sampling is representative for all three categories, and for actively moulting birds a sufficiently linear moult index <span class="math inline">\(y\)</span> (e.g. percent feather mass grown) is known. The likelihood of these observations is <span class="math display">\[
+<p>Type 2 data consist of observations of birds in all three moult
+states (pre-moult, active moult, post-moult). Sampling is representative
+for all three categories, and for actively moulting birds a sufficiently
+linear moult index
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>y</mi><annotation encoding="application/x-tex">y</annotation></semantics></math>
+(e.g. percent feather mass grown) is known. The likelihood of these
+observations is
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℒ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝛉</mi><mo>,</mo><mi>t</mi><mo>,</mo><mi>u</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>v</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><munderover><mo>∏</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>I</mi></munderover><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>t</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><munderover><mo>∏</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mi>J</mi></munderover><mi>q</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>u</mi><mi>j</mi></msub><mo>,</mo><msub><mi>y</mi><mi>j</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><munderover><mo>∏</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>K</mi></munderover><mi>R</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>v</mi><mi>k</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">
 \mathcal{L}(\boldsymbol\theta,t,u,y,v) = \prod_{i=1}^IP(t_i)\prod_{j = 1}^Jq(u_j,y_j)\prod_{k=1}^KR(v_k),
-\]</span> where <span class="math inline">\(q(u_j,y_j) = \tau f_T(u_j-y_j\tau).\)</span></p>
+</annotation></semantics></math> where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>q</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>u</mi><mi>j</mi></msub><mo>,</mo><msub><mi>y</mi><mi>j</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>τ</mi><msub><mi>f</mi><mi>T</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>u</mi><mi>j</mi></msub><mo>−</mo><msub><mi>y</mi><mi>j</mi></msub><mi>τ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">q(u_j,y_j) = \tau f_T(u_j-y_j\tau).</annotation></semantics></math></p>
 </div>
 <div class="section level3">
 <h3 id="lumped-type-2">Lumped Type 2<a class="anchor" aria-label="anchor" href="#lumped-type-2"></a>
 </h3>
-<p>Lumped type 2 data consist of observations of birds in all three moult states (pre-moult, active moult, post-moult), but where the pre-moult and post-moult states cannot be distinguished from each other, yielding <span class="math inline">\(I\)</span> observations of dates <span class="math inline">\(t_i\)</span> on which non-moulting birds were observed. Sampling is representative for all three categories, and for actively moulting birds a sufficiently linear moult index <span class="math inline">\(y\)</span> (e.g. percent feather mass grown) is known. The likelihood of these observations is <span class="math display">\[
+<p>Lumped type 2 data consist of observations of birds in all three
+moult states (pre-moult, active moult, post-moult), but where the
+pre-moult and post-moult states cannot be distinguished from each other,
+yielding
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>I</mi><annotation encoding="application/x-tex">I</annotation></semantics></math>
+observations of dates
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>t</mi><mi>i</mi></msub><annotation encoding="application/x-tex">t_i</annotation></semantics></math>
+on which non-moulting birds were observed. Sampling is representative
+for all three categories, and for actively moulting birds a sufficiently
+linear moult index
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>y</mi><annotation encoding="application/x-tex">y</annotation></semantics></math>
+(e.g. percent feather mass grown) is known. The likelihood of these
+observations is
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℒ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝛉</mi><mo>,</mo><mi>t</mi><mo>,</mo><mi>u</mi><mo>,</mo><mi>y</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><munderover><mo>∏</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>I</mi></munderover><mi>P</mi><mi>R</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>t</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><munderover><mo>∏</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mi>J</mi></munderover><mi>q</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>u</mi><mi>j</mi></msub><mo>,</mo><msub><mi>y</mi><mi>j</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">
 \mathcal{L}(\boldsymbol\theta,t,u,y) = \prod_{i=1}^IPR(t_i)\prod_{j = 1}^Jq(u_j,y_j),
-\]</span> where <span class="math inline">\(q(u_j,y_j) = \tau f_T(u_j-y_j\tau)\)</span> and <span class="math inline">\(PR(t_i)=P(t_i)+R(t_i).\)</span></p>
+</annotation></semantics></math> where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>q</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>u</mi><mi>j</mi></msub><mo>,</mo><msub><mi>y</mi><mi>j</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>τ</mi><msub><mi>f</mi><mi>T</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>u</mi><mi>j</mi></msub><mo>−</mo><msub><mi>y</mi><mi>j</mi></msub><mi>τ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">q(u_j,y_j) = \tau f_T(u_j-y_j\tau)</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mi>R</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>t</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>t</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mi>R</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>t</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">PR(t_i)=P(t_i)+R(t_i).</annotation></semantics></math></p>
 </div>
 <div class="section level3">
 <h3 id="type-3">Type 3<a class="anchor" aria-label="anchor" href="#type-3"></a>
 </h3>
-<p>Type 3 data consist of observations of actively moulting birds only, and a sufficiently linear moult index <span class="math inline">\(y\)</span> (e.g. percent feather mass grown) is known for each individual. The likelihood of these observations is <span class="math display">\[
+<p>Type 3 data consist of observations of actively moulting birds only,
+and a sufficiently linear moult index
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>y</mi><annotation encoding="application/x-tex">y</annotation></semantics></math>
+(e.g. percent feather mass grown) is known for each individual. The
+likelihood of these observations is
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℒ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝛉</mi><mo>,</mo><mi>u</mi><mo>,</mo><mi>y</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><munderover><mo>∏</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mi>J</mi></munderover><mfrac><mrow><mi>q</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>u</mi><mi>j</mi></msub><mo>,</mo><msub><mi>y</mi><mi>j</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mi>Q</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>u</mi><mi>j</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
 \mathcal{L}(\boldsymbol\theta,u,y) = \prod_{j = 1}^J\frac{q(u_j,y_j)}{Q(u_j)}.
-\]</span></p>
+</annotation></semantics></math></p>
 </div>
 <div class="section level3">
 <h3 id="type-4">Type 4<a class="anchor" aria-label="anchor" href="#type-4"></a>
 </h3>
-<p>Type 4 data consist of observations of birds in active moult and post-moult only. Sampling is representative for these two categories, and for actively moulting birds a sufficiently linear moult index <span class="math inline">\(y\)</span> (e.g. percent feather mass grown) is known. The likelihood of these observations is <span class="math display">\[
+<p>Type 4 data consist of observations of birds in active moult and
+post-moult only. Sampling is representative for these two categories,
+and for actively moulting birds a sufficiently linear moult index
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>y</mi><annotation encoding="application/x-tex">y</annotation></semantics></math>
+(e.g. percent feather mass grown) is known. The likelihood of these
+observations is
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℒ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝛉</mi><mo>,</mo><mi>u</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>v</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><munderover><mo>∏</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mi>J</mi></munderover><mfrac><mrow><mi>q</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>u</mi><mi>j</mi></msub><mo>,</mo><msub><mi>y</mi><mi>j</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mn>1</mn><mo>−</mo><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>u</mi><mi>j</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac><munderover><mo>∏</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>K</mi></munderover><mfrac><mrow><mi>R</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>v</mi><mi>k</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mn>1</mn><mo>−</mo><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>v</mi><mi>k</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
 \mathcal{L}(\boldsymbol\theta,u,y,v) = \prod_{j = 1}^J\frac{q(u_j,y_j)}{1-P(u_j)}\prod_{k=1}^K\frac{R(v_k)}{1-P(v_k)}.
-\]</span></p>
+</annotation></semantics></math></p>
 </div>
 <div class="section level3">
 <h3 id="type-5">Type 5<a class="anchor" aria-label="anchor" href="#type-5"></a>
 </h3>
-<p>Type 5 data consist of observations of birds in pre-moult and active moult. Sampling is representative for these two categories, and for actively moulting birds a sufficiently linear moult index <span class="math inline">\(y\)</span> (e.g. percent feather mass grown) is known. The likelihood of these observations is <span class="math display">\[
+<p>Type 5 data consist of observations of birds in pre-moult and active
+moult. Sampling is representative for these two categories, and for
+actively moulting birds a sufficiently linear moult index
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>y</mi><annotation encoding="application/x-tex">y</annotation></semantics></math>
+(e.g. percent feather mass grown) is known. The likelihood of these
+observations is
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℒ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝛉</mi><mo>,</mo><mi>t</mi><mo>,</mo><mi>u</mi><mo>,</mo><mi>y</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><munderover><mo>∏</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>I</mi></munderover><mfrac><mrow><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>t</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mn>1</mn><mo>−</mo><mi>R</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>t</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac><munderover><mo>∏</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mi>J</mi></munderover><mfrac><mrow><mi>q</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>u</mi><mi>j</mi></msub><mo>,</mo><msub><mi>y</mi><mi>j</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mn>1</mn><mo>−</mo><mi>R</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>u</mi><mi>j</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
 \mathcal{L}(\boldsymbol\theta,t,u,y) = \prod_{i=1}^I\frac{P(t_i)}{1-R(t_i)}\prod_{j = 1}^J\frac{q(u_j,y_j)}{1-R(u_j)}.
-\]</span></p>
+</annotation></semantics></math></p>
 </div>
 <div class="section level3">
 <h3 id="type-1-2">Type 1 + 2<a class="anchor" aria-label="anchor" href="#type-1-2"></a>
 </h3>
-<p>As outlined in <span class="citation">Underhill and Zucchini (1988)</span> estimates can also be derived from mixtures of data types. Type 1 + 2 data consist of observations of birds in all three moult states (pre-moult, active moult, post-moult). Sampling is representative for all three categories, but a sufficiently linear moult index <span class="math inline">\(y\)</span> (e.g. percent feather mass grown) is known only for some of the actively moulting birds. This means the sample consist of <span class="math inline">\(I\)</span> pre-moult birds, <span class="math inline">\(J\)</span> birds in active moult with known indices, <span class="math inline">\(L\)</span> birds in active moult without known indices but known capture dates <span class="math inline">\(u'=u'_l,\ldots,u'_L\)</span>, and <span class="math inline">\(K\)</span> post-moult birds. The likelihood of these observations is <span class="math display">\[
+<p>As outlined in <span class="citation">Les G. Underhill and Zucchini
+(1988)</span> estimates can also be derived from mixtures of data types.
+Type 1 + 2 data consist of observations of birds in all three moult
+states (pre-moult, active moult, post-moult). Sampling is representative
+for all three categories, but a sufficiently linear moult index
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>y</mi><annotation encoding="application/x-tex">y</annotation></semantics></math>
+(e.g. percent feather mass grown) is known only for some of the actively
+moulting birds. This means the sample consist of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>I</mi><annotation encoding="application/x-tex">I</annotation></semantics></math>
+pre-moult birds,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>J</mi><annotation encoding="application/x-tex">J</annotation></semantics></math>
+birds in active moult with known indices,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>L</mi><annotation encoding="application/x-tex">L</annotation></semantics></math>
+birds in active moult without known indices but known capture dates
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mi>′</mi><mo>=</mo><mi>u</mi><msub><mi>′</mi><mi>l</mi></msub><mo>,</mo><mi>…</mi><mo>,</mo><mi>u</mi><msub><mi>′</mi><mi>L</mi></msub></mrow><annotation encoding="application/x-tex">u'=u'_l,\ldots,u'_L</annotation></semantics></math>,
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
+post-moult birds. The likelihood of these observations is
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℒ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝛉</mi><mo>,</mo><mi>t</mi><mo>,</mo><mi>u</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>u</mi><mi>′</mi><mo>,</mo><mi>v</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><munderover><mo>∏</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>I</mi></munderover><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>t</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><munderover><mo>∏</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mi>J</mi></munderover><mi>q</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>u</mi><mi>j</mi></msub><mo>,</mo><msub><mi>y</mi><mi>j</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><munderover><mo>∏</mo><mrow><mi>l</mi><mo>=</mo><mn>1</mn></mrow><mi>L</mi></munderover><mi>Q</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>u</mi><msub><mi>′</mi><mi>l</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><munderover><mo>∏</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>K</mi></munderover><mi>R</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>v</mi><mi>k</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">
 \mathcal{L}(\boldsymbol\theta,t,u,y,u',v) = \prod_{i=1}^IP(t_i)\prod_{j = 1}^Jq(u_j,y_j)\prod_{l = 1}^{L}Q(u'_{l})\prod_{k=1}^KR(v_k),
-\]</span></p>
+</annotation></semantics></math></p>
 </div>
 <div class="section level3">
 <h3 id="recapture-models">Recapture models<a class="anchor" aria-label="anchor" href="#recapture-models"></a>
 </h3>
-<p><code>moultmcmc</code> currently implements a recaptures model which allows for heterogeneity in start dates <span class="math inline">\(\mu\)</span> but assumes a common moult duration <span class="math inline">\(\tau\)</span>. When repeat observations are available an individual’s start date <span class="math inline">\(\mu_n\)</span> then becomes</p>
-<p><span class="math display">\[\begin{equation}
+<p><code>moultmcmc</code> currently implements a recaptures model which
+allows for heterogeneity in start dates
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>μ</mi><annotation encoding="application/x-tex">\mu</annotation></semantics></math>
+but assumes a common moult duration
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math>.
+When repeat observations are available an individual’s start date
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>μ</mi><mi>n</mi></msub><annotation encoding="application/x-tex">\mu_n</annotation></semantics></math>
+then becomes</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>μ</mi><mi>n</mi></msub><mo>=</mo><msub><mi>μ</mi><mn>0</mn></msub><mo>+</mo><mi>μ</mi><msub><mi>′</mi><mi>n</mi></msub><mo>+</mo><msub><mi>𝐱</mi><mi>μ</mi></msub><msub><mi>𝛃</mi><mi>μ</mi></msub></mrow><annotation encoding="application/x-tex">\begin{equation}
 \mu_n = \mu_0 + \mu'_n + \mathbf{x}_\mu\boldsymbol{\beta}_\mu 
-\end{equation}\]</span></p>
-<p>where <span class="math inline">\(\boldsymbol{x}_\mu\)</span> is a row vector containing the values of individual-specific predictors (in the same format as <span class="math inline">\(\boldsymbol{X}_\mu\)</span>), and <span class="math inline">\(\mu'_n\)</span> is an individual-level random effect intercept</p>
-<p><span class="math display">\[\begin{equation}
+\end{equation}</annotation></semantics></math></p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐱</mi><mi>μ</mi></msub><annotation encoding="application/x-tex">\boldsymbol{x}_\mu</annotation></semantics></math>
+is a row vector containing the values of individual-specific predictors
+(in the same format as
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐗</mi><mi>μ</mi></msub><annotation encoding="application/x-tex">\boldsymbol{X}_\mu</annotation></semantics></math>),
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>μ</mi><msub><mi>′</mi><mi>n</mi></msub></mrow><annotation encoding="application/x-tex">\mu'_n</annotation></semantics></math>
+is an individual-level random effect intercept</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>μ</mi><msub><mi>′</mi><mi>n</mi></msub><mo>∼</mo><mrow><mi mathvariant="normal">N</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">l</mi></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo>,</mo><msub><mi>σ</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\begin{equation}
 \mu'_n \sim \mathrm{Normal}(0,\sigma_n) 
-\end{equation}\]</span> where <span class="math inline">\(\sigma_n\)</span> is the individual-specific standard deviation. We can then exploit the linearity assumption and treat observed moult scores as <span class="math display">\[\begin{equation}
+\end{equation}</annotation></semantics></math> where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>σ</mi><mi>n</mi></msub><annotation encoding="application/x-tex">\sigma_n</annotation></semantics></math>
+is the individual-specific standard deviation. We can then exploit the
+linearity assumption and treat observed moult scores as
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>y</mi><mrow><mi>n</mi><mi>i</mi></mrow></msub><mo>∼</mo><mrow><mi mathvariant="normal">N</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">l</mi></mrow><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>μ</mi><mn>0</mn></msub><mo>+</mo><mi>μ</mi><msub><mi>′</mi><mi>n</mi></msub><mo>+</mo><mi>τ</mi><mo>*</mo><msub><mi>u</mi><mrow><mi>n</mi><mi>i</mi></mrow></msub><mo>,</mo><msub><mi>σ</mi><mi>τ</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\begin{equation}
  y_{ni} \sim \mathrm{Normal}(\mu_0 + \mu'_n + \tau * u_{ni}, \sigma_\tau) 
-\end{equation}\]</span> where <span class="math inline">\(\sigma_\tau\)</span> captures any unmodelled variance in <span class="math inline">\(\tau\)</span> as well as any measurement error in <span class="math inline">\(y\)</span>.</p>
-<p>The likelihood for the Type 3-like model for a sample of <span class="math inline">\(J\)</span> birds in active moult without repeated observations, and <span class="math inline">\(N\)</span> birds in active moult with a total of <span class="math inline">\(M\)</span> repeated observations <span class="math inline">\(u'=u'_m,\ldots,u'_M\)</span> and <span class="math inline">\(y'=y'_m,\ldots,y'_M\)</span> then is</p>
-<p><span class="math display">\[
+\end{equation}</annotation></semantics></math> where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>σ</mi><mi>τ</mi></msub><annotation encoding="application/x-tex">\sigma_\tau</annotation></semantics></math>
+captures any unmodelled variance in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math>
+as well as any measurement error in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>y</mi><annotation encoding="application/x-tex">y</annotation></semantics></math>.</p>
+<p>The likelihood for the Type 3-like model for a sample of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>J</mi><annotation encoding="application/x-tex">J</annotation></semantics></math>
+birds in active moult without repeated observations, and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>
+birds in active moult with a total of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>M</mi><annotation encoding="application/x-tex">M</annotation></semantics></math>
+repeated observations
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mi>′</mi><mo>=</mo><mi>u</mi><msub><mi>′</mi><mi>m</mi></msub><mo>,</mo><mi>…</mi><mo>,</mo><mi>u</mi><msub><mi>′</mi><mi>M</mi></msub></mrow><annotation encoding="application/x-tex">u'=u'_m,\ldots,u'_M</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi><mi>′</mi><mo>=</mo><mi>y</mi><msub><mi>′</mi><mi>m</mi></msub><mo>,</mo><mi>…</mi><mo>,</mo><mi>y</mi><msub><mi>′</mi><mi>M</mi></msub></mrow><annotation encoding="application/x-tex">y'=y'_m,\ldots,y'_M</annotation></semantics></math>
+then is</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℒ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝛉</mi><mo>,</mo><mi>u</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>u</mi><mi>′</mi><mo>,</mo><mi>y</mi><mi>′</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><munderover><mo>∏</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mi>J</mi></munderover><mfrac><mrow><mi>q</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>u</mi><mi>j</mi></msub><mo>,</mo><msub><mi>y</mi><mi>j</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mi>Q</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>u</mi><mi>j</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac><munderover><mo>∏</mo><mrow><mi>m</mi><mo>=</mo><mn>1</mn></mrow><mi>M</mi></munderover><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>u</mi><msub><mi>′</mi><mi>m</mi></msub><mo>,</mo><mi>y</mi><msub><mi>′</mi><mi>m</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><munderover><mo>∏</mo><mrow><mi>n</mi><mo>=</mo><mn>1</mn></mrow><mi>N</mi></munderover><mi>ϕ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>μ</mi><msub><mi>′</mi><mi>n</mi></msub><mo stretchy="false" form="prefix">|</mo><mn>0</mn><mo>,</mo><msub><mi>σ</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">
 \mathcal{L}(\boldsymbol\theta,u,y,u',y') = \prod_{j = 1}^J\frac{q(u_j,y_j)}{Q(u_j)}\prod_{m = 1}^{M}f(u'_m,y'_m)\prod_{n=1}^N\phi(\mu'_n|0,\sigma_n),
-\]</span> where <span class="math inline">\(f(u'_m,y'_m)\)</span> follows from above.</p>
+</annotation></semantics></math> where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>u</mi><msub><mi>′</mi><mi>m</mi></msub><mo>,</mo><mi>y</mi><msub><mi>′</mi><mi>m</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">f(u'_m,y'_m)</annotation></semantics></math>
+follows from above.</p>
 </div>
 </div>
 <div class="section level2">
 <h2 id="priors">Priors<a class="anchor" aria-label="anchor" href="#priors"></a>
 </h2>
-<p>Users have a choice between two set of priors for the intercept terms of the linear predictors on the start date <span class="math inline">\(\mu\)</span>, the duration <span class="math inline">\(\tau\)</span>, and the population standard deviation of the start date <span class="math inline">\(\sigma\)</span>, respectively. By default flat priors are used for <span class="math inline">\(\mu_0\)</span> and <span class="math inline">\(\tau_0\)</span> and a vaguely informative normal prior on <span class="math inline">\(\ln(\sigma_0)\)</span></p>
-<p><span class="math inline">\(\mu_0 \sim \mathrm{Uniform(0,366)}\)</span><br><span class="math inline">\(\tau_0 \sim \mathrm{Uniform(0,366)}\)</span><br><span class="math inline">\(\ln(\sigma_0) \sim \mathrm{Normal(0,5)}\)</span></p>
-<p>In some cases the models sample poorly with these priors, and better convergence can be achieved by setting the argument <code>flat_prior = FALSE</code>. In this case vaguely informative truncated normal priors are used for <span class="math inline">\(\mu_0\)</span> and <span class="math inline">\(\tau_0\)</span>:</p>
-<p><span class="math inline">\(\mu_0 \sim \mathrm{TruncNormal(150,50,0,366)}\)</span><br><span class="math inline">\(\tau_0 \sim \mathrm{TruncNormal(100,30,0,366)}\)</span></p>
-<p>These priors work well for data from passerines in seasonal environments, i.e. when the sampling occasion data is encoded as days from mid-winter.</p>
-<p>For any additional regression coefficients an improper flat prior is used as a default.</p>
+<p>Users have a choice between two set of priors for the intercept terms
+of the linear predictors on the start date
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>μ</mi><annotation encoding="application/x-tex">\mu</annotation></semantics></math>,
+the duration
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math>,
+and the population standard deviation of the start date
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math>,
+respectively. By default flat priors are used for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>μ</mi><mn>0</mn></msub><annotation encoding="application/x-tex">\mu_0</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>τ</mi><mn>0</mn></msub><annotation encoding="application/x-tex">\tau_0</annotation></semantics></math>
+and a vaguely informative normal prior on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>ln</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>σ</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\ln(\sigma_0)</annotation></semantics></math></p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>μ</mi><mn>0</mn></msub><mo>∼</mo><mrow><mi mathvariant="normal">U</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">f</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">m</mi><mrow><mo stretchy="true" form="prefix" mathvariant="normal">(</mo><mn mathvariant="normal">0</mn><mo mathvariant="normal">,</mo><mn mathvariant="normal">366</mn><mo stretchy="true" form="postfix" mathvariant="normal">)</mo></mrow></mrow></mrow><annotation encoding="application/x-tex">\mu_0 \sim \mathrm{Uniform(0,366)}</annotation></semantics></math><br><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>τ</mi><mn>0</mn></msub><mo>∼</mo><mrow><mi mathvariant="normal">U</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">f</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">m</mi><mrow><mo stretchy="true" form="prefix" mathvariant="normal">(</mo><mn mathvariant="normal">0</mn><mo mathvariant="normal">,</mo><mn mathvariant="normal">366</mn><mo stretchy="true" form="postfix" mathvariant="normal">)</mo></mrow></mrow></mrow><annotation encoding="application/x-tex">\tau_0 \sim \mathrm{Uniform(0,366)}</annotation></semantics></math><br><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>ln</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>σ</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>∼</mo><mrow><mi mathvariant="normal">N</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">l</mi><mrow><mo stretchy="true" form="prefix" mathvariant="normal">(</mo><mn mathvariant="normal">0</mn><mo mathvariant="normal">,</mo><mn mathvariant="normal">5</mn><mo stretchy="true" form="postfix" mathvariant="normal">)</mo></mrow></mrow></mrow><annotation encoding="application/x-tex">\ln(\sigma_0) \sim \mathrm{Normal(0,5)}</annotation></semantics></math></p>
+<p>In some cases the models sample poorly with these priors, and better
+convergence can be achieved by setting the argument
+<code>flat_prior = FALSE</code>. In this case vaguely informative
+truncated normal priors are used for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>μ</mi><mn>0</mn></msub><annotation encoding="application/x-tex">\mu_0</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>τ</mi><mn>0</mn></msub><annotation encoding="application/x-tex">\tau_0</annotation></semantics></math>:</p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>μ</mi><mn>0</mn></msub><mo>∼</mo><mrow><mi mathvariant="normal">T</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">c</mi><mi mathvariant="normal">N</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">l</mi><mrow><mo stretchy="true" form="prefix" mathvariant="normal">(</mo><mn mathvariant="normal">150</mn><mo mathvariant="normal">,</mo><mn mathvariant="normal">50</mn><mo mathvariant="normal">,</mo><mn mathvariant="normal">0</mn><mo mathvariant="normal">,</mo><mn mathvariant="normal">366</mn><mo stretchy="true" form="postfix" mathvariant="normal">)</mo></mrow></mrow></mrow><annotation encoding="application/x-tex">\mu_0 \sim \mathrm{TruncNormal(150,50,0,366)}</annotation></semantics></math><br><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>τ</mi><mn>0</mn></msub><mo>∼</mo><mrow><mi mathvariant="normal">T</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">c</mi><mi mathvariant="normal">N</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">l</mi><mrow><mo stretchy="true" form="prefix" mathvariant="normal">(</mo><mn mathvariant="normal">100</mn><mo mathvariant="normal">,</mo><mn mathvariant="normal">30</mn><mo mathvariant="normal">,</mo><mn mathvariant="normal">0</mn><mo mathvariant="normal">,</mo><mn mathvariant="normal">366</mn><mo stretchy="true" form="postfix" mathvariant="normal">)</mo></mrow></mrow></mrow><annotation encoding="application/x-tex">\tau_0 \sim \mathrm{TruncNormal(100,30,0,366)}</annotation></semantics></math></p>
+<p>These priors work well for data from passerines in seasonal
+environments, i.e. when the sampling occasion data is encoded as days
+from mid-winter.</p>
+<p>For any additional regression coefficients an improper flat prior is
+used as a default.</p>
 </div>
 <div class="section level2">
-<h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+<h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<div id="refs" class="references">
-<div id="ref-underhill1988model">
-<p>Underhill, Les G., and Walter Zucchini. 1988. “A Model for Avian Primary Moult.” <em>Ibis</em> 130: 358–72. <a href="https://doi.org/10.1111/j.1474-919x.1988.tb00993.x" class="external-link">https://doi.org/10.1111/j.1474-919x.1988.tb00993.x</a>.</p>
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
+<div id="ref-underhill1990model" class="csl-entry">
+Underhill, L. G., W. Zucchini, and R. W. Summers. 1990. <span>“A Model
+for Avian Primary Moult-Data Types Based on Migration Strategies and an
+Example Using the Redshank <em>Tringa Totanus</em>.”</span>
+<em>Ibis</em> 132: 118–23. <a href="https://doi.org/10.1111/j.1474-919x.1990.tb01024.x" class="external-link">https://doi.org/10.1111/j.1474-919x.1990.tb01024.x</a>.
 </div>
-<div id="ref-underhill1990model">
-<p>Underhill, L. G., W. Zucchini, and R. W. Summers. 1990. “A Model for Avian Primary Moult-Data Types Based on Migration Strategies and an Example Using the Redshank <em>Tringa Totanus</em>.” <em>Ibis</em> 132: 118–23. <a href="https://doi.org/10.1111/j.1474-919x.1990.tb01024.x" class="external-link">https://doi.org/10.1111/j.1474-919x.1990.tb01024.x</a>.</p>
+<div id="ref-underhill1988model" class="csl-entry">
+Underhill, Les G., and Walter Zucchini. 1988. <span>“A Model for Avian
+Primary Moult.”</span> <em>Ibis</em> 130: 358–72. <a href="https://doi.org/10.1111/j.1474-919x.1988.tb00993.x" class="external-link">https://doi.org/10.1111/j.1474-919x.1988.tb00993.x</a>.
 </div>
 </div>
 </div>
-<div class="footnotes">
+<div class="footnotes footnotes-end-of-document">
 <hr>
 <ol>
-<li id="fn1"><p>Note that in <span class="citation">Underhill and Zucchini (1988)</span> the variable <span class="math inline">\(t\)</span> is doubly defined. It is both a generic variable of time in the model derivation, and denotes the sample dates of pre-moult birds in the data likelihoods<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn1"><p>Note that in <span class="citation">Les G. Underhill and
+Zucchini (1988)</span> the variable
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+is doubly defined. It is both a generic variable of time in the model
+derivation, and denotes the sample dates of pre-moult birds in the data
+likelihoods<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
-        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
-    </nav>
-</div>
+      </div>
 
 </div>
 
@@ -213,16 +382,16 @@ f_Y(t)(y)=\tau f_T(t-y\tau),\quad0 &lt; y &lt; 1,
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
       </footer>
 </div>
 
-  
 
 
-  
+
+
 
   </body>
 </html>

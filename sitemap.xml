@@ -1,102 +1,36 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>/404.html</loc>
-  </url>
-  <url>
-    <loc>/CODE_OF_CONDUCT.html</loc>
-  </url>
-  <url>
-    <loc>/CONTRIBUTING.html</loc>
-  </url>
-  <url>
-    <loc>/LICENSE-text.html</loc>
-  </url>
-  <url>
-    <loc>/articles/extended-moult-models.html</loc>
-  </url>
-  <url>
-    <loc>/articles/getting-started.html</loc>
-  </url>
-  <url>
-    <loc>/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>/articles/moult-likelihoods.html</loc>
-  </url>
-  <url>
-    <loc>/authors.html</loc>
-  </url>
-  <url>
-    <loc>/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/compare_plot.html</loc>
-  </url>
-  <url>
-    <loc>/reference/consolidate_moult_records.html</loc>
-  </url>
-  <url>
-    <loc>/reference/fixef.moultmcmc.html</loc>
-  </url>
-  <url>
-    <loc>/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/loo.moultmcmc.html</loc>
-  </url>
-  <url>
-    <loc>/reference/moult_plot.html</loc>
-  </url>
-  <url>
-    <loc>/reference/moult_plot.moult.html</loc>
-  </url>
-  <url>
-    <loc>/reference/moult_plot.moultmcmc.html</loc>
-  </url>
-  <url>
-    <loc>/reference/moultmcmc-package.html</loc>
-  </url>
-  <url>
-    <loc>/reference/moultmcmc.html</loc>
-  </url>
-  <url>
-    <loc>/reference/namedList.html</loc>
-  </url>
-  <url>
-    <loc>/reference/predict.moultmcmc.html</loc>
-  </url>
-  <url>
-    <loc>/reference/ranef.moultmcmc.html</loc>
-  </url>
-  <url>
-    <loc>/reference/recaptures.html</loc>
-  </url>
-  <url>
-    <loc>/reference/recaptures2.html</loc>
-  </url>
-  <url>
-    <loc>/reference/residual_plot.html</loc>
-  </url>
-  <url>
-    <loc>/reference/residual_plot.moult.html</loc>
-  </url>
-  <url>
-    <loc>/reference/siskins.html</loc>
-  </url>
-  <url>
-    <loc>/reference/summary.moultmcmc.html</loc>
-  </url>
-  <url>
-    <loc>/reference/summary_table.html</loc>
-  </url>
-  <url>
-    <loc>/reference/summary_table.moult.html</loc>
-  </url>
-  <url>
-    <loc>/reference/summary_table.moultmcmc.html</loc>
-  </url>
-  <url>
-    <loc>/reference/weavers_processed.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>/404.html</loc></url>
+<url><loc>/CODE_OF_CONDUCT.html</loc></url>
+<url><loc>/CONTRIBUTING.html</loc></url>
+<url><loc>/LICENSE-text.html</loc></url>
+<url><loc>/articles/extended-moult-models.html</loc></url>
+<url><loc>/articles/getting-started.html</loc></url>
+<url><loc>/articles/index.html</loc></url>
+<url><loc>/articles/moult-likelihoods.html</loc></url>
+<url><loc>/authors.html</loc></url>
+<url><loc>/index.html</loc></url>
+<url><loc>/reference/compare_plot.html</loc></url>
+<url><loc>/reference/consolidate_moult_records.html</loc></url>
+<url><loc>/reference/fixef.moultmcmc.html</loc></url>
+<url><loc>/reference/index.html</loc></url>
+<url><loc>/reference/loo.moultmcmc.html</loc></url>
+<url><loc>/reference/moult_plot.html</loc></url>
+<url><loc>/reference/moult_plot.moult.html</loc></url>
+<url><loc>/reference/moult_plot.moultmcmc.html</loc></url>
+<url><loc>/reference/moultmcmc-package.html</loc></url>
+<url><loc>/reference/moultmcmc.html</loc></url>
+<url><loc>/reference/namedList.html</loc></url>
+<url><loc>/reference/predict.moultmcmc.html</loc></url>
+<url><loc>/reference/ranef.moultmcmc.html</loc></url>
+<url><loc>/reference/recaptures.html</loc></url>
+<url><loc>/reference/recaptures2.html</loc></url>
+<url><loc>/reference/residual_plot.html</loc></url>
+<url><loc>/reference/residual_plot.moult.html</loc></url>
+<url><loc>/reference/siskins.html</loc></url>
+<url><loc>/reference/summary.moultmcmc.html</loc></url>
+<url><loc>/reference/summary_table.html</loc></url>
+<url><loc>/reference/summary_table.moult.html</loc></url>
+<url><loc>/reference/summary_table.moultmcmc.html</loc></url>
+<url><loc>/reference/weavers_processed.html</loc></url>
 </urlset>
+
