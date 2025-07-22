@@ -8,9 +8,13 @@
 Precompiled Stan models to conduct full Bayesian inference in regression models for the phenology of avian primary moult based on the approach of Underhill & Zucchini (1988) and related hierarchical models to accommodate repeated-measures data (within-season recaptures of individuals).
 }
 \references{
-Boersch-Supan et al. (2022) Bayesian inference for models of moult duration and timing in birds arXiv DOI:10.48550/arXiv.2205.12120
+Boersch-Supan et al. (2024) Extended molt phenology models improve inferences about molt duration and timing. Ornithology DOI:10.1093/ornithology/ukae003
 
 Underhill & Zucchini (1988) A model for avian primary moult. Ibis 130:358 DOI:10.1111/j.1474-919X.1988.tb00993.x
 
 Stan Development Team (2022). RStan: the R interface to Stan. R package version 2.21.5. https://mc-stan.org
+}
+\author{
+\strong{Maintainer}: Philipp Boersch-Supan \email{pboesu@gmail.com} (\href{https://orcid.org/0000-0001-6723-6833}{ORCID})
+
 }

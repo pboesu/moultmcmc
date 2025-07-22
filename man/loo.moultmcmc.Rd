@@ -4,12 +4,14 @@
 \alias{loo.moultmcmc}
 \title{Efficient approximate leave-one-out cross-validation (LOO)}
 \usage{
-\method{loo}{moultmcmc}(x, cores = getOption("mc.cores", 1))
+\method{loo}{moultmcmc}(x, cores = getOption("mc.cores", 1), ...)
 }
 \arguments{
 \item{x}{A moultmcmc model object}
 
 \item{cores}{The number of cores to use for parallelization. This defaults to the option mc.cores which can be set for an entire R session by options(mc.cores = NUMBER). The old option loo.cores is now deprecated but will be given precedence over mc.cores until loo.cores is removed in a future release. As of version 2.0.0 the default is now 1 core if mc.cores is not set, but we recommend using as many (or close to as many) cores as possible. Note for Windows 10 users: it is strongly recommended to avoid using the .Rprofile file to set mc.cores (using the cores argument or setting mc.cores interactively or in a script is fine).}
+
+\item{...}{other arguments to pass to the log-likelihood function}
 }
 \value{
 The loo() methods return a named list with class c("psis_loo", "loo"). See ?loo::loo
