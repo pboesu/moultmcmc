@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">moultmcmc</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0.9001</span>
       </span>
     </div>
 
@@ -222,13 +222,15 @@ bird identities to the <code><a href="../reference/moultmcmc.html">moultmcmc()</
 <span>                       iter <span class="op">=</span> <span class="fl">1000</span>,</span>
 <span>                       chain <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>                       cores <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">rowSums</a></span><span class="op">(</span><span class="fu"><a href="https://mc-stan.org/rstan/reference/stanfit-class.html" class="external-link">get_elapsed_time</a></span><span class="op">(</span><span class="va">uz5_recap</span><span class="op">$</span><span class="va">stanfit</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; n 2: Iteration: 1000 / 1000 [100%]  (Sampling)</span></span>
+<span><span class="co">#&gt;             36.165 seconds (Total)</span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 2: Iteration: 1000 / 1000 [100%]  (Sampling)</span></span>
 <span><span class="co">#&gt; Chain 2: </span></span>
-<span><span class="co">#&gt; Chain 2:  Elapsed Time: 0.963 seconds (Warm-up)</span></span>
-<span><span class="co">#&gt; Chain 2:                0.497 seconds (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 2:                1.46 seconds (Total)</span></span>
-<span><span class="co">#&gt; Chain 2:</span></span></code></pre></div>
+<span><span class="co">#&gt; Chain 2:  Elapsed Time: 16.753 seconds (Warm-up)</span></span>
+<span><span class="co">#&gt; Chain 2:                20.379 seconds (Sampling)</span></span>
+<span><span class="co">#&gt; Chain 2:                37.132 seconds (Total)</span></span>
+<span><span class="co">#&gt; Chain 2:</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">rowSums</a></span><span class="op">(</span><span class="fu"><a href="https://mc-stan.org/rstan/reference/stanfit-class.html" class="external-link">get_elapsed_time</a></span><span class="op">(</span><span class="va">uz5_recap</span><span class="op">$</span><span class="va">stanfit</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>When comparing the results visually it is apparent that the moult
 period for the population predicted by the standard Type 3 models fails
 to encapsulate a substantial proportion of the observed data, whereas
